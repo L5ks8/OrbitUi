@@ -13,28 +13,32 @@ local Setup = {
 }
 
 local Themes = {
-    Dark = {
-        Primary = Color3.fromRGB(30, 30, 30),
-        Secondary = Color3.fromRGB(21, 21, 21),
-        Component = Color3.fromRGB(40, 40, 40),
-        Interactables = Color3.fromRGB(45, 45, 45),
-        Tab = Color3.fromRGB(200, 200, 200),
-        Title = Color3.fromRGB(240, 240, 240),
-        Description = Color3.fromRGB(200, 200, 200),
-        Shadow = Color3.fromRGB(0, 0, 0),
-        Outline = Color3.fromRGB(40, 40, 40),
-        Icon = Color3.fromRGB(220, 220, 220),
-        Accent = Color3.fromRGB(248, 191, 212),
-        TopbarActions = Color3.fromRGB(25, 25, 25)
-    },
-    -- Weitere Themes können hier analog zu ui.lua ergänzt werden
+    Dark = { Main = Color3.fromRGB(36, 36, 36), Accent = Color3.fromRGB(248, 191, 212), TopbarActions = Color3.fromRGB(25, 25, 25), Secondary = Color3.fromRGB(21, 21, 21), Component = Color3.fromRGB(40, 40, 40), Interactables = Color3.fromRGB(45, 45, 45), Tab = Color3.fromRGB(200, 200, 200), Title = Color3.fromRGB(240, 240, 240), Description = Color3.fromRGB(200, 200, 200), Shadow = Color3.fromRGB(0, 0, 0), Outline = Color3.fromRGB(40, 40, 40), Icon = Color3.fromRGB(220, 220, 220) },
+    Blue = { Main = Color3.fromRGB(25, 30, 45), Accent = Color3.fromRGB(0, 160, 255), TopbarActions = Color3.fromRGB(20, 25, 35) },
+    Halloween = { Main = Color3.fromRGB(20, 20, 20), Accent = Color3.fromRGB(255, 120, 0), TopbarActions = Color3.fromRGB(15, 15, 15) },
+    Red = { Main = Color3.fromRGB(30, 10, 10), Accent = Color3.fromRGB(255, 50, 50), TopbarActions = Color3.fromRGB(20, 5, 5) },
+    Purple = { Main = Color3.fromRGB(25, 15, 35), Accent = Color3.fromRGB(180, 100, 255), TopbarActions = Color3.fromRGB(20, 10, 30) },
+    Midnight = { Main = Color3.fromRGB(12, 12, 18), Accent = Color3.fromRGB(90, 90, 255), TopbarActions = Color3.fromRGB(8, 8, 12) },
+    Ocean = { Main = Color3.fromRGB(10, 35, 40), Accent = Color3.fromRGB(0, 220, 220), TopbarActions = Color3.fromRGB(5, 25, 30) },
+    Rose = { Main = Color3.fromRGB(40, 30, 35), Accent = Color3.fromRGB(255, 140, 180), TopbarActions = Color3.fromRGB(35, 25, 30) },
+    Emerald = { Main = Color3.fromRGB(20, 30, 25), Accent = Color3.fromRGB(0, 255, 120), TopbarActions = Color3.fromRGB(15, 25, 20) },
+    Amber = { Main = Color3.fromRGB(30, 25, 20), Accent = Color3.fromRGB(255, 170, 0), TopbarActions = Color3.fromRGB(25, 20, 15) },
+    Sakura = { Main = Color3.fromRGB(35, 25, 30), Accent = Color3.fromRGB(255, 180, 220), TopbarActions = Color3.fromRGB(30, 20, 25) },
+    Cyberpunk = { Main = Color3.fromRGB(25, 10, 40), Accent = Color3.fromRGB(0, 255, 255), TopbarActions = Color3.fromRGB(15, 5, 30) },
+    Forest = { Main = Color3.fromRGB(15, 25, 15), Accent = Color3.fromRGB(100, 200, 100), TopbarActions = Color3.fromRGB(10, 20, 10) },
+    Coffee = { Main = Color3.fromRGB(45, 35, 30), Accent = Color3.fromRGB(180, 140, 100), TopbarActions = Color3.fromRGB(35, 30, 25) },
+    Nord = { Main = Color3.fromRGB(46, 52, 64), Accent = Color3.fromRGB(136, 192, 208), TopbarActions = Color3.fromRGB(40, 45, 55) },
+    Dracula = { Main = Color3.fromRGB(40, 42, 54), Accent = Color3.fromRGB(255, 121, 198), TopbarActions = Color3.fromRGB(30, 32, 44) },
+    Gold = { Main = Color3.fromRGB(20, 20, 0), Accent = Color3.fromRGB(255, 215, 0), TopbarActions = Color3.fromRGB(15, 15, 0) },
+    Sky = { Main = Color3.fromRGB(15, 30, 45), Accent = Color3.fromRGB(135, 206, 235), TopbarActions = Color3.fromRGB(10, 25, 40) },
+    Synthwave = { Main = Color3.fromRGB(30, 10, 50), Accent = Color3.fromRGB(255, 0, 255), TopbarActions = Color3.fromRGB(20, 5, 40) }
 }
 
 local Fonts = {
     reg = Font.new("rbxassetid://12187365364"),
-    bold = Font.fromId(12187365364, Enum.FontWeight.Bold),
-    med = Font.fromId(12187365364, Enum.FontWeight.Medium),
-    logo = Font.fromId(12187365364, Enum.FontWeight.Bold)
+    bold = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold),
+    med = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium),
+    logo = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold)
 }
 
 --// Utilities
@@ -94,7 +98,7 @@ end
 --// Core Library
 function Library:CreateWindow(Settings)
     local Title = Settings.Title or "Goon Hub"
-    local WindowSize = Settings.Size or UDim2.new(0, 850, 0, 580)
+    local WindowSize = Settings.Size or UDim2.new(0, 880, 0, 600)
     local Transparency = Settings.Transparency or 0
     local Theme = Themes.Dark
 
@@ -190,6 +194,33 @@ function Library:CreateWindow(Settings)
         PaddingTop = UDim.new(0, 2)
     }, NavScroll)
 
+    local AnchoredButtons = New("Frame", {
+        Name = "AnchoredButtons",
+        Size = UDim2.new(1, -22, 0, 0),
+        AutomaticSize = Enum.AutomaticSize.Y,
+        BackgroundTransparency = 1,
+        LayoutOrder = 5
+    }, Sidebar)
+
+    local AnchoredMain = New("Frame", {
+        Name = "Main",
+        BackgroundColor3 = Color3.fromRGB(9, 9, 9),
+        BackgroundTransparency = 0.7,
+        AutomaticSize = Enum.AutomaticSize.Y,
+        Size = UDim2.new(1, 0, 0, 0),
+        Parent = AnchoredButtons
+    })
+
+    New("UICorner", { CornerRadius = UDim.new(0, 12) }, AnchoredMain)
+
+    New("UIListLayout", {
+        Padding = UDim.new(0, 5),
+        HorizontalAlignment = Enum.HorizontalAlignment.Center,
+        SortOrder = Enum.SortOrder.LayoutOrder
+    }, AnchoredMain)
+
+    New("UIPadding", { PaddingTop = UDim.new(0, 7), PaddingBottom = UDim.new(0, 7), PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) }, AnchoredMain)
+
     -- Sidebar Profile (User Section)
     local UserPanel = New("ImageButton", {
         Name = "UserPanel",
@@ -250,6 +281,29 @@ function Library:CreateWindow(Settings)
         BackgroundTransparency = 1,
         TextXAlignment = Enum.TextXAlignment.Left,
         TextTruncate = Enum.TextTruncate.AtEnd
+    })
+
+    -- Time Box in User Panel
+    local TimeBox = New("Frame", {
+        Parent = UserPanel,
+        Size = UDim2.new(0, 75, 0, 22),
+        BackgroundColor3 = Color3.new(0, 0, 0),
+        BackgroundTransparency = 0.8,
+        LayoutOrder = 1
+    })
+    New("UICorner", { CornerRadius = UDim.new(0, 6) }, TimeBox)
+    New("UIPadding", { PaddingLeft = UDim.new(0, 5), PaddingRight = UDim.new(0, 5) }, TimeBox)
+
+    local TimeLabel = New("TextLabel", {
+        Parent = TimeBox,
+        Size = UDim2.new(1, 0, 1, 0),
+        Text = "00:00 PM",
+        FontFace = Fonts.reg,
+        TextSize = 13,
+        TextColor3 = Color3.new(1, 1, 1),
+        BackgroundTransparency = 1,
+        TextTransparency = 0.2,
+        TextYAlignment = Enum.TextYAlignment.Center
     })
 
     -- Debug Bar (Bottom Info)
@@ -317,7 +371,8 @@ function Library:CreateWindow(Settings)
         Parent = Topbar,
         AutomaticSize = Enum.AutomaticSize.X,
         Size = UDim2.new(0, 0, 1, 0),
-        BackgroundTransparency = 1
+        BackgroundTransparency = 1,
+        LayoutOrder = 1
     })
 
     New("TextLabel", {
@@ -333,23 +388,16 @@ function Library:CreateWindow(Settings)
         TextXAlignment = Enum.TextXAlignment.Left
     })
 
-    local Spacer = New("Frame", { Parent = Topbar, BackgroundTransparency = 1 })
+    local Spacer = New("Frame", { Parent = Topbar, BackgroundTransparency = 1, LayoutOrder = 2 })
     New("UIFlexItem", { FlexMode = Enum.UIFlexMode.Fill }, Spacer)
-
-    -- Weather Icon
-    New("ImageLabel", {
-        Parent = Topbar,
-        Size = UDim2.new(0, 21, 0, 21),
-        Image = "rbxassetid://13056160366",
-        BackgroundTransparency = 1
-    })
 
     -- Topbar Actions Frame
     local ActionsFrame = New("Frame", {
         Parent = Topbar,
         Name = "Actions",
         Size = UDim2.new(0, 80, 1, 0),
-        BackgroundTransparency = 1
+        BackgroundTransparency = 1,
+        LayoutOrder = 3
     })
 
     local ActionBackground = New("Frame", {
@@ -374,12 +422,33 @@ function Library:CreateWindow(Settings)
     local SidebarBtn = CreateTopButton("sidebar", Color3.fromRGB(226, 183, 26), "4773248567")
     local MaximizeBtn = CreateTopButton("maximize", Color3.fromRGB(122, 214, 3), "11295291707")
 
+    -- Weather Icon (Far Right)
+    local WeatherIcon = New("ImageLabel", {
+        Parent = Topbar,
+        Size = UDim2.new(0, 21, 0, 21),
+        Image = "rbxassetid://13056160366",
+        BackgroundTransparency = 1,
+        LayoutOrder = 4
+    })
+
     CloseBtn.MouseButton1Click:Connect(function() Screen:Destroy() end)
     
     local sidebarVisible = true
     SidebarBtn.MouseButton1Click:Connect(function()
         sidebarVisible = not sidebarVisible
         Tween(Sidebar, 0.3, { Size = sidebarVisible and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 0, 1, 0) })
+    end)
+
+    local maximized = false
+    MaximizeBtn.MouseButton1Click:Connect(function()
+        maximized = not maximized
+        local targetSize = maximized and UDim2.fromScale(1, 1) or WindowSize
+        local targetPos = maximized and UDim2.fromScale(0.5, 0.5) or UDim2.fromScale(0.5, 0.5)
+        
+        Tween(Main, 0.3, { 
+            Size = targetSize,
+            Position = targetPos
+        })
     end)
 
     -- Resize Handle
@@ -407,6 +476,7 @@ function Library:CreateWindow(Settings)
             FPSLabel.Text = "FPS: " .. fps .. "/s"
             PingLabel.Text = math.floor(game:GetService("Stats").PerformanceStats.Ping:GetValue()) .. " ms"
             MemoryLabel.Text = string.format("%.1f MB", game:GetService("Stats"):GetTotalMemoryUsageMb())
+            TimeLabel.Text = os.date("%I:%M %p")
         end
     end)
 
@@ -463,9 +533,11 @@ function Library:CreateWindow(Settings)
 
 
     function Options:AddTab(data)
+        local parent = data.Fixed and AnchoredMain or NavScroll
+
         local tabBtn = New("TextButton", {
-            Parent = NavScroll,
-            Size = UDim2.new(1, -10, 0, 35),
+            Parent = parent,
+            Size = UDim2.new(1, data.Fixed and 0 or -10, 0, 35),
             BackgroundColor3 = Theme.Interactables,
             BackgroundTransparency = 1,
             Text = "  " .. (data.Title or "Tab"),
@@ -503,10 +575,15 @@ function Library:CreateWindow(Settings)
 
         tabBtn.MouseButton1Click:Connect(function()
             Pages:JumpTo(page)
-            for _, v in pairs(NavScroll:GetChildren()) do 
+            for _, v in pairs(NavScroll:GetChildren()) do
                 if v:IsA("TextButton") then 
                     v.BackgroundTransparency = 1 
                 end 
+            end
+            for _, v in pairs(AnchoredMain:GetChildren()) do
+                if v:IsA("TextButton") then
+                    v.BackgroundTransparency = 1
+                end
             end
             tabBtn.BackgroundTransparency = 0.8
         end)
@@ -863,6 +940,12 @@ function Library:CreateWindow(Settings)
         if k == "Blur" then Setup.Blur = v end
     end
 
+    function Options:SetTheme(themeData)
+        Theme = themeData
+        Main.BackgroundColor3 = Theme.Main or Theme.Primary
+        -- Hier könnten weitere rekursive Farb-Updates folgen
+    end
+
     UserInputService.InputBegan:Connect(function(input, gpe)
         if not gpe and input.KeyCode == Setup.Keybind then
             Main.Visible = not Main.Visible
@@ -870,6 +953,36 @@ function Library:CreateWindow(Settings)
     end)
 
     -- Initialization
+    task.defer(function()
+        -- Settings Tab
+        local SettingsTab = Options:AddTab({ Title = "Settings", Fixed = true })
+        Options:AddSection({ Name = "UI Configuration", Tab = SettingsTab })
+        
+        local ThemeList = {}
+        for Name, _ in next, Themes do table.insert(ThemeList, Name) end
+
+        Options:AddDropdown({
+            Title = "Theme Selector",
+            Tab = SettingsTab,
+            Options = ThemeList,
+            Callback = function(ThemeName)
+                if Themes[ThemeName] then
+                    Options:SetTheme(Themes[ThemeName])
+                end
+            end
+        })
+
+        -- About Tab
+        local AboutTab = Options:AddTab({ Title = "About", Fixed = true })
+        Options:AddSection({ Name = "Information", Tab = AboutTab })
+        
+        Options:AddParagraph({
+            Title = "GoonHub Standalone",
+            Description = "Version 1.0.0\nDeveloped for high performance and clarity.",
+            Tab = AboutTab
+        })
+    end)
+
     SetProperty(Main, { Size = WindowSize, Visible = true })
     Animations:Open(Main, Transparency)
 
