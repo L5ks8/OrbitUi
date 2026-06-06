@@ -14,24 +14,24 @@ local Setup = {
 
 local Themes = {
     Dark = { Main = Color3.fromRGB(36, 36, 36), Accent = Color3.fromRGB(248, 191, 212), TopbarActions = Color3.fromRGB(25, 25, 25), Secondary = Color3.fromRGB(21, 21, 21), Component = Color3.fromRGB(40, 40, 40), Interactables = Color3.fromRGB(45, 45, 45), Tab = Color3.fromRGB(200, 200, 200), Title = Color3.fromRGB(240, 240, 240), Description = Color3.fromRGB(200, 200, 200), Shadow = Color3.fromRGB(0, 0, 0), Outline = Color3.fromRGB(40, 40, 40), Icon = Color3.fromRGB(220, 220, 220) },
-    Blue = { Main = Color3.fromRGB(25, 30, 45), Accent = Color3.fromRGB(0, 160, 255), TopbarActions = Color3.fromRGB(20, 25, 35) },
-    Halloween = { Main = Color3.fromRGB(20, 20, 20), Accent = Color3.fromRGB(255, 120, 0), TopbarActions = Color3.fromRGB(15, 15, 15) },
-    Red = { Main = Color3.fromRGB(30, 10, 10), Accent = Color3.fromRGB(255, 50, 50), TopbarActions = Color3.fromRGB(20, 5, 5) },
-    Purple = { Main = Color3.fromRGB(25, 15, 35), Accent = Color3.fromRGB(180, 100, 255), TopbarActions = Color3.fromRGB(20, 10, 30) },
-    Midnight = { Main = Color3.fromRGB(12, 12, 18), Accent = Color3.fromRGB(90, 90, 255), TopbarActions = Color3.fromRGB(8, 8, 12) },
-    Ocean = { Main = Color3.fromRGB(10, 35, 40), Accent = Color3.fromRGB(0, 220, 220), TopbarActions = Color3.fromRGB(5, 25, 30) },
-    Rose = { Main = Color3.fromRGB(40, 30, 35), Accent = Color3.fromRGB(255, 140, 180), TopbarActions = Color3.fromRGB(35, 25, 30) },
-    Emerald = { Main = Color3.fromRGB(20, 30, 25), Accent = Color3.fromRGB(0, 255, 120), TopbarActions = Color3.fromRGB(15, 25, 20) },
-    Amber = { Main = Color3.fromRGB(30, 25, 20), Accent = Color3.fromRGB(255, 170, 0), TopbarActions = Color3.fromRGB(25, 20, 15) },
-    Sakura = { Main = Color3.fromRGB(35, 25, 30), Accent = Color3.fromRGB(255, 180, 220), TopbarActions = Color3.fromRGB(30, 20, 25) },
-    Cyberpunk = { Main = Color3.fromRGB(25, 10, 40), Accent = Color3.fromRGB(0, 255, 255), TopbarActions = Color3.fromRGB(15, 5, 30) },
-    Forest = { Main = Color3.fromRGB(15, 25, 15), Accent = Color3.fromRGB(100, 200, 100), TopbarActions = Color3.fromRGB(10, 20, 10) },
-    Coffee = { Main = Color3.fromRGB(45, 35, 30), Accent = Color3.fromRGB(180, 140, 100), TopbarActions = Color3.fromRGB(35, 30, 25) },
-    Nord = { Main = Color3.fromRGB(46, 52, 64), Accent = Color3.fromRGB(136, 192, 208), TopbarActions = Color3.fromRGB(40, 45, 55) },
-    Dracula = { Main = Color3.fromRGB(40, 42, 54), Accent = Color3.fromRGB(255, 121, 198), TopbarActions = Color3.fromRGB(30, 32, 44) },
-    Gold = { Main = Color3.fromRGB(20, 20, 0), Accent = Color3.fromRGB(255, 215, 0), TopbarActions = Color3.fromRGB(15, 15, 0) },
-    Sky = { Main = Color3.fromRGB(15, 30, 45), Accent = Color3.fromRGB(135, 206, 235), TopbarActions = Color3.fromRGB(10, 25, 40) },
-    Synthwave = { Main = Color3.fromRGB(30, 10, 50), Accent = Color3.fromRGB(255, 0, 255), TopbarActions = Color3.fromRGB(20, 5, 40) }
+    Blue = { Main = Color3.fromRGB(25, 30, 45), Accent = Color3.fromRGB(0, 160, 255), TopbarActions = Color3.fromRGB(20, 25, 35), Secondary = Color3.fromRGB(15, 20, 30) },
+    Halloween = { Main = Color3.fromRGB(20, 20, 20), Accent = Color3.fromRGB(255, 120, 0), TopbarActions = Color3.fromRGB(15, 15, 15), Secondary = Color3.fromRGB(10, 10, 10) },
+    Red = { Main = Color3.fromRGB(30, 10, 10), Accent = Color3.fromRGB(255, 50, 50), TopbarActions = Color3.fromRGB(20, 5, 5), Secondary = Color3.fromRGB(15, 5, 5) },
+    Purple = { Main = Color3.fromRGB(25, 15, 35), Accent = Color3.fromRGB(180, 100, 255), TopbarActions = Color3.fromRGB(20, 10, 30), Secondary = Color3.fromRGB(15, 5, 25) },
+    Midnight = { Main = Color3.fromRGB(12, 12, 18), Accent = Color3.fromRGB(90, 90, 255), TopbarActions = Color3.fromRGB(8, 8, 12), Secondary = Color3.fromRGB(5, 5, 10) },
+    Ocean = { Main = Color3.fromRGB(10, 35, 40), Accent = Color3.fromRGB(0, 220, 220), TopbarActions = Color3.fromRGB(5, 25, 30), Secondary = Color3.fromRGB(5, 20, 25) },
+    Rose = { Main = Color3.fromRGB(40, 30, 35), Accent = Color3.fromRGB(255, 140, 180), TopbarActions = Color3.fromRGB(35, 25, 30), Secondary = Color3.fromRGB(30, 20, 25) },
+    Emerald = { Main = Color3.fromRGB(20, 30, 25), Accent = Color3.fromRGB(0, 255, 120), TopbarActions = Color3.fromRGB(15, 25, 20), Secondary = Color3.fromRGB(10, 20, 15) },
+    Amber = { Main = Color3.fromRGB(30, 25, 20), Accent = Color3.fromRGB(255, 170, 0), TopbarActions = Color3.fromRGB(25, 20, 15), Secondary = Color3.fromRGB(20, 15, 10) },
+    Sakura = { Main = Color3.fromRGB(35, 25, 30), Accent = Color3.fromRGB(255, 180, 220), TopbarActions = Color3.fromRGB(30, 20, 25), Secondary = Color3.fromRGB(25, 15, 20) },
+    Cyberpunk = { Main = Color3.fromRGB(25, 10, 40), Accent = Color3.fromRGB(0, 255, 255), TopbarActions = Color3.fromRGB(15, 5, 30), Secondary = Color3.fromRGB(10, 5, 25) },
+    Forest = { Main = Color3.fromRGB(15, 25, 15), Accent = Color3.fromRGB(100, 200, 100), TopbarActions = Color3.fromRGB(10, 20, 10), Secondary = Color3.fromRGB(5, 15, 5) },
+    Coffee = { Main = Color3.fromRGB(45, 35, 30), Accent = Color3.fromRGB(180, 140, 100), TopbarActions = Color3.fromRGB(35, 30, 25), Secondary = Color3.fromRGB(30, 25, 20) },
+    Nord = { Main = Color3.fromRGB(46, 52, 64), Accent = Color3.fromRGB(136, 192, 208), TopbarActions = Color3.fromRGB(40, 45, 55), Secondary = Color3.fromRGB(35, 40, 50) },
+    Dracula = { Main = Color3.fromRGB(40, 42, 54), Accent = Color3.fromRGB(255, 121, 198), TopbarActions = Color3.fromRGB(30, 32, 44), Secondary = Color3.fromRGB(25, 25, 35) },
+    Gold = { Main = Color3.fromRGB(20, 20, 0), Accent = Color3.fromRGB(255, 215, 0), TopbarActions = Color3.fromRGB(15, 15, 0), Secondary = Color3.fromRGB(10, 10, 0) },
+    Sky = { Main = Color3.fromRGB(15, 30, 45), Accent = Color3.fromRGB(135, 206, 235), TopbarActions = Color3.fromRGB(10, 25, 40), Secondary = Color3.fromRGB(5, 20, 35) },
+    Synthwave = { Main = Color3.fromRGB(30, 10, 50), Accent = Color3.fromRGB(255, 0, 255), TopbarActions = Color3.fromRGB(20, 5, 40), Secondary = Color3.fromRGB(15, 5, 35) }
 }
 
 local Fonts = {
@@ -100,12 +100,8 @@ function Library:CreateWindow(Settings)
     local Title = Settings.Title or "Goon Hub"
     local WindowSize = Settings.Size or UDim2.new(0, 880, 0, 600)
     local Transparency = Settings.Transparency or 0
-    local Theme = Themes.Dark
-
-    -- Configuration
-    if Settings.MinimizeKeybind then
-        Setup.Keybind = Settings.MinimizeKeybind
-    end
+    local CurrentTheme = Themes[Settings.Theme] or Themes.Dark
+    Setup.Keybind = Settings.MinimizeKeybind or Enum.KeyCode.RightControl
     
     -- Target UI Root
     local target = (gethui and gethui()) or game:GetService("CoreGui") or LocalPlayer:WaitForChild("PlayerGui")
@@ -116,12 +112,12 @@ function Library:CreateWindow(Settings)
         Name = "GoonHub", 
         IgnoreGuiInset = true, 
         ResetOnSpawn = false,
-        ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        ZIndexBehavior = Enum.ZIndexBehavior.Global
     }, target)
 
     local Main = New("CanvasGroup", {
         Name = "Main",
-        BackgroundColor3 = Theme.Primary,
+        BackgroundColor3 = CurrentTheme.Main,
         AnchorPoint = Vector2.new(0.5, 0.5),
         Size = WindowSize,
         Position = UDim2.new(0.5, 0, 0.5, 0),
@@ -134,6 +130,13 @@ function Library:CreateWindow(Settings)
         Transparency = 0.75, 
         Thickness = 2, 
         Color = Color3.new(1, 1, 1) 
+    }, Main)
+
+    local ControlsFrame = New("Frame", {
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
+        ZIndex = 999,
+        Name = "controls"
     }, Main)
 
     -- Panel Content
@@ -205,7 +208,7 @@ function Library:CreateWindow(Settings)
     local AnchoredMain = New("Frame", {
         Name = "Main",
         BackgroundColor3 = Color3.fromRGB(9, 9, 9),
-        BackgroundTransparency = 0.7,
+        BackgroundTransparency = 0,
         AutomaticSize = Enum.AutomaticSize.Y,
         Size = UDim2.new(1, 0, 0, 0),
         Parent = AnchoredButtons
@@ -227,7 +230,7 @@ function Library:CreateWindow(Settings)
         Parent = Sidebar,
         Size = UDim2.new(1, -22, 0, 48),
         BackgroundColor3 = Color3.fromRGB(9, 9, 9),
-        BackgroundTransparency = 0.7,
+        BackgroundTransparency = 0,
         LayoutOrder = 10,
         AutoButtonColor = false
     })
@@ -314,7 +317,7 @@ function Library:CreateWindow(Settings)
         Position = UDim2.new(0, 0, 1, 0),
         AnchorPoint = Vector2.new(0, 1),
         BackgroundColor3 = Color3.new(0, 0, 0),
-        BackgroundTransparency = 0.9
+        BackgroundTransparency = 0
     })
     New("UIStroke", { Color = Color3.fromRGB(46, 46, 46) }, DebugBar)
     New("UIListLayout", {
@@ -341,8 +344,8 @@ function Library:CreateWindow(Settings)
         Size = UDim2.new(1, -235, 1, 0), 
         Position = UDim2.new(1, 0, 1, 0), 
         AnchorPoint = Vector2.new(1, 1), 
-        BackgroundColor3 = Theme.Secondary, 
-        BackgroundTransparency = 0.7 
+        BackgroundColor3 = CurrentTheme.Secondary, 
+        BackgroundTransparency = 0 
     }, Content)
 
     New("UICorner", { CornerRadius = UDim.new(0, 12) }, PageHolder)
@@ -405,21 +408,25 @@ function Library:CreateWindow(Settings)
         Size = UDim2.new(1, 0, 0, 27),
         AnchorPoint = Vector2.new(0.5, 0.5),
         Position = UDim2.new(0.5, 0, 0.5, 0),
-        BackgroundColor3 = Theme.TopbarActions
+        BackgroundColor3 = CurrentTheme.TopbarActions
     })
     New("UICorner", { CornerRadius = UDim.new(1, 0) }, ActionBackground)
     New("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 4) }, ActionBackground)
 
     local function CreateTopButton(name, color, iconId)
         local btn = New("ImageButton", { Name = name, Size = UDim2.new(0, 22, 0, 22), BackgroundTransparency = 1, Parent = ActionBackground })
-        local circle = New("Frame", { Size = UDim2.new(0, 18, 0, 18), Position = UDim2.new(0.5, 0, 0.5, 0), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = color, Parent = btn })
+        local f = New("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Parent = btn })
+        local circle = New("ImageLabel", { Size = UDim2.new(0, 18, 0, 18), Position = UDim2.new(0.5, 0, 0.5, 0), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = color, ImageTransparency = 1, Parent = f })
         New("UICorner", { CornerRadius = UDim.new(1, 0) }, circle)
-        New("ImageLabel", { Size = UDim2.new(0, 8, 0, 8), Position = UDim2.new(0.5, 0, 0.5, 0), AnchorPoint = Vector2.new(0.5, 0.5), Image = "rbxassetid://" .. iconId, ImageColor3 = Color3.new(0,0,0), BackgroundTransparency = 1, Parent = btn, ZIndex = 5 })
+        local i = New("ImageLabel", { Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0.5, 0, 0.5, 0), AnchorPoint = Vector2.new(0.5, 0.5), ImageTransparency = 0, BackgroundTransparency = 1, ZIndex = 1002, Parent = f })
+        New("UIStroke", { Transparency = 0.9, Color = Color3.new(1, 1, 1) }, i)
+        New("UICorner", { CornerRadius = UDim.new(1, 0) }, i)
+        New("ImageLabel", { Size = UDim2.new(0, 8, 0, 8), Position = UDim2.new(0.5, 0, 0.5, 0), AnchorPoint = Vector2.new(0.5, 0.5), Image = "rbxassetid://" .. iconId, ImageColor3 = Color3.new(0,0,0), BackgroundTransparency = 1, Parent = f, ZIndex = 1003 })
         return btn
     end
 
     local CloseBtn = CreateTopButton("close", Color3.fromRGB(255, 51, 51), "109757326745560")
-    local SidebarBtn = CreateTopButton("sidebar", Color3.fromRGB(226, 183, 26), "4773248567")
+    local SidebarBtn = CreateTopButton("sidebar_toggle", Color3.fromRGB(226, 183, 26), "4773248567")
     local MaximizeBtn = CreateTopButton("maximize", Color3.fromRGB(122, 214, 3), "11295291707")
 
     -- Weather Icon (Far Right)
@@ -431,35 +438,85 @@ function Library:CreateWindow(Settings)
         LayoutOrder = 4
     })
 
-    CloseBtn.MouseButton1Click:Connect(function() Screen:Destroy() end)
-    
+    local function closeUI()
+        local closeTween = TweenService:Create(Main, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.In), { Size = UDim2.new(0, 0, 0, 0) })
+        closeTween:Play()
+        closeTween.Completed:Connect(function() Screen:Destroy() end)
+    end
+
+    CloseBtn.MouseButton1Click:Connect(closeUI)
+
     local sidebarVisible = true
     SidebarBtn.MouseButton1Click:Connect(function()
         sidebarVisible = not sidebarVisible
         Tween(Sidebar, 0.3, { Size = sidebarVisible and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 0, 1, 0) })
+        Tween(PageHolder, 0.3, { Size = sidebarVisible and UDim2.new(1, -235, 1, 0) or UDim2.new(1, 0, 1, 0) })
     end)
 
-    local maximized = false
+    local isMinimized = false
+    local miniButtons = nil
+    local miniLogo = nil
     MaximizeBtn.MouseButton1Click:Connect(function()
-        maximized = not maximized
-        local targetSize = maximized and UDim2.fromScale(1, 1) or WindowSize
-        local targetPos = maximized and UDim2.fromScale(0.5, 0.5) or UDim2.fromScale(0.5, 0.5)
+        isMinimized = not isMinimized
+        local targetSize = isMinimized and UDim2.new(0, 260, 0, 35) or WindowSize
+        Tween(Main, 0.5, { Size = targetSize })
         
-        Tween(Main, 0.3, { 
-            Size = targetSize,
-            Position = targetPos
-        })
+        if isMinimized then
+            Content.Visible = false
+            Topbar.Visible = false
+            DebugBar.Visible = false
+            ResizeHandle.Visible = false
+            
+            miniButtons = ActionBackground:Clone()
+            miniButtons.Name = "MiniButtons"
+            miniButtons.Parent = ControlsFrame
+            miniButtons.Size = UDim2.new(0, 85, 0, 27)
+            miniButtons.AnchorPoint = Vector2.new(1, 0.5) 
+            miniButtons.Position = UDim2.new(1, -15, 0, 17.5)
+            miniButtons.ZIndex = 2000
+            miniButtons.Visible = true
+            
+            for _, child in pairs(miniButtons:GetDescendants()) do
+                if child:IsA("GuiObject") then
+                    child.ZIndex = miniButtons.ZIndex + 5
+                    child.Visible = true
+                end
+            end
+
+            miniLogo = LogoFrame:Clone()
+            miniLogo.Name = "MiniLogo"
+            miniLogo.Parent = ControlsFrame
+            miniLogo.AnchorPoint = Vector2.new(0, 0.5)
+            miniLogo.Position = UDim2.new(0, 15, 0, 17.5)
+            miniLogo.ZIndex = 2000
+            miniLogo.Visible = true
+
+            local clonedLogoText = miniLogo:FindFirstChildWhichIsA("TextLabel")
+            if clonedLogoText then
+                clonedLogoText.Text = '<font color="rgb(248, 191, 212)">Goon</font>Hub'
+            end
+
+            if miniButtons:FindFirstChild("close") then miniButtons.close.MouseButton1Click:Connect(closeUI) end
+            if miniButtons:FindFirstChild("maximize") then miniButtons.maximize.MouseButton1Click:Connect(function() MaximizeBtn:Activate() end) end
+        else
+            if miniButtons then miniButtons:Destroy() end
+            if miniLogo then miniLogo:Destroy() end
+            Content.Visible = true
+            Topbar.Visible = true
+            DebugBar.Visible = true
+            ResizeHandle.Visible = true
+        end
     end)
 
     -- Resize Handle
     local ResizeHandle = New("ImageButton", {
         Name = "Resize",
-        Parent = Main,
+        Parent = ControlsFrame,
         Size = UDim2.new(0, 35, 0, 35),
         Position = UDim2.new(1, -8, 1, -8),
         AnchorPoint = Vector2.new(1, 1),
         BackgroundTransparency = 1,
-        ZIndex = 100
+        ZIndex = 1005
     })
     New("ImageLabel", {
         Parent = ResizeHandle,
@@ -468,6 +525,67 @@ function Library:CreateWindow(Settings)
         ImageColor3 = Color3.fromRGB(91, 91, 91),
         BackgroundTransparency = 1
     })
+
+    local resizing, resizeStartPos, resizeStartSize, resizeConn
+    ResizeHandle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            resizing, resizeStartPos, resizeStartSize = true, input.Position, Main.AbsoluteSize
+            resizeConn = UserInputService.InputChanged:Connect(function(move)
+                if move.UserInputType == Enum.UserInputType.MouseMovement then
+                    local delta = move.Position - resizeStartPos
+                    Main.Size = UDim2.new(0, math.clamp(resizeStartSize.X + delta.X, 500, 1200), 0, math.clamp(resizeStartSize.Y + delta.Y, 350, 800))
+                    if not isMinimized then WindowSize = Main.Size end
+                end
+            end)
+        end
+    end)
+    UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 and resizing then resizing = false if resizeConn then resizeConn:Disconnect() end end end)
+
+    -- Floating Toggle Button
+    local toggleBtn = New("ImageButton", {
+        Name = "GoonToggle",
+        Parent = Screen,
+        BackgroundColor3 = Color3.fromRGB(36, 36, 36),
+        BorderSizePixel = 0,
+        Size = UDim2.new(0, 50, 0, 50),
+        Position = UDim2.new(0, 20, 0.5, -25),
+        Image = "rbxassetid://135630585467568",
+        ZIndex = 10000,
+        AutoButtonColor = false
+    })
+    New("UICorner", { CornerRadius = UDim.new(0, 10) }, toggleBtn)
+    
+    local btnStroke = New("UIStroke", { Thickness = 1.5, Transparency = 0.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Color = Color3.new(1, 1, 1), Parent = toggleBtn })
+    local btnGradient = New("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.45, 0), NumberSequenceKeypoint.new(0.55, 0), NumberSequenceKeypoint.new(1, 1) }), Parent = btnStroke })
+
+    task.spawn(function()
+        while task.wait() and toggleBtn.Parent do
+            btnGradient.Rotation = (btnGradient.Rotation + 0.5) % 360
+        end
+    end)
+
+    local isToggling = false
+    local function animateToggle()
+        if isToggling then return end
+        isToggling = true
+        if Main.Visible then
+            local closeT = TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In), { Size = UDim2.new(0, 0, 0, 0) })
+            closeT:Play()
+            closeT.Completed:Connect(function() Main.Visible = false isToggling = false end)
+        else
+            Main.Size = UDim2.new(0, 0, 0, 0)
+            Main.Visible = true
+            local openT = TweenService:Create(Main, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = isMinimized and UDim2.new(0, 260, 0, 35) or WindowSize })
+            openT:Play()
+            openT.Completed:Connect(function() isToggling = false end)
+        end
+    end
+
+    local btnDrag, btnDragStart, btnStartPos, btnTargetPos = false, nil, nil, UDim2.new(0, 20, 0.5, -25)
+    toggleBtn.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then btnDrag, btnDragStart, btnStartPos = true, i.Position, toggleBtn.Position end end)
+    UserInputService.InputChanged:Connect(function(i) if btnDrag and i.UserInputType == Enum.UserInputType.MouseMovement then local d = i.Position - btnDragStart btnTargetPos = UDim2.new(btnStartPos.X.Scale, btnStartPos.X.Offset + d.X, btnStartPos.Y.Scale, btnStartPos.Y.Offset + d.Y) end end)
+    UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then if btnDrag then if (i.Position - btnDragStart).Magnitude < 5 then animateToggle() end end btnDrag = false end end)
+    RunService.RenderStepped:Connect(function() toggleBtn.Position = toggleBtn.Position:Lerp(btnTargetPos, 0.08) end)
 
     -- Stats Loop (FPS/Ping/Mem)
     task.spawn(function()
@@ -481,33 +599,20 @@ function Library:CreateWindow(Settings)
     end)
 
     -- Dragging Logic
-    local dragging, dragStart, startPos
-
+    local dragging, dragStart, startPos, windowTargetPos = false, nil, nil, Main.Position
     Topbar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = Main.Position
+        if input.UserInputType == Enum.UserInputType.MouseButton1 and not resizing then
+            dragging, dragStart, startPos = true, input.Position, Main.Position
         end
     end)
-
     UserInputService.InputChanged:Connect(function(input)
         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
             local delta = input.Position - dragStart
-            Main.Position = UDim2.new(
-                startPos.X.Scale, 
-                startPos.X.Offset + delta.X, 
-                startPos.Y.Scale, 
-                startPos.Y.Offset + delta.Y
-            )
+            windowTargetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
-
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
+    UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
+    RunService.RenderStepped:Connect(function() if dragging and windowTargetPos then Main.Position = Main.Position:Lerp(windowTargetPos, 0.08) end end)
 
     -- Return Options (API)
     local Options = { LastSection = {} }
@@ -533,17 +638,23 @@ function Library:CreateWindow(Settings)
 
 
     function Options:AddTab(data)
-        local parent = data.Fixed and AnchoredMain or NavScroll
+        local ParentContainer = data.Fixed and AnchoredMain or NavScroll
+        local TabTitle = data.Title or "Tab"
 
         local tabBtn = New("TextButton", {
-            Parent = parent,
-            Size = UDim2.new(1, data.Fixed and 0 or -10, 0, 35),
-            BackgroundColor3 = Theme.Interactables,
+            Parent = ParentContainer,
+            Size = UDim2.new(
+                1, 
+                data.Fixed and 0 or -10, 
+                0, 
+                35
+            ),
+            BackgroundColor3 = CurrentTheme.Interactables,
             BackgroundTransparency = 1,
-            Text = "  " .. (data.Title or "Tab"),
+            Text = "  " .. TabTitle,
             FontFace = Fonts.med,
             TextSize = 14,
-            TextColor3 = Theme.Tab,
+            TextColor3 = CurrentTheme.Tab,
             LayoutOrder = StoredInfo.Sections[data.Section] or 0,
             TextXAlignment = Enum.TextXAlignment.Left
         })
@@ -574,18 +685,21 @@ function Library:CreateWindow(Settings)
         }, page)
 
         tabBtn.MouseButton1Click:Connect(function()
-            Pages:JumpTo(page)
-            for _, v in pairs(NavScroll:GetChildren()) do
-                if v:IsA("TextButton") then 
-                    v.BackgroundTransparency = 1 
-                end 
-            end
-            for _, v in pairs(AnchoredMain:GetChildren()) do
-                if v:IsA("TextButton") then
-                    v.BackgroundTransparency = 1
+            -- Reset all buttons in both containers
+            local function ResetButtons(folder)
+                for _, btn in pairs(folder:GetChildren()) do
+                    if btn:IsA("TextButton") then
+                        Tween(btn, 0.2, { BackgroundTransparency = 1 })
+                    end
                 end
             end
-            tabBtn.BackgroundTransparency = 0.8
+
+            ResetButtons(NavScroll)
+            ResetButtons(AnchoredMain)
+
+            -- Activate current
+            Pages:JumpTo(page)
+            Tween(tabBtn, 0.2, { BackgroundTransparency = 0.8 })
         end)
 
         local TabObj = { Page = page }
@@ -598,7 +712,7 @@ function Library:CreateWindow(Settings)
             Parent = data.Tab.Page,
             Size = UDim2.new(1, -20, 0, 0),
             AutomaticSize = Enum.AutomaticSize.Y,
-            BackgroundColor3 = Theme.Secondary,
+            BackgroundColor3 = CurrentTheme.Secondary,
             BackgroundTransparency = 0.5
         })
         New("UICorner", { CornerRadius = UDim.new(0, 10) }, sec)
@@ -619,7 +733,7 @@ function Library:CreateWindow(Settings)
             Text = data.Name,
             FontFace = Fonts.bold,
             TextSize = 14,
-            TextColor3 = Theme.Accent,
+            TextColor3 = CurrentTheme.Accent,
             BackgroundTransparency = 1,
             TextXAlignment = Enum.TextXAlignment.Left
         })
@@ -633,9 +747,9 @@ function Library:CreateWindow(Settings)
         local btn = New("TextButton", {
             Parent = target,
             Size = UDim2.new(1, -20, 0, 35),
-            BackgroundColor3 = Theme.Component,
+            BackgroundColor3 = CurrentTheme.Component,
             Text = data.Title,
-            TextColor3 = Theme.Title,
+            TextColor3 = CurrentTheme.Title,
             FontFace = Fonts.reg,
             TextSize = 14
         })
@@ -659,9 +773,9 @@ function Library:CreateWindow(Settings)
         local frame = New("TextButton", {
             Parent = target,
             Size = UDim2.new(1, -20, 0, 35),
-            BackgroundColor3 = Theme.Component,
+            BackgroundColor3 = CurrentTheme.Component,
             Text = "  " .. data.Title,
-            TextColor3 = Theme.Title,
+            TextColor3 = CurrentTheme.Title,
             FontFace = Fonts.reg,
             TextSize = 14,
             TextXAlignment = Enum.TextXAlignment.Left
@@ -673,7 +787,7 @@ function Library:CreateWindow(Settings)
             Parent = frame,
             Size = UDim2.new(0, 40, 0, 20),
             Position = UDim2.new(1, -50, 0.5, -10),
-            BackgroundColor3 = state and Theme.Accent or Color3.fromRGB(60, 60, 60)
+            BackgroundColor3 = state and CurrentTheme.Accent or Color3.fromRGB(60, 60, 60)
         }, frame)
         New("UICorner", { CornerRadius = UDim.new(1, 0) }, indicator)
 
@@ -695,7 +809,7 @@ function Library:CreateWindow(Settings)
         local f = New("Frame", { 
             Parent = target, 
             Size = UDim2.new(1, -20, 0, 50), 
-            BackgroundColor3 = Theme.Component 
+            BackgroundColor3 = CurrentTheme.Component 
         })
         
         New("UICorner", { CornerRadius = UDim.new(0, 6) }, f)
@@ -712,7 +826,7 @@ function Library:CreateWindow(Settings)
             Text = data.Title, 
             FontFace = Fonts.reg, 
             TextSize = 14, 
-            TextColor3 = Theme.Title, 
+            TextColor3 = CurrentTheme.Title, 
             BackgroundTransparency = 1, 
             TextXAlignment = Enum.TextXAlignment.Left 
         })
@@ -727,7 +841,7 @@ function Library:CreateWindow(Settings)
         local fill = New("Frame", { 
             Parent = bg, 
             Size = UDim2.new(0, 0, 1, 0), 
-            BackgroundColor3 = Theme.Accent 
+            BackgroundColor3 = CurrentTheme.Accent 
         })
         
         local valLabel = New("TextBox", {
@@ -736,7 +850,7 @@ function Library:CreateWindow(Settings)
             Position = UDim2.new(1, -50, 0, 5),
             BackgroundTransparency = 1,
             Text = tostring(data.Default or min),
-            TextColor3 = Theme.Title,
+            TextColor3 = CurrentTheme.Title,
             FontFace = Fonts.reg,
             TextSize = 14,
             TextXAlignment = Enum.TextXAlignment.Right
@@ -775,14 +889,14 @@ function Library:CreateWindow(Settings)
         local f = New("Frame", { 
             Parent = target, 
             Size = UDim2.new(1, -20, 0, 35), 
-            BackgroundColor3 = Theme.Component 
+            BackgroundColor3 = CurrentTheme.Component 
         })
 
         New("UICorner", { CornerRadius = UDim.new(0, 6) }, f)
         local i = New("TextBox", { 
             Parent = f, Size = UDim2.new(1, -20, 1, 0), Position = UDim2.new(0, 10, 0, 0), 
             BackgroundTransparency = 1, Text = "", PlaceholderText = data.Title .. "...", 
-            TextColor3 = Theme.Title, FontFace = Fonts.reg, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left 
+            TextColor3 = CurrentTheme.Title, FontFace = Fonts.reg, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left 
         })
 
         i.FocusLost:Connect(function() if data.Callback then data.Callback(i.Text) end end)
@@ -790,7 +904,7 @@ function Library:CreateWindow(Settings)
 
     function Options:AddDropdown(data)
         local target = Options.LastSection[data.Tab]
-        local f = New("TextButton", { Parent = target, Size = UDim2.new(1, -20, 0, 35), BackgroundColor3 = Theme.Component, Text = "  " .. data.Title, TextColor3 = Theme.Title, FontFace = Fonts.reg, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left })
+        local f = New("TextButton", { Parent = target, Size = UDim2.new(1, -20, 0, 35), BackgroundColor3 = CurrentTheme.Component, Text = "  " .. data.Title, TextColor3 = CurrentTheme.Title, FontFace = Fonts.reg, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left })
         New("UICorner", { CornerRadius = UDim.new(0, 6) }, f)
 
         f.MouseButton1Click:Connect(function() 
@@ -807,9 +921,9 @@ function Library:CreateWindow(Settings)
         local f = New("TextButton", { 
             Parent = target, 
             Size = UDim2.new(1, -20, 0, 35), 
-            BackgroundColor3 = Theme.Component, 
+            BackgroundColor3 = CurrentTheme.Component, 
             Text = "  " .. data.Title, 
-            TextColor3 = Theme.Title, 
+            TextColor3 = CurrentTheme.Title, 
             FontFace = Fonts.reg, 
             TextSize = 14, 
             TextXAlignment = Enum.TextXAlignment.Left 
@@ -823,7 +937,7 @@ function Library:CreateWindow(Settings)
             Position = UDim2.new(1, -70, 0.5, -10), 
             Text = key.Name, 
             BackgroundColor3 = Color3.fromRGB(60, 60, 60), 
-            TextColor3 = Theme.Title 
+            TextColor3 = CurrentTheme.Title 
         })
 
         f.MouseButton1Click:Connect(function()
@@ -846,7 +960,7 @@ function Library:CreateWindow(Settings)
             Parent = target, 
             Size = UDim2.new(1, -20, 0, 0), 
             AutomaticSize = Enum.AutomaticSize.Y, 
-            BackgroundColor3 = Theme.Secondary 
+            BackgroundColor3 = CurrentTheme.Secondary 
         })
 
         New("UICorner", { CornerRadius = UDim.new(0, 6) }, f)
@@ -866,7 +980,7 @@ function Library:CreateWindow(Settings)
             Text = data.Title, 
             FontFace = Fonts.bold, 
             TextSize = 14, 
-            TextColor3 = Theme.Title, 
+            TextColor3 = CurrentTheme.Title, 
             BackgroundTransparency = 1, 
             TextXAlignment = Enum.TextXAlignment.Left 
         })
@@ -878,7 +992,7 @@ function Library:CreateWindow(Settings)
             Text = data.Description, 
             FontFace = Fonts.reg, 
             TextSize = 13, 
-            TextColor3 = Theme.Description, 
+            TextColor3 = CurrentTheme.Description, 
             BackgroundTransparency = 1, 
             TextXAlignment = Enum.TextXAlignment.Left, 
             TextWrapped = true 
@@ -903,7 +1017,7 @@ function Library:CreateWindow(Settings)
         
         local b = New("CanvasGroup", { 
             Size = UDim2.new(1, 0, 0, 60), 
-            BackgroundColor3 = Theme.Secondary, 
+            BackgroundColor3 = CurrentTheme.Secondary, 
             GroupTransparency = 1 
         }, h)
 
@@ -914,7 +1028,7 @@ function Library:CreateWindow(Settings)
             Size = UDim2.new(1, -20, 1, 0), 
             Position = UDim2.new(0, 10, 0, 0), 
             Text = data.Description, 
-            TextColor3 = Theme.Title, 
+            TextColor3 = CurrentTheme.Title, 
             BackgroundTransparency = 1, 
             TextWrapped = true, 
             FontFace = Fonts.reg, 
@@ -941,9 +1055,35 @@ function Library:CreateWindow(Settings)
     end
 
     function Options:SetTheme(themeData)
-        Theme = themeData
-        Main.BackgroundColor3 = Theme.Main or Theme.Primary
-        -- Hier könnten weitere rekursive Farb-Updates folgen
+        CurrentTheme = themeData
+        Main.BackgroundColor3 = CurrentTheme.Main or CurrentTheme.Primary
+        
+        -- Recursive Update for existing elements
+        for _, obj in pairs(Screen:GetDescendants()) do
+            if obj:IsA("TextLabel") or obj:IsA("TextBox") then
+                if obj.TextColor3 ~= Color3.new(1, 1, 1) and obj.TextColor3 ~= Color3.new(0.6, 0.6, 0.6) then
+                    obj.TextColor3 = CurrentTheme.Accent
+                end
+            elseif obj:IsA("Frame") and obj.Name == "selector" then
+                obj.BackgroundColor3 = Color3.fromRGB(41, 41, 41)
+            elseif obj:IsA("ScrollingFrame") and obj.Name == "Navigation" then
+                -- Specific logic for nav
+            end
+        end
+
+        Options:Notify({
+            Title = "Theme Applied",
+            Description = "The UI colors have been updated.",
+            Duration = 3
+        })
+    end
+
+    function Options:SetSetting(k, v)
+        if k == "Transparency" then 
+            Main.BackgroundTransparency = v 
+        end
+        if k == "Keybind" then Setup.Keybind = v end
+        if k == "Blur" then Setup.Blur = v end
     end
 
     UserInputService.InputBegan:Connect(function(input, gpe)
