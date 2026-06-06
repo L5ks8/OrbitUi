@@ -9,7 +9,8 @@ local LocalPlayer = Players.LocalPlayer
 local Setup = {
     Keybind = Enum.KeyCode.RightControl,
     Transparency = 0,
-    ThemeMode = "Dark"
+    ThemeMode = "Dark",
+    Blur = false
 }
 
 local Themes = {
@@ -29,10 +30,10 @@ local Themes = {
 }
 
 local Fonts = {
-    reg = Font.new("rbxassetid://12187365364"),
-    bold = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold),
-    med = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium),
-    logo = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Bold)
+    reg = Font.fromId(12187365364),
+    bold = Font.fromId(12187365364, Enum.FontWeight.Bold),
+    med = Font.fromId(12187365364, Enum.FontWeight.Medium),
+    logo = Font.fromId(12187365364, Enum.FontWeight.Bold)
 }
 
 --// Utilities
@@ -95,6 +96,11 @@ function Library:CreateWindow(Settings)
     local Size = Settings.Size or UDim2.new(0, 850, 0, 580)
     local Transparency = Settings.Transparency or 0
     local Theme = Themes.Dark
+
+    -- Configuration
+    if Settings.MinimizeKeybind then
+        Setup.Keybind = Settings.MinimizeKeybind
+    end
     
     -- Target UI Root
     local target = (gethui and gethui()) or game:GetService("CoreGui") or LocalPlayer:WaitForChild("PlayerGui")
@@ -189,14 +195,32 @@ function Library:CreateWindow(Settings)
     }, PageHolder)
 
     local Topbar = New("Frame", { 
-        Name = "Topbar", 
-        Size = UDim2.new(1, 0, 0, 35), 
-        BackgroundTransparency = 1 
+        Name = "Topbar",
+        Size = UDim2.new(1, 0, 0, 35),
+        BackgroundTransparency = 1
     }, Main)
 
+    local Buttons = New("Frame", {
+        Name = "Buttons",
+        Size = UDim2.new(0, 80, 1, 0),
+        Position = UDim2.new(1, -90, 0, 0),
+        BackgroundTransparency = 1
+    }, Topbar)
+
+    local CloseBtn = New("TextButton", {
+        Name = "Close",
+        Size = UDim2.new(0, 25, 0, 25),
+        Position = UDim2.new(1, -25, 0.5, -12),
+        BackgroundColor3 = Color3.fromRGB(200, 50, 50),
+        Text = "",
+        AutoButtonColor = true
+    }, Buttons)
+    New("UICorner", { CornerRadius = UDim.new(1, 0) }, CloseBtn)
+    CloseBtn.MouseButton1Click:Connect(function() Screen:Destroy() end)
+
     local TitleLabel = New("TextLabel", {
-        Position = UDim2.new(0, 15, 0, 0), 
-        Size = UDim2.new(0, 0, 1, 0), 
+        Position = UDim2.new(0, 15, 0, 0),
+        Size = UDim2.new(0, 0, 1, 0),
         AutomaticSize = Enum.AutomaticSize.X,
         Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub | %s", Title),
         RichText = true, 
@@ -240,16 +264,24 @@ function Library:CreateWindow(Settings)
     local Options = { LastSection = {} }
 
     function Options:AddTabSection(data)
+        StoredInfo.Sections[data.Name] = data.Order or 0
+
         New("TextLabel", {
             Parent = NavScroll,
             Size = UDim2.new(1, 0, 0, 20),
             Text = data.Name:upper(),
             FontFace = Fonts.bold,
             TextSize = 12,
-            TextColor3 = Color3.fromRGB(120, 120, 120),
-            BackgroundTransparency = 1
+            TextColor3 = Color3.fromRGB(
+                120, 
+                120, 
+                120
+            ),
+            BackgroundTransparency = 1,
+            LayoutOrder = data.Order or 0
         })
     end
+
 
     function Options:AddTab(data)
         local tabBtn = New("TextButton", {
@@ -261,6 +293,7 @@ function Library:CreateWindow(Settings)
             FontFace = Fonts.med,
             TextSize = 14,
             TextColor3 = Theme.Tab,
+            LayoutOrder = StoredInfo.Sections[data.Section] or 0,
             TextXAlignment = Enum.TextXAlignment.Left
         })
         New("UICorner", { CornerRadius = UDim.new(0, 8) }, tabBtn)
@@ -273,14 +306,20 @@ function Library:CreateWindow(Settings)
             AutomaticCanvasSize = Enum.AutomaticSize.Y
         })
 
-        New("UIListLayout", { 
-            Padding = UDim.new(0, 10), 
-            HorizontalAlignment = Enum.HorizontalAlignment.Center 
+        New("UIListLayout", {
+            Padding = UDim.new(0, 10),
+            HorizontalAlignment = Enum.HorizontalAlignment.Center
         }, page)
 
-        New("UIPadding", { 
-            PaddingTop = UDim.new(0, 10), 
-            PaddingBottom = UDim.new(0, 10) 
+        New("UIPadding", {
+            PaddingTop = UDim.new(
+                0, 
+                10
+            ),
+            PaddingBottom = UDim.new(
+                0, 
+                10
+            )
         }, page)
 
         tabBtn.MouseButton1Click:Connect(function()
@@ -345,7 +384,13 @@ function Library:CreateWindow(Settings)
             TextSize = 14
         })
         New("UICorner", { CornerRadius = UDim.new(0, 6) }, btn)
+        
+        if data.Description then
+            btn.ToolTip = data.Description -- Falls Tooltips existieren
+        end
+
         Animations:Component(btn)
+
         btn.MouseButton1Click:Connect(function()
             if data.Callback then data.Callback() end
         end)
@@ -365,6 +410,7 @@ function Library:CreateWindow(Settings)
             TextSize = 14,
             TextXAlignment = Enum.TextXAlignment.Left
         })
+
         New("UICorner", { CornerRadius = UDim.new(0, 6) }, frame)
 
         local indicator = New("Frame", {
@@ -389,12 +435,23 @@ function Library:CreateWindow(Settings)
 
     function Options:AddSlider(data)
         local target = Options.LastSection[data.Tab]
-        local f = New("Frame", { Parent = target, Size = UDim2.new(1, -20, 0, 50), BackgroundColor3 = Theme.Component })
+        local min, max = data.MinValue or 0, data.MaxValue or 100
+        local f = New("Frame", { 
+            Parent = target, 
+            Size = UDim2.new(1, -20, 0, 50), 
+            BackgroundColor3 = Theme.Component 
+        })
         
         New("UICorner", { CornerRadius = UDim.new(0, 6) }, f)
+
         New("TextLabel", { 
             Parent = f, 
-            Size = UDim2.new(1, -20, 0, 20), 
+            Size = UDim2.new(
+                1, 
+                -20, 
+                0, 
+                20
+            ), 
             Position = UDim2.new(0, 10, 0, 5), 
             Text = data.Title, 
             FontFace = Fonts.reg, 
@@ -413,20 +470,38 @@ function Library:CreateWindow(Settings)
 
         local fill = New("Frame", { 
             Parent = bg, 
-            Size = UDim2.new(0.5, 0, 1, 0), 
+            Size = UDim2.new(0, 0, 1, 0), 
             BackgroundColor3 = Theme.Accent 
         })
         
+        local valLabel = New("TextBox", {
+            Parent = f,
+            Size = UDim2.new(0, 40, 0, 20),
+            Position = UDim2.new(1, -50, 0, 5),
+            BackgroundTransparency = 1,
+            Text = tostring(data.Default or min),
+            TextColor3 = Theme.Title,
+            FontFace = Fonts.reg,
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Right
+        })
+
+        local function UpdateSlider(p)
+            local raw = min + (max - min) * p
+            local value = data.AllowDecimals and (math.floor(raw * 100) / 100) or math.floor(raw)
+            
+            fill.Size = UDim2.new(p, 0, 1, 0)
+            valLabel.Text = tostring(value)
+            if data.Callback then data.Callback(value) end
+        end
+
         bg.InputBegan:Connect(function(i)
             if i.UserInputType == Enum.UserInputType.MouseButton1 then
                 local conn
                 conn = UserInputService.InputChanged:Connect(function(m)
                     if m.UserInputType == Enum.UserInputType.MouseMovement then
                         local p = math.clamp((m.Position.X - bg.AbsolutePosition.X) / bg.AbsoluteSize.X, 0, 1)
-                        fill.Size = UDim2.new(p, 0, 1, 0)
-
-                        local value = math.floor(data.MinValue + (data.MaxValue - data.MinValue) * p)
-                        if data.Callback then data.Callback(value) end
+                        UpdateSlider(p)
                     end
                 end)
 
@@ -605,7 +680,15 @@ function Library:CreateWindow(Settings)
 
     function Options:SetSetting(k, v)
         if k == "Transparency" then Main.BackgroundTransparency = v end
+        if k == "Keybind" then Setup.Keybind = v end
+        if k == "Blur" then Setup.Blur = v end
     end
+
+    UserInputService.InputBegan:Connect(function(input, gpe)
+        if not gpe and input.KeyCode == Setup.Keybind then
+            Main.Visible = not Main.Visible
+        end
+    end)
 
     -- Initialization
     SetProperty(Main, { Size = Size, Visible = true })
