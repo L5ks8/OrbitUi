@@ -522,6 +522,10 @@ function Library:CreateWindow(config)
         }
     }
 
+    function Window:SetTheme(themeName)
+        mainfunctions.SetTheme(G2L, themeName)
+    end
+
     -- Set initial Theme
     mainfunctions.SetTheme(G2L, defaultTheme)
 
@@ -1529,36 +1533,7 @@ function Library:CreateWindow(config)
         return Tab
     end
 
-    -- Setup static tabs: Settings & About
-    task.defer(function()
-        -- Saved theme loading
-        local savedTheme = defaultTheme
-        
-
-        local settingsTab = Window:CreateTab("Settings", true)
-        local themeSection = settingsTab:CreateSection("Themes")
-        
-        themeSection:CreateDropdown({
-            Title = "Accent Theme",
-            Options = {"Dark", "Blue", "Halloween", "Red", "Purple", "Midnight", "Ocean", "Rose", "Emerald", "Amber", "Sakura", "Cyberpunk", "Forest", "Coffee", "Nord", "Dracula", "Gold", "Sky", "Synthwave"},
-            Default = savedTheme,
-            Callback = function(value)
-                mainfunctions.SetTheme(G2L, value)
-            end
-        })
-
-        local aboutTab = Window:CreateTab("About", true)
-        local infoSection = aboutTab:CreateSection("Information")
-        
-        infoSection:CreateParagraph({
-            Text = title .. " Suite Version " .. versionText
-        })
-        infoSection:CreateParagraph({
-            Text = "Developed by L5ks8\nRefactored with high-performance animations."
-        })
-
-        mainfunctions.SetTheme(G2L, savedTheme)
-    end)
+    mainfunctions.SetTheme(G2L, defaultTheme)
 
     return Window
 end
