@@ -253,7 +253,7 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
             if logoText then
                 logoText.RichText = true
                 logoText.TextTransparency = 0
-                logoText.Text = '<font color="rgb(248, 191, 212)">Goon</font>Hub'
+                logoText.Text = window.Logo or '<font color="rgb(248, 191, 212)">Goon</font>Hub'
                 logoText.Visible = true
             end
 

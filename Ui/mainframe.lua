@@ -11,6 +11,8 @@ function Library:CreateWindow(config)
     local title = config.Title or "GoonHub"
     local versionText = config.Version or "1.0.0"
     local defaultTheme = config.Theme or "Dark"
+    local logo = config.Logo or "<font color=\"rgb(248, 191, 212)\">Goon</font>Hub"
+    local secondaryLogo = config.SecondaryLogo or string.format("| %s %s", title, versionText)
 
     mainfunctions.Themes = config.Themes or {
         Dark = { Main = Color3.fromRGB(36, 36, 36), Accent = Color3.fromRGB(248, 191, 212) }
@@ -150,7 +152,7 @@ function Library:CreateWindow(config)
         Name = "logo_text",
         AutomaticSize = Enum.AutomaticSize.X,
         Size = UDim2.new(0, 0, 1, 0),
-        Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub<font color=\"rgb(150,150,150)\">| %s</font> <font color=\"rgb(100,100,100)\" size=\"14\">%s</font>", title, versionText),
+        Text = string.format("%s <font color=\"rgb(150,150,150)\">%s</font>", logo, secondaryLogo),
         RichText = true,
         FontFace = fonts.logo,
         TextSize = 24,
@@ -164,7 +166,7 @@ function Library:CreateWindow(config)
     G2L["70"] = New("Frame", {
         Size = UDim2.new(1, 0, 0, 27),
         AnchorPoint = Vector2.new(1, 0),
-        Position = UDim2.new(1, 3, 0, 3),
+        Position = UDim2.new(1, 3, 0, 5),
         BackgroundTransparency = 0,
         BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     }, G2L["6e"])
@@ -507,6 +509,7 @@ function Library:CreateWindow(config)
     local Window = {
         G2L = G2L,
         TabCount = 0,
+        Logo = logo,
         Stats = {
             FPS = G2L["fps_label"],
             Ping = G2L["ping_label"],
