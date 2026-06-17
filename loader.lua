@@ -1,18 +1,18 @@
 local baseUrl = "https://raw.githubusercontent.com/L5ks8/UiLibary/main/Ui/"
 
-local success1, content1 = pcall(game.HttpGet, game, baseUrl .. "mainfunktions.lua?t=" .. os.time())
+local success1, content1 = pcall(game.HttpGet, game, baseUrl .. "mainfunctions.lua?t=" .. os.time())
 local success2, content2 = pcall(game.HttpGet, game, baseUrl .. "mainframe.lua?t=" .. os.time())
 
-local mainfunktions, mainframe
+local mainfunctions, mainframe
 if success1 and success2 then
-    mainfunktions = loadstring(content1)()
+    mainfunctions = loadstring(content1)()
     mainframe = loadstring(content2)()
 else
     error("GoonHub Loader: Failed to fetch files from GitHub.")
 end
 
-if mainframe and mainfunktions then
-    return mainframe(mainfunktions)
+if mainframe and mainfunctions then
+    return mainframe(mainfunctions)
 else
-    error("GoonHub Loader: Failed to compile mainframe or mainfunktions.")
+    error("GoonHub Loader: Failed to compile mainframe or mainfunctions.")
 end

@@ -1,10 +1,10 @@
 -- GoonHub UI Library Mainframe
-return function(mainfunktions)
+return function(mainfunctions)
     local RunService = game:GetService("RunService")
     local TweenService = game:GetService("TweenService")
     local Library = {}
     Library.TabCount = 0
-    Library.Themes = mainfunktions.Themes
+    Library.Themes = mainfunctions.Themes
 
 function Library:CreateWindow(config)
     config = config or {}
@@ -12,8 +12,13 @@ function Library:CreateWindow(config)
     local versionText = config.Version or "1.0.0"
     local defaultTheme = config.Theme or "Dark"
 
-    local New = mainfunktions.New
-    local fonts = mainfunktions.GetFonts()
+    mainfunctions.Themes = config.Themes or {
+        Dark = { Main = Color3.fromRGB(36, 36, 36), Accent = Color3.fromRGB(248, 191, 212) }
+    }
+    Library.Themes = mainfunctions.Themes
+
+    local New = mainfunctions.New
+    local fonts = mainfunctions.GetFonts()
     local G2L = {}
 
     -- Resolve Local Player safely
@@ -42,7 +47,7 @@ function Library:CreateWindow(config)
     }, targetParent)
 
     G2L["2"] = New("Frame", {
-        BackgroundColor3 = mainfunktions.CurrentMain,
+        BackgroundColor3 = mainfunctions.CurrentMain,
         AnchorPoint = Vector2.new(0.5, 0.5),
         Size = UDim2.new(0, 850, 0, 580),
         Position = UDim2.new(0.5, 0, 0.5, 0),
@@ -499,7 +504,7 @@ function Library:CreateWindow(config)
     }, G2L["a1"])
 
     -- Wire behavior / physics
-    mainfunktions.InitBehavior(G2L, Library, config.OnClose)
+    mainfunctions.InitBehavior(G2L, Library, config.OnClose)
 
     -- Set flex behavior on footer
     if G2L["18"] and not G2L["18"]:FindFirstChildOfClass("UIFlexItem") then
@@ -518,23 +523,32 @@ function Library:CreateWindow(config)
     }
 
     -- Set initial Theme
-    mainfunktions.SetTheme(G2L, defaultTheme)
+    mainfunctions.SetTheme(G2L, defaultTheme)
 
     -- CreateWindow API implementation
-    function Window:CreateTab(tabName, isFixedOrIconId)
+    function Window:CreateTab(tabNameOrConfig, isFixedOrIconId)
         self.TabCount = self.TabCount + 1
         local tabIndex = self.TabCount
         
+        local tabName = ""
         local isFixed = false
-        local iconId = "11433532654" -- default home icon
+        local iconId = "11433532654"
+        local hasColumns = false
         
-        if type(isFixedOrIconId) == "boolean" then
-            isFixed = isFixedOrIconId
-        elseif type(isFixedOrIconId) == "string" then
-            iconId = isFixedOrIconId
+        if type(tabNameOrConfig) == "table" then
+            tabName = tabNameOrConfig.Name or "Tab"
+            iconId = tabNameOrConfig.Icon or "11433532654"
+            isFixed = tabNameOrConfig.Fixed or false
+            hasColumns = tabNameOrConfig.Columns or false
+        else
+            tabName = tabNameOrConfig
+            if type(isFixedOrIconId) == "boolean" then
+                isFixed = isFixedOrIconId
+            elseif type(isFixedOrIconId) == "string" then
+                iconId = isFixedOrIconId
+            end
         end
 
-        -- Map common tab icons if passed as names
         if tabName == "Home" then iconId = "11433532654"
         elseif tabName == "Settings" then iconId = "11293977610"
         elseif tabName == "About" then iconId = "11419720347"
@@ -590,12 +604,12 @@ function Library:CreateWindow(config)
 
         -- Spin gradient border
         local borderSpinConn
-        borderSpinConn = RunService.RenderStepped:Connect(function()
+        borderSpinConn = RunService.RenderStepped:Connect(function(dt)
             if not navBtn or not navBtn.Parent then
                 borderSpinConn:Disconnect()
                 return
             end
-            gradient.Rotation = (gradient.Rotation + 0.5) % 360
+            gradient.Rotation = (gradient.Rotation + 45 * dt) % 360
         end)
 
         New("UIListLayout", {
@@ -647,24 +661,17 @@ function Library:CreateWindow(config)
 
         New("UIFlexItem", {FlexMode = Enum.UIFlexMode.Fill}, textLabel)
 
-        -- Construct Tab Content Frame (Single Column Layout)
+        -- Construct Tab Content Frame
         local tabContentFrame = New("ScrollingFrame", {
             Name = tabName .. "Tab",
             Size = UDim2.new(1, 0, 1, 0),
             BackgroundTransparency = 1,
             ScrollBarThickness = 3,
-            ScrollBarImageColor3 = mainfunktions.CurrentAccent,
+            ScrollBarImageColor3 = mainfunctions.CurrentAccent,
             AutomaticCanvasSize = Enum.AutomaticSize.Y,
             CanvasSize = UDim2.new(0, 0, 0, 0),
-            LayoutOrder = tabIndex,
-            Visible = (tabIndex == 1)
+            LayoutOrder = tabIndex
         }, G2L["11"])
-
-        New("UIListLayout", {
-            Padding = UDim.new(0, 8),
-            HorizontalAlignment = Enum.HorizontalAlignment.Center,
-            SortOrder = Enum.SortOrder.LayoutOrder
-        }, tabContentFrame)
 
         New("UIPadding", {
             PaddingLeft = UDim.new(0, 12),
@@ -672,6 +679,59 @@ function Library:CreateWindow(config)
             PaddingTop = UDim.new(0, 8),
             PaddingBottom = UDim.new(0, 8)
         }, tabContentFrame)
+
+        local leftCol, rightCol
+        if hasColumns then
+            leftCol = New("ScrollingFrame", {
+                Name = "Left",
+                Size = UDim2.new(0.5, -6, 1, 0),
+                Position = UDim2.new(0, 0, 0, 0),
+                BackgroundTransparency = 1,
+                ScrollBarThickness = 0,
+                AutomaticCanvasSize = Enum.AutomaticSize.Y,
+                CanvasSize = UDim2.new(0, 0, 0, 0)
+            }, tabContentFrame)
+
+            New("UIListLayout", {
+                Padding = UDim.new(0, 8),
+                SortOrder = Enum.SortOrder.LayoutOrder,
+                HorizontalAlignment = Enum.HorizontalAlignment.Center
+            }, leftCol)
+
+            New("UIPadding", {
+                PaddingTop = UDim.new(0, 4),
+                PaddingBottom = UDim.new(0, 4)
+            }, leftCol)
+
+            rightCol = New("ScrollingFrame", {
+                Name = "Right",
+                Size = UDim2.new(0.5, -6, 1, 0),
+                Position = UDim2.new(0.5, 6, 0, 0),
+                BackgroundTransparency = 1,
+                ScrollBarThickness = 0,
+                AutomaticCanvasSize = Enum.AutomaticSize.Y,
+                CanvasSize = UDim2.new(0, 0, 0, 0)
+            }, tabContentFrame)
+
+            New("UIListLayout", {
+                Padding = UDim.new(0, 8),
+                SortOrder = Enum.SortOrder.LayoutOrder,
+                HorizontalAlignment = Enum.HorizontalAlignment.Center
+            }, rightCol)
+
+            New("UIPadding", {
+                PaddingTop = UDim.new(0, 4),
+                PaddingBottom = UDim.new(0, 4)
+            }, rightCol)
+
+            tabContentFrame.ScrollBarThickness = 0
+        else
+            New("UIListLayout", {
+                Padding = UDim.new(0, 8),
+                HorizontalAlignment = Enum.HorizontalAlignment.Center,
+                SortOrder = Enum.SortOrder.LayoutOrder
+            }, tabContentFrame)
+        end
 
         -- Wire Selection / Navigation jump
         local TweenService = game:GetService("TweenService")
@@ -734,15 +794,29 @@ function Library:CreateWindow(config)
             iconImg.ImageTransparency = 0
         end
 
-        -- Tab Object API (Creates Single-Column UI Widgets)
+        local function getWidgetParent(overrideParent, colName)
+            if overrideParent then return overrideParent end
+            if hasColumns then
+                if colName == "Right" then
+                    return rightCol
+                else
+                    return leftCol
+                end
+            end
+            return tabContentFrame
+        end
+
         local Tab = {
             tabFrame = tabContentFrame,
             WidgetCount = 0,
             SectionCount = 0
         }
 
-        -- Section creator (full width)
-        function Tab:CreateSection(sectionTitle)
+        function Tab:CreateSection(sectionTitle, columnSelection)
+            local title = type(sectionTitle) == "table" and sectionTitle.Title or sectionTitle
+            local colName = type(sectionTitle) == "table" and sectionTitle.Column or columnSelection
+            
+            local parent = getWidgetParent(nil, colName)
             self.SectionCount = self.SectionCount + 1
             
             local secFrame = New("Frame", {
@@ -750,7 +824,7 @@ function Library:CreateWindow(config)
                 AutomaticSize = Enum.AutomaticSize.Y,
                 BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                 LayoutOrder = self.SectionCount
-            }, tabContentFrame)
+            }, parent)
 
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, secFrame)
             
@@ -763,8 +837,8 @@ function Library:CreateWindow(config)
             local sectionText = New("TextLabel", {
                 Size = UDim2.new(1, -20, 0, 32),
                 Position = UDim2.new(0, 10, 0, 0),
-                Text = " " .. sectionTitle,
-                TextColor3 = mainfunktions.CurrentAccent,
+                Text = " " .. title,
+                TextColor3 = mainfunctions.CurrentAccent,
                 FontFace = fonts.bold,
                 TextSize = 14,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -789,7 +863,6 @@ function Library:CreateWindow(config)
                 PaddingTop = UDim.new(0, 4)
             }, container)
 
-            -- Section Widget Wrappers (delegating to Tab widgets)
             local Section = {
                 WidgetCount = 0
             }
@@ -835,8 +908,9 @@ function Library:CreateWindow(config)
             local default = type(configTitle) == "table" and configTitle.Default or defaultState
             local cb = type(configTitle) == "table" and configTitle.Callback or callback
             local subTitle = type(configTitle) == "table" and configTitle.SubTitle or nil
+            local colName = type(configTitle) == "table" and configTitle.Column or nil
             
-            local parent = overrideParent or tabContentFrame
+            local parent = getWidgetParent(overrideParent, colName)
             self.WidgetCount = self.WidgetCount + 1
             local lOrder = layoutOrder or self.WidgetCount
 
@@ -900,7 +974,7 @@ function Library:CreateWindow(config)
                 Size = UDim2.new(0, 36, 0, 18),
                 Position = UDim2.new(1, -12, 0.5, 0),
                 AnchorPoint = Vector2.new(1, 0.5),
-                BackgroundColor3 = state and mainfunktions.CurrentAccent or Color3.fromRGB(45, 45, 45),
+                BackgroundColor3 = state and mainfunctions.CurrentAccent or Color3.fromRGB(45, 45, 45),
                 Text = "",
                 AutoButtonColor = false
             }, widgetFrame)
@@ -932,6 +1006,24 @@ function Library:CreateWindow(config)
                 ApplyStrokeMode = "Border"
             }, hoverSelector)
 
+            local toggleGradient = New("UIGradient", {
+                Transparency = NumberSequence.new({
+                    NumberSequenceKeypoint.new(0, 1),
+                    NumberSequenceKeypoint.new(0.45, 0),
+                    NumberSequenceKeypoint.new(0.55, 0),
+                    NumberSequenceKeypoint.new(1, 1)
+                })
+            }, hoverStroke)
+
+            local toggleSpinConn
+            toggleSpinConn = RunService.RenderStepped:Connect(function(dt)
+                if not toggleBtn or not toggleBtn.Parent then
+                    toggleSpinConn:Disconnect()
+                    return
+                end
+                toggleGradient.Rotation = (toggleGradient.Rotation + 45 * dt) % 360
+            end)
+
             widgetFrame.MouseEnter:Connect(function()
                 TweenService:Create(hoverStroke, TweenInfo.new(0.3), {Transparency = 0.5}):Play()
             end)
@@ -943,7 +1035,7 @@ function Library:CreateWindow(config)
             toggleBtn.MouseButton1Click:Connect(function()
                 state = not state
                 TweenService:Create(toggleBtn, TweenInfo.new(0.25, Enum.EasingStyle.Quart), {
-                    BackgroundColor3 = state and mainfunktions.CurrentAccent or Color3.fromRGB(45, 45, 45)
+                    BackgroundColor3 = state and mainfunctions.CurrentAccent or Color3.fromRGB(45, 45, 45)
                 }):Play()
                 TweenService:Create(sliderCircle, TweenInfo.new(0.25, Enum.EasingStyle.Quart), {
                     Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
@@ -963,7 +1055,7 @@ function Library:CreateWindow(config)
                     if state ~= newState then
                         state = newState
                         TweenService:Create(toggleBtn, TweenInfo.new(0.25, Enum.EasingStyle.Quart), {
-                            BackgroundColor3 = state and mainfunktions.CurrentAccent or Color3.fromRGB(45, 45, 45)
+                            BackgroundColor3 = state and mainfunctions.CurrentAccent or Color3.fromRGB(45, 45, 45)
                         }):Play()
                         TweenService:Create(sliderCircle, TweenInfo.new(0.25, Enum.EasingStyle.Quart), {
                             Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
@@ -983,8 +1075,9 @@ function Library:CreateWindow(config)
             local max = type(configTitle) == "table" and configTitle.Max or maxVal
             local default = type(configTitle) == "table" and configTitle.Default or defaultState
             local cb = type(configTitle) == "table" and configTitle.Callback or callback
+            local colName = type(configTitle) == "table" and configTitle.Column or nil
             
-            local parent = overrideParent or tabContentFrame
+            local parent = getWidgetParent(overrideParent, colName)
             self.WidgetCount = self.WidgetCount + 1
             local lOrder = layoutOrder or self.WidgetCount
 
@@ -1020,7 +1113,7 @@ function Library:CreateWindow(config)
                 Position = UDim2.new(1, -10, 0, 4),
                 AnchorPoint = Vector2.new(1, 0),
                 Text = tostring(math.floor(valText)),
-                TextColor3 = mainfunktions.CurrentAccent,
+                TextColor3 = mainfunctions.CurrentAccent,
                 BackgroundColor3 = Color3.fromRGB(20, 20, 20),
                 BackgroundTransparency = 0,
                 TextXAlignment = Enum.TextXAlignment.Center,
@@ -1043,7 +1136,7 @@ function Library:CreateWindow(config)
             
             local sliderFill = New("Frame", {
                 Size = UDim2.new(math.clamp((valText - min) / (max - min), 0, 1), 0, 1, 0),
-                BackgroundColor3 = mainfunktions.CurrentAccent
+                BackgroundColor3 = mainfunctions.CurrentAccent
             }, sliderBg)
 
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderFill)
@@ -1127,8 +1220,9 @@ function Library:CreateWindow(config)
         function Tab:CreateButton(configTitle, callback, overrideParent, layoutOrder)
             local title = type(configTitle) == "table" and configTitle.Title or configTitle
             local cb = type(configTitle) == "table" and configTitle.Callback or callback
+            local colName = type(configTitle) == "table" and configTitle.Column or nil
             
-            local parent = overrideParent or tabContentFrame
+            local parent = getWidgetParent(overrideParent, colName)
             self.WidgetCount = self.WidgetCount + 1
             local lOrder = layoutOrder or self.WidgetCount
 
@@ -1176,8 +1270,9 @@ function Library:CreateWindow(config)
             local options = type(configTitle) == "table" and configTitle.Options or configOptions
             local cb = type(configTitle) == "table" and configTitle.Callback or callback
             local default = type(configTitle) == "table" and configTitle.Default or (options and options[1] or "None")
+            local colName = type(configTitle) == "table" and configTitle.Column or nil
             
-            local parent = overrideParent or tabContentFrame
+            local parent = getWidgetParent(overrideParent, colName)
             self.WidgetCount = self.WidgetCount + 1
             local lOrder = layoutOrder or self.WidgetCount
 
@@ -1216,7 +1311,7 @@ function Library:CreateWindow(config)
                 Position = UDim2.new(0, 10, 0, 18),
                 BackgroundColor3 = Color3.fromRGB(35, 35, 35),
                 Text = "  " .. selected,
-                TextColor3 = mainfunktions.CurrentAccent,
+                TextColor3 = mainfunctions.CurrentAccent,
                 FontFace = fonts.bold,
                 TextSize = 13,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -1243,7 +1338,7 @@ function Library:CreateWindow(config)
                 BackgroundTransparency = 1,
                 Visible = false,
                 ScrollBarThickness = 3,
-                ScrollBarImageColor3 = mainfunktions.CurrentAccent,
+                ScrollBarImageColor3 = mainfunctions.CurrentAccent,
                 AutomaticCanvasSize = Enum.AutomaticSize.Y,
                 CanvasSize = UDim2.new(0, 0, 0, 0)
             }, dropdownFrame)
@@ -1332,8 +1427,9 @@ function Library:CreateWindow(config)
         function Tab:CreateLabel(configTitle, defaultState, overrideParent, layoutOrder)
             local title = type(configTitle) == "table" and configTitle.Title or configTitle
             local default = type(configTitle) == "table" and configTitle.Default or defaultState
+            local colName = type(configTitle) == "table" and configTitle.Column or nil
             
-            local parent = overrideParent or tabContentFrame
+            local parent = getWidgetParent(overrideParent, colName)
             self.WidgetCount = self.WidgetCount + 1
             local lOrder = layoutOrder or self.WidgetCount
             
@@ -1366,7 +1462,7 @@ function Library:CreateWindow(config)
                 Size = UDim2.new(1, -20, 1, 0),
                 Position = UDim2.new(0, 10, 0, 0),
                 Text = default or "",
-                TextColor3 = mainfunktions.CurrentAccent,
+                TextColor3 = mainfunctions.CurrentAccent,
                 BackgroundTransparency = 1,
                 TextXAlignment = Enum.TextXAlignment.Right,
                 FontFace = fonts.med,
@@ -1383,8 +1479,9 @@ function Library:CreateWindow(config)
         -- 6. Multiline Paragraph widget
         function Tab:CreateParagraph(configText, overrideParent, layoutOrder)
             local text = type(configText) == "table" and configText.Text or configText
+            local colName = type(configText) == "table" and configText.Column or nil
             
-            local parent = overrideParent or tabContentFrame
+            local parent = getWidgetParent(overrideParent, colName)
             self.WidgetCount = self.WidgetCount + 1
             local lOrder = layoutOrder or self.WidgetCount
             
@@ -1446,7 +1543,7 @@ function Library:CreateWindow(config)
             Options = {"Dark", "Blue", "Halloween", "Red", "Purple", "Midnight", "Ocean", "Rose", "Emerald", "Amber", "Sakura", "Cyberpunk", "Forest", "Coffee", "Nord", "Dracula", "Gold", "Sky", "Synthwave"},
             Default = savedTheme,
             Callback = function(value)
-                mainfunktions.SetTheme(G2L, value)
+                mainfunctions.SetTheme(G2L, value)
             end
         })
 
@@ -1460,7 +1557,7 @@ function Library:CreateWindow(config)
             Text = "Developed by L5ks8\nRefactored with high-performance animations."
         })
 
-        mainfunktions.SetTheme(G2L, savedTheme)
+        mainfunctions.SetTheme(G2L, savedTheme)
     end)
 
     return Window
