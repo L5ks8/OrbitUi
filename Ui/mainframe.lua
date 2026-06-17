@@ -161,18 +161,10 @@ function Library:CreateWindow(config)
         TextTruncate = Enum.TextTruncate.AtEnd
     }, G2L["6c"])
 
-    G2L["weather"] = New("ImageLabel", {
-        Size = UDim2.new(0, 21, 0, 21),
-        Image = "rbxassetid://13056160366",
-        BackgroundTransparency = 1,
-        Name = "weather",
-        LayoutOrder = 4
-    }, G2L["65"])
-
     G2L["70"] = New("Frame", {
         Size = UDim2.new(1, 0, 0, 27),
-        AnchorPoint = Vector2.new(0.5, 0.5),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(1, 0),
+        Position = UDim2.new(1, 3, 0, 3),
         BackgroundTransparency = 0,
         BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     }, G2L["6e"])
