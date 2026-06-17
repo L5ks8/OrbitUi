@@ -883,18 +883,20 @@ function Library:CreateWindow(config)
                 }, secFrame)
 
                 local dropped = true
+                local isAnimating = false
                 toggleBtn.MouseButton1Click:Connect(function()
+                    if isAnimating then return end
                     dropped = not dropped
+                    isAnimating = true
                     if not dropped then
-                        container.ClipsDescendants = true
+                        -- COLLAPSE: tween secFrame from full height to header-only (32px)
                         secFrame.ClipsDescendants = true
+                        local fullHeight = secFrame.AbsoluteSize.Y
+                        secFrame.AutomaticSize = Enum.AutomaticSize.None
+                        secFrame.Size = UDim2.new(1, 0, 0, fullHeight)
                         
-                        local currentHeight = container.AbsoluteSize.Y
-                        container.AutomaticSize = Enum.AutomaticSize.None
-                        container.Size = UDim2.new(1, -20, 0, currentHeight)
-                        
-                        local tween = TweenService:Create(container, TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-                            Size = UDim2.new(1, -20, 0, 0)
+                        local tween = TweenService:Create(secFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+                            Size = UDim2.new(1, 0, 0, 32)
                         })
                         tween:Play()
                         
@@ -906,17 +908,36 @@ function Library:CreateWindow(config)
                             if not dropped then
                                 container.Visible = false
                             end
+                            isAnimating = false
                         end)
                     else
-                        container.ClipsDescendants = false
-                        secFrame.ClipsDescendants = false
+                        -- EXPAND: tween secFrame from 32px back to full height
                         container.Visible = true
-                        container.Size = UDim2.new(1, -20, 0, 0)
-                        container.AutomaticSize = Enum.AutomaticSize.Y
+                        secFrame.ClipsDescendants = true
                         
-                        TweenService:Create(arrow, TweenInfo.new(0.1, Enum.EasingStyle.Quart), {
+                        -- Temporarily enable AutomaticSize to measure target height
+                        secFrame.AutomaticSize = Enum.AutomaticSize.Y
+                        RunService.RenderStepped:Wait()
+                        local targetHeight = secFrame.AbsoluteSize.Y
+                        secFrame.AutomaticSize = Enum.AutomaticSize.None
+                        secFrame.Size = UDim2.new(1, 0, 0, 32)
+                        
+                        local tween = TweenService:Create(secFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+                            Size = UDim2.new(1, 0, 0, targetHeight)
+                        })
+                        tween:Play()
+                        
+                        TweenService:Create(arrow, TweenInfo.new(0.25, Enum.EasingStyle.Quart), {
                             Rotation = 0
                         }):Play()
+                        
+                        tween.Completed:Connect(function()
+                            if dropped then
+                                secFrame.AutomaticSize = Enum.AutomaticSize.Y
+                                secFrame.ClipsDescendants = false
+                            end
+                            isAnimating = false
+                        end)
                     end
                 end)
             end
