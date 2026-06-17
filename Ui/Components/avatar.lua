@@ -17,7 +17,7 @@ return function(Tab, mainfunctions, configTitle, overrideParent, layoutOrder)
     local hasTitle = (title ~= nil)
     
     local widgetFrame = New("Frame", {
-        Size = UDim2.new(1, 0, 0, hasTitle and 250 or 210),
+        Size = UDim2.new(1, 0, 0, hasTitle and 280 or 240),
         BackgroundColor3 = Color3.fromRGB(30, 30, 30),
         LayoutOrder = lOrder
     }, parent)
@@ -46,7 +46,7 @@ return function(Tab, mainfunctions, configTitle, overrideParent, layoutOrder)
 
     -- ViewportFrame
     local viewportFrame = New("ViewportFrame", {
-        Size = UDim2.new(0, 140, 0, 180),
+        Size = UDim2.new(0, 160, 0, 220),
         Position = UDim2.new(0.5, 0, 0.5, hasTitle and 10 or 0),
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundTransparency = 1,
@@ -59,13 +59,13 @@ return function(Tab, mainfunctions, configTitle, overrideParent, layoutOrder)
     camera.Parent = viewportFrame
 
     local charClone
-    local yaw = 0     -- Horizontal rotation angle (degrees)
+    local yaw = 180    -- Horizontal rotation angle (degrees) - starts facing the camera
     local pitch = 0    -- Vertical rotation angle (degrees)
-    local distance = 6.5 -- Camera distance
+    local distance = 8.0 -- Camera distance (zoomed out slightly to fit feet)
 
     local function updateCamera()
         if not camera then return end
-        local center = Vector3.new(0, 0.2, 0) -- Look at torso center
+        local center = Vector3.new(0, 0.1, 0) -- Look at character center
         local rotationCFrame = CFrame.Angles(0, math.rad(yaw), 0) * CFrame.Angles(math.rad(pitch), 0, 0)
         camera.CFrame = CFrame.new(center) * rotationCFrame * CFrame.new(0, 0, distance)
         camera.Focus = CFrame.new(center)
