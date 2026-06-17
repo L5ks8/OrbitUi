@@ -522,44 +522,42 @@ function Library:CreateWindow(config)
         }
     }
 
-    function Window:SetTheme(themeName)
-        mainfunctions.SetTheme(G2L, themeName)
-    end
-
     -- Set initial Theme
     mainfunctions.SetTheme(G2L, defaultTheme)
 
     -- CreateWindow API implementation
-    function Window:CreateTab(tabNameOrConfig, isFixedOrIconId)
+    -- Track secondary tab count for 2-slot limit
+    local secondaryTabCount = 0
+
+    function Window:CreateTab(tabNameOrConfig)
         self.TabCount = self.TabCount + 1
         local tabIndex = self.TabCount
         
         local tabName = ""
-        local isFixed = false
+        local isSecondary = false
         local iconId = "11433532654"
         local hasColumns = false
         
         if type(tabNameOrConfig) == "table" then
             tabName = tabNameOrConfig.Name or "Tab"
             iconId = tabNameOrConfig.Icon or "11433532654"
-            isFixed = tabNameOrConfig.Fixed or false
+            isSecondary = tabNameOrConfig.SecondaryTab or false
             hasColumns = tabNameOrConfig.Columns or false
         else
-            tabName = tabNameOrConfig
-            if type(isFixedOrIconId) == "boolean" then
-                isFixed = isFixedOrIconId
-            elseif type(isFixedOrIconId) == "string" then
-                iconId = isFixedOrIconId
+            tabName = tostring(tabNameOrConfig)
+        end
+
+        -- Enforce max 2 secondary tabs
+        if isSecondary then
+            secondaryTabCount = secondaryTabCount + 1
+            if secondaryTabCount > 2 then
+                warn("GoonHub: Max 2 secondary tabs allowed. '" .. tabName .. "' was not created.")
+                return nil
             end
         end
 
-        if tabName == "Home" then iconId = "11433532654"
-        elseif tabName == "Settings" then iconId = "11293977610"
-        elseif tabName == "About" then iconId = "11419720347"
-        end
-
         -- Construct Tab Sidebar Navigation Button
-        local parentFrame = isFixed and G2L["19"] or G2L["4c"]
+        local parentFrame = isSecondary and G2L["19"] or G2L["4c"]
         
         local navBtn = New("ImageButton", {
             Name = tabName,
@@ -613,7 +611,7 @@ function Library:CreateWindow(config)
                 borderSpinConn:Disconnect()
                 return
             end
-            gradient.Rotation = (gradient.Rotation + 45 * dt) % 360
+            gradient.Rotation = (gradient.Rotation + 6 * dt) % 360
         end)
 
         New("UIListLayout", {
@@ -740,7 +738,7 @@ function Library:CreateWindow(config)
         -- Wire Selection / Navigation jump
         local TweenService = game:GetService("TweenService")
         navBtn.MouseButton1Click:Connect(function()
-            G2L["14"]:JumpToIndex(tabIndex - 1)
+            G2L["14"]:JumpTo(tabContentFrame)
             
             local function updateNavStyle(button, active)
                 local sel = button:FindFirstChild("selector") 
@@ -1025,7 +1023,7 @@ function Library:CreateWindow(config)
                     toggleSpinConn:Disconnect()
                     return
                 end
-                toggleGradient.Rotation = (toggleGradient.Rotation + 45 * dt) % 360
+                toggleGradient.Rotation = (toggleGradient.Rotation + 120 * dt) % 360
             end)
 
             widgetFrame.MouseEnter:Connect(function()
@@ -1533,6 +1531,7 @@ function Library:CreateWindow(config)
         return Tab
     end
 
+    -- Apply initial theme
     mainfunctions.SetTheme(G2L, defaultTheme)
 
     return Window
