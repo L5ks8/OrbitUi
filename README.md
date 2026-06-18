@@ -1,5 +1,5 @@
 ```lua
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Relix78/UiLibary/main/loader.lua"))  --Load the UiLibary
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/L5ks8/UiLibary/main/loader.lua?t=" .. os.time()))()  --Load the UiLibary
 
 --//Create window
 local Window = Library:CreateWindow({
