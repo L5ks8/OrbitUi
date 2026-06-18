@@ -62,7 +62,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         Size = UDim2.new(0, 20, 0, 20),
         Position = UDim2.new(1, -25, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
-        Text = "▼",
+        Text = "▶",
         BackgroundTransparency = 1,
         TextColor3 = Color3.new(1, 1, 1),
         TextSize = 12
@@ -178,7 +178,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
                 end
                 
                 TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 44)}):Play()
-                TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
+                -- Arrow rotation removed; static right-pointing arrow
                 if cb then 
                     pcall(cb, opt) 
                 end
@@ -204,7 +204,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         
         local targetHeight = dropped and (searchbar and 200 or math.min(listLayout.AbsoluteContentSize.Y + 54, 200)) or 44
         TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()
-        TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
+        -- No rotation for arrow; keep static
     end)
 
     return {
