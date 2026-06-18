@@ -104,7 +104,21 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         }, dropdownFrame)
 
         New("UICorner", {CornerRadius = UDim.new(0, 4)}, searchBox)
-        New("UIPadding", {PaddingLeft = UDim.new(0, 8)}, searchBox)
+        New("UIPadding", {
+            PaddingLeft = UDim.new(0, 26),
+            PaddingRight = UDim.new(0, 8)
+        }, searchBox)
+
+        New("ImageLabel", {
+            Name = "Icon",
+            Size = UDim2.new(0, 14, 0, 14),
+            Position = UDim2.new(0, 6, 0.5, 0),
+            AnchorPoint = Vector2.new(0, 0.5),
+            Image = "rbxassetid://111214789510168",
+            ImageColor3 = Color3.fromRGB(180, 180, 180),
+            BackgroundTransparency = 1,
+            ZIndex = 11
+        }, searchBox)
 
         searchBox:GetPropertyChangedSignal("Text"):Connect(function()
             local query = searchBox.Text:lower()

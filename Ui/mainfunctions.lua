@@ -617,7 +617,21 @@ end
                         Thickness = 1,
                         Transparency = 0.5
                     }, searchBox)
-                    New("UIPadding", {PaddingLeft = UDim.new(0, 10)}, searchBox)
+                    New("UIPadding", {
+                        PaddingLeft = UDim.new(0, 30),
+                        PaddingRight = UDim.new(0, 10)
+                    }, searchBox)
+
+                    New("ImageLabel", {
+                        Name = "Icon",
+                        Size = UDim2.new(0, 16, 0, 16),
+                        Position = UDim2.new(0, 8, 0.5, 0),
+                        AnchorPoint = Vector2.new(0, 0.5),
+                        Image = "rbxassetid://111214789510168",
+                        ImageColor3 = Color3.fromRGB(180, 180, 180),
+                        BackgroundTransparency = 1,
+                        ZIndex = 11
+                    }, searchBox)
 
                     searchBox:GetPropertyChangedSignal("Text"):Connect(function()
                         local query = searchBox.Text:lower()
