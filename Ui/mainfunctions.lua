@@ -630,7 +630,7 @@ end
                         Image = "rbxassetid://112780490255100",
                         ImageColor3 = Color3.fromRGB(180, 180, 180),
                         BackgroundTransparency = 1,
-                        ZIndex = 11
+                        ZIndex = 11,
                     }, searchBox)
 
                     searchBox:GetPropertyChangedSignal("Text"):Connect(function()
