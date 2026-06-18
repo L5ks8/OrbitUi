@@ -502,15 +502,9 @@ function Library:CreateWindow(config)
         New("UIFlexItem", {FlexMode = Enum.UIFlexMode.None}, G2L["18"])
     end
 
-    -- Build the window API and functions using mainfunctions
     local Window = mainfunctions.BuildWindow(G2L, config, components)
-
-    -- Set initial Theme
     mainfunctions.SetTheme(G2L, defaultTheme)
-
-    -- Wire behavior / physics
     mainfunctions.InitBehavior(G2L, Window, config.OnClose)
-
     return Window
 end
 

@@ -9,6 +9,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
     local cb = type(configTitle) == "table" and configTitle.Callback or callback
     local default = type(configTitle) == "table" and configTitle.Default or (options and options[1] or "None")
     local colName = type(configTitle) == "table" and configTitle.Column or nil
+    local searchbar = type(configTitle) == "table" and (configTitle.Searchbar or configTitle.searchbar or configTitle.SearchBar) or false
     
     local parent = Tab.getWidgetParent(overrideParent, colName)
     Tab.WidgetCount = Tab.WidgetCount + 1
@@ -67,10 +68,13 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         TextSize = 12
     }, btn)
 
+    local listPosition = searchbar and UDim2.new(0, 10, 0, 76) or UDim2.new(0, 10, 0, 48)
+    local listSize = searchbar and UDim2.new(1, -20, 1, -80) or UDim2.new(1, -20, 1, -50)
+
     local list = New("ScrollingFrame", {
         Name = "list",
-        Position = UDim2.new(0, 10, 0, 48),
-        Size = UDim2.new(1, -20, 1, -50),
+        Position = listPosition,
+        Size = listSize,
         BackgroundTransparency = 1,
         Visible = false,
         ScrollBarThickness = 3,
@@ -80,6 +84,42 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
     }, dropdownFrame)
 
     local listLayout = New("UIListLayout", {Padding = UDim.new(0, 4)}, list)
+
+    local searchBox
+    if searchbar then
+        searchBox = New("TextBox", {
+            Name = "search",
+            Size = UDim2.new(1, -20, 0, 24),
+            Position = UDim2.new(0, 10, 0, 48),
+            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
+            Text = "",
+            PlaceholderText = "Search...",
+            TextColor3 = Color3.new(1, 1, 1),
+            PlaceholderColor3 = Color3.fromRGB(120, 120, 120),
+            FontFace = fonts.med,
+            TextSize = 13,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            ClearTextOnFocus = false,
+            Visible = false
+        }, dropdownFrame)
+
+        New("UICorner", {CornerRadius = UDim.new(0, 4)}, searchBox)
+        New("UIPadding", {PaddingLeft = UDim.new(0, 8)}, searchBox)
+
+        searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+            local query = searchBox.Text:lower()
+            for _, child in pairs(list:GetChildren()) do
+                if child:IsA("TextButton") then
+                    local itemText = child.Text:lower():gsub("^%s+", "")
+                    if itemText:find(query, 1, true) then
+                        child.Visible = true
+                    else
+                        child.Visible = false
+                    end
+                end
+            end
+        end)
+    end
     
     local function populateOptions(listOptions)
         for _, child in pairs(list:GetChildren()) do
@@ -114,6 +154,10 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
                 btn.Text = "  " .. tostring(opt) 
                 dropped = false 
                 list.Visible = false
+                if searchBox then
+                    searchBox.Visible = false
+                    searchBox.Text = ""
+                end
                 
                 if parent:IsA("ScrollingFrame") then
                     parent.ScrollingEnabled = true
@@ -133,12 +177,18 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
     btn.MouseButton1Click:Connect(function()
         dropped = not dropped
         list.Visible = dropped
+        if searchBox then
+            searchBox.Visible = dropped
+            if not dropped then
+                searchBox.Text = ""
+            end
+        end
         
         if parent:IsA("ScrollingFrame") then
             parent.ScrollingEnabled = not dropped
         end
         
-        local targetHeight = dropped and math.min(listLayout.AbsoluteContentSize.Y + 54, 200) or 44
+        local targetHeight = dropped and (searchbar and 200 or math.min(listLayout.AbsoluteContentSize.Y + 54, 200)) or 44
         TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()
         TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
     end)

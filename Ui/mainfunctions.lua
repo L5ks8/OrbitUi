@@ -380,7 +380,6 @@ end
                     Memory = G2L["mem_label"]
                 }
             }
-
             local secondaryTabCount = 0
             local New = UIFunctions.New
             local fonts = UIFunctions.GetFonts()
@@ -393,12 +392,14 @@ end
                 local isSecondary = false
                 local iconId = "11433532654"
                 local hasColumns = false
+                local searchbar = false
                 
                 if type(tabNameOrConfig) == "table" then
                     tabName = tabNameOrConfig.Name or "Tab"
                     iconId = tabNameOrConfig.Icon or "11433532654"
                     isSecondary = tabNameOrConfig.SecondaryTab or false
                     hasColumns = tabNameOrConfig.Columns or false
+                    searchbar = tabNameOrConfig.Searchbar or tabNameOrConfig.searchbar or tabNameOrConfig.SearchBar or false
                 else
                     tabName = tostring(tabNameOrConfig)
                 end
@@ -538,12 +539,13 @@ end
                     PaddingBottom = UDim.new(0, 8)
                 }, tabContentFrame)
 
+                local searchOffset = searchbar and 42 or 0
                 local leftCol, rightCol
                 if hasColumns then
                     leftCol = New("ScrollingFrame", {
                         Name = "Left",
-                        Size = UDim2.new(0.5, -6, 1, 0),
-                        Position = UDim2.new(0, 0, 0, 0),
+                        Size = UDim2.new(0.5, -6, 1, -searchOffset),
+                        Position = UDim2.new(0, 0, 0, searchOffset),
                         BackgroundTransparency = 1,
                         ScrollBarThickness = 0,
                         AutomaticCanvasSize = Enum.AutomaticSize.Y,
@@ -563,8 +565,8 @@ end
 
                     rightCol = New("ScrollingFrame", {
                         Name = "Right",
-                        Size = UDim2.new(0.5, -6, 1, 0),
-                        Position = UDim2.new(0.5, 6, 0, 0),
+                        Size = UDim2.new(0.5, -6, 1, -searchOffset),
+                        Position = UDim2.new(0.5, 6, 0, searchOffset),
                         BackgroundTransparency = 1,
                         ScrollBarThickness = 0,
                         AutomaticCanvasSize = Enum.AutomaticSize.Y,
@@ -589,6 +591,92 @@ end
                         HorizontalAlignment = Enum.HorizontalAlignment.Center,
                         SortOrder = Enum.SortOrder.LayoutOrder
                     }, tabContentFrame)
+                end
+
+                if searchbar then
+                    local searchBox = New("TextBox", {
+                        Name = "SearchBar",
+                        Size = UDim2.new(1, 0, 0, 32),
+                        Position = hasColumns and UDim2.new(0, 0, 0, 0) or nil,
+                        BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                        Text = "",
+                        PlaceholderText = "Search in tab...",
+                        TextColor3 = Color3.new(1, 1, 1),
+                        PlaceholderColor3 = Color3.fromRGB(120, 120, 120),
+                        FontFace = fonts.bold,
+                        TextSize = 14,
+                        TextXAlignment = Enum.TextXAlignment.Left,
+                        ClearTextOnFocus = false,
+                        LayoutOrder = 0,
+                        ZIndex = 10
+                    }, tabContentFrame)
+
+                    New("UICorner", {CornerRadius = UDim.new(0, 6)}, searchBox)
+                    New("UIStroke", {
+                        Color = Color3.fromRGB(45, 45, 45),
+                        Thickness = 1,
+                        Transparency = 0.5
+                    }, searchBox)
+                    New("UIPadding", {PaddingLeft = UDim.new(0, 10)}, searchBox)
+
+                    searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+                        local query = searchBox.Text:lower()
+                        
+                        local function filterContainer(container)
+                            for _, child in pairs(container:GetChildren()) do
+                                if child:IsA("Frame") and child.Name ~= "SearchBar" then
+                                    local innerContainer = child:FindFirstChild("container")
+                                    if innerContainer then
+                                        -- It's a Section
+                                        local anyWidgetVisible = false
+                                        for _, widget in pairs(innerContainer:GetChildren()) do
+                                            if widget:IsA("Frame") or widget:IsA("TextButton") or widget:IsA("TextBox") then
+                                                local titleText = ""
+                                                local titleLabel = widget:FindFirstChild("label", true) or widget:FindFirstChildOfClass("TextLabel")
+                                                if titleLabel and titleLabel:IsA("TextLabel") then
+                                                    titleText = titleLabel.Text
+                                                end
+                                                titleText = titleText:lower()
+                                                
+                                                if query == "" or titleText:find(query, 1, true) then
+                                                    widget.Visible = true
+                                                    anyWidgetVisible = true
+                                                else
+                                                    widget.Visible = false
+                                                end
+                                            end
+                                        end
+                                        if query ~= "" and not anyWidgetVisible then
+                                            child.Visible = false
+                                        else
+                                            child.Visible = true
+                                        end
+                                    else
+                                        -- Normal widget placed directly
+                                        local titleText = ""
+                                        local titleLabel = child:FindFirstChild("label", true) or child:FindFirstChildOfClass("TextLabel")
+                                        if titleLabel and titleLabel:IsA("TextLabel") then
+                                            titleText = titleLabel.Text
+                                        end
+                                        titleText = titleText:lower()
+                                        
+                                        if query == "" or titleText:find(query, 1, true) then
+                                            child.Visible = true
+                                        else
+                                            child.Visible = false
+                                        end
+                                    end
+                                end
+                            end
+                        end
+
+                        if hasColumns then
+                            filterContainer(leftCol)
+                            filterContainer(rightCol)
+                        else
+                            filterContainer(tabContentFrame)
+                        end
+                    end)
                 end
 
                 -- Wire Selection / Navigation jump
