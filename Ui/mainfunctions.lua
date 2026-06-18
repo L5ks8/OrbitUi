@@ -618,14 +618,14 @@ end
                         Transparency = 0.5
                     }, searchBox)
                     New("UIPadding", {
-                        PaddingLeft = UDim.new(0, 30),
+                        PaddingLeft = UDim.new(0, 40),
                         PaddingRight = UDim.new(0, 10)
                     }, searchBox)
 
                     New("ImageLabel", {
                         Name = "Icon",
                         Size = UDim2.new(0, 16, 0, 16),
-                        Position = UDim2.new(0, 8, 0.5, 0),
+                        Position = UDim2.new(0, 10, 0.5, 0),
                         AnchorPoint = Vector2.new(0, 0.5),
                         Image = "rbxassetid://112780490255100",
                         ImageColor3 = Color3.fromRGB(180, 180, 180),

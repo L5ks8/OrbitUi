@@ -65,7 +65,8 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         Text = "▶",
         BackgroundTransparency = 1,
         TextColor3 = Color3.new(1, 1, 1),
-        TextSize = 12
+        TextSize = 12,
+        Rotation = 0
     }, btn)
 
     local function setTabScrollingEnabled(enabled)
@@ -131,14 +132,14 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
 
         New("UICorner", {CornerRadius = UDim.new(0, 4)}, searchBox)
         New("UIPadding", {
-            PaddingLeft = UDim.new(0, 26),
+            PaddingLeft = UDim.new(0, 40),
             PaddingRight = UDim.new(0, 8)
         }, searchBox)
 
         New("ImageLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 14, 0, 14),
-            Position = UDim2.new(0, 6, 0.5, 0),
+            Position = UDim2.new(0, 10, 0.5, 0),
             AnchorPoint = Vector2.new(0, 0.5),
             Image = "rbxassetid://112780490255100",
             ImageColor3 = Color3.fromRGB(180, 180, 180),
@@ -200,7 +201,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
                 end
 
                 updateDropdownScrollState(false)
-                arrow.Text = "▶"
+                TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
 
                 TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 44)}):Play()
                 if cb then 
@@ -223,7 +224,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         end
 
         updateDropdownScrollState(dropped)
-        arrow.Text = dropped and "▼" or "▶"
+        TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = dropped and 90 or 0}):Play()
 
         local targetHeight = dropped and (searchbar and 200 or math.min(listLayout.AbsoluteContentSize.Y + 54, 200)) or 44
         TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()
