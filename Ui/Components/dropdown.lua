@@ -60,13 +60,39 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
 
     local arrow = New("TextLabel", {
         Size = UDim2.new(0, 20, 0, 20),
-        Position = UDim2.new(1, -20, 0.5, 0),
-        AnchorPoint = Vector2.new(1, 0.5),
+        Position = UDim2.new(1, -25, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
         Text = "▶",
         BackgroundTransparency = 1,
         TextColor3 = Color3.new(1, 1, 1),
         TextSize = 12
     }, btn)
+
+    local function setTabScrollingEnabled(enabled)
+        local function recurse(frame)
+            if frame:IsA("ScrollingFrame") and frame.Name ~= "list" then
+                frame.ScrollingEnabled = enabled
+            end
+            for _, child in pairs(frame:GetChildren()) do
+                recurse(child)
+            end
+        end
+
+        if Tab and Tab.tabFrame then
+            recurse(Tab.tabFrame)
+        end
+    end
+
+    Tab._activeDropdownCount = Tab._activeDropdownCount or 0
+
+    local function updateDropdownScrollState(droppedState)
+        if droppedState then
+            Tab._activeDropdownCount = Tab._activeDropdownCount + 1
+        else
+            Tab._activeDropdownCount = math.max(0, Tab._activeDropdownCount - 1)
+        end
+        setTabScrollingEnabled(Tab._activeDropdownCount == 0)
+    end
 
     local listPosition = searchbar and UDim2.new(0, 10, 0, 76) or UDim2.new(0, 10, 0, 48)
     local listSize = searchbar and UDim2.new(1, -20, 1, -80) or UDim2.new(1, -20, 1, -50)
@@ -172,13 +198,11 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
                     searchBox.Visible = false
                     searchBox.Text = ""
                 end
-                
-                if parent:IsA("ScrollingFrame") then
-                    parent.ScrollingEnabled = true
-                end
-                
+
+                updateDropdownScrollState(false)
+                arrow.Text = "▶"
+
                 TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 44)}):Play()
-                -- Arrow rotation removed; static right-pointing arrow
                 if cb then 
                     pcall(cb, opt) 
                 end
@@ -197,25 +221,12 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
                 searchBox.Text = ""
             end
         end
-        
-        -- Find the topmost ScrollingFrame that contains this dropdown (usually the tab content frame)
-        local rootScroll = dropdownFrame:FindFirstAncestorWhichIsA("ScrollingFrame")
-        if rootScroll then
-            local function setAllScrolling(enabled)
-                for _, sf in ipairs(rootScroll:GetDescendants()) do
-                    if sf:IsA("ScrollingFrame") then
-                        sf.ScrollingEnabled = enabled
-                    end
-                end
-                -- also affect the root itself
-                rootScroll.ScrollingEnabled = enabled
-            end
-            setAllScrolling(not dropped)
-        end
-        
+
+        updateDropdownScrollState(dropped)
+        arrow.Text = dropped and "▼" or "▶"
+
         local targetHeight = dropped and (searchbar and 200 or math.min(listLayout.AbsoluteContentSize.Y + 54, 200)) or 44
         TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()
-        -- No rotation for arrow; keep static
     end)
 
     return {
