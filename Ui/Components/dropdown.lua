@@ -60,8 +60,8 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
 
     local arrow = New("TextLabel", {
         Size = UDim2.new(0, 20, 0, 20),
-        Position = UDim2.new(1, -25, 0.5, 0),
-        AnchorPoint = Vector2.new(0, 0.5),
+        Position = UDim2.new(1, -20, 0.5, 0),
+        AnchorPoint = Vector2.new(1, 0.5),
         Text = "▶",
         BackgroundTransparency = 1,
         TextColor3 = Color3.new(1, 1, 1),
@@ -198,8 +198,19 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
             end
         end
         
-        if parent:IsA("ScrollingFrame") then
-            parent.ScrollingEnabled = not dropped
+        -- Find the topmost ScrollingFrame that contains this dropdown (usually the tab content frame)
+        local rootScroll = dropdownFrame:FindFirstAncestorWhichIsA("ScrollingFrame")
+        if rootScroll then
+            local function setAllScrolling(enabled)
+                for _, sf in ipairs(rootScroll:GetDescendants()) do
+                    if sf:IsA("ScrollingFrame") then
+                        sf.ScrollingEnabled = enabled
+                    end
+                end
+                -- also affect the root itself
+                rootScroll.ScrollingEnabled = enabled
+            end
+            setAllScrolling(not dropped)
         end
         
         local targetHeight = dropped and (searchbar and 200 or math.min(listLayout.AbsoluteContentSize.Y + 54, 200)) or 44
