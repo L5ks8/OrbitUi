@@ -594,10 +594,18 @@ end
                 end
 
                 if searchbar then
+                    local searchContainer = New("Frame", {
+                        Name = "SearchContainer",
+                        Size = UDim2.new(1, 0, 0, 32),
+                        BackgroundTransparency = 1,
+                        LayoutOrder = -1,
+                        ZIndex = 10,
+                    }, tabContentFrame)
+
                     local searchBox = New("TextBox", {
                         Name = "SearchBar",
-                        Size = UDim2.new(1, 0, 0, 32),
-                        Position = hasColumns and UDim2.new(0, 0, 0, 0) or nil,
+                        Size = UDim2.new(1, 0, 1, 0),
+                        Position = UDim2.new(0, 0, 0, 0),
                         BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                         Text = "",
                         PlaceholderText = "Search in tab...",
@@ -608,8 +616,8 @@ end
                         TextXAlignment = Enum.TextXAlignment.Left,
                         ClearTextOnFocus = false,
                         LayoutOrder = 0,
-                        ZIndex = 10
-                    }, tabContentFrame)
+                        ZIndex = 10,
+                    }, searchContainer)
 
                     New("UICorner", {CornerRadius = UDim.new(0, 6)}, searchBox)
                     New("UIStroke", {
@@ -625,13 +633,15 @@ end
                     New("ImageLabel", {
                         Name = "Icon",
                         Size = UDim2.new(0, 16, 0, 16),
-                        Position = UDim2.new(0, 8, 0, 50),
-                        AnchorPoint = Vector2.new(0, 0),
+                        Position = UDim2.new(0, 8, 0.5, 0),
+                        AnchorPoint = Vector2.new(0, 0.5),
                         Image = "rbxassetid://112780490255100",
                         ImageColor3 = Color3.fromRGB(180, 180, 180),
                         BackgroundTransparency = 1,
                         ZIndex = 11,
-                    }, tabContentFrame)
+                    }, searchContainer)
+
+
 
                     searchBox:GetPropertyChangedSignal("Text"):Connect(function()
                         local query = searchBox.Text:lower()
