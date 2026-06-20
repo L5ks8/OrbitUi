@@ -371,8 +371,8 @@ return function(mainfunctions)
     }, leftPanel)
 
     local camera = Instance.new("Camera")
-    camera.FieldOfView = 20
-    camera.CFrame = CFrame.new(Vector3.new(0, 0, 10), Vector3.new(0, 0, 0))
+    camera.FieldOfView = 35
+    camera.CFrame = CFrame.new(Vector3.new(0, 1.5, 3.5), Vector3.new(0, 1.5, 0))
     viewport.CurrentCamera = camera
 
     local charClone
