@@ -16,7 +16,6 @@ return function(Tab, mainfunctions, configTitle, defaultKey, callback, overrideP
     end
     mainfunctions.UIToggleBindRegistered = true
     mainfunctions.ToggleKey = default
-    print("UI Keybind: Initialized ToggleKey to", tostring(default))
 
     local parent = Tab.getWidgetParent(overrideParent, colName)
     Tab.WidgetCount = Tab.WidgetCount + 1
@@ -121,7 +120,6 @@ return function(Tab, mainfunctions, configTitle, defaultKey, callback, overrideP
                     bindBtn.TextColor3 = mainfunctions.CurrentAccent
                     TweenService:Create(bindBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play()
                     mainfunctions.ToggleKey = code
-                    print("UI Keybind: Set ToggleKey to", tostring(code))
                     if cb then
                         pcall(cb, code)
                     end

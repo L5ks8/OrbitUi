@@ -148,11 +148,7 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
     -- Keybind Toggle (Customizable, defaults to RightControl)
     UserInputService.InputBegan:Connect(function(input, gpe)
         if not gpe then
-            if input.KeyCode ~= Enum.KeyCode.Unknown then
-                print("UI InputBegan: Pressed Key =", tostring(input.KeyCode), "Current ToggleKey =", tostring(UIFunctions.ToggleKey))
-            end
             if input.KeyCode == (UIFunctions.ToggleKey or Enum.KeyCode.RightControl) then
-                print("UI Toggle Triggered!")
                 animateToggle()
                 return
             end
