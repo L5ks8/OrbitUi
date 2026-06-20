@@ -393,35 +393,6 @@ return function(mainfunctions)
         humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
         humanoid.NameDisplayDistance = 0
 
-        local desc = Instance.new("HumanoidDescription", humanoid)
-        desc.ProportionScale = 0
-        desc.RightArmColor = Color3.fromRGB(164, 163, 166)
-        desc.TorsoColor = Color3.fromRGB(100, 96, 99)
-        desc.RightLegColor = Color3.fromRGB(164, 163, 166)
-        desc.LeftLegColor = Color3.fromRGB(164, 163, 166)
-        desc.BodyTypeScale = 0
-        desc.LeftArmColor = Color3.fromRGB(164, 163, 166)
-        desc.Shirt = 8231083610
-        desc.HeadColor = Color3.fromRGB(164, 163, 166)
-        desc.Pants = 8231088943
-        local bpd1 = Instance.new("BodyPartDescription", desc)
-        bpd1.Color = Color3.fromRGB(164, 163, 166)
-        local bpd2 = Instance.new("BodyPartDescription", desc)
-        bpd2.Color = Color3.fromRGB(164, 163, 166)
-        bpd2.BodyPart = Enum.BodyPart.LeftArm
-        local bpd3 = Instance.new("BodyPartDescription", desc)
-        bpd3.Color = Color3.fromRGB(164, 163, 166)
-        bpd3.BodyPart = Enum.BodyPart.LeftLeg
-        local bpd4 = Instance.new("BodyPartDescription", desc)
-        bpd4.Color = Color3.fromRGB(164, 163, 166)
-        bpd4.BodyPart = Enum.BodyPart.RightArm
-        local bpd5 = Instance.new("BodyPartDescription", desc)
-        bpd5.Color = Color3.fromRGB(164, 163, 166)
-        bpd5.BodyPart = Enum.BodyPart.RightLeg
-        local bpd6 = Instance.new("BodyPartDescription", desc)
-        bpd6.Color = Color3.fromRGB(100, 96, 99)
-        bpd6.BodyPart = Enum.BodyPart.Torso
-
         -- Shirt & Pants
         local shirt = Instance.new("Shirt", rig)
         shirt.ShirtTemplate = "http://www.roblox.com/asset/?id=8231083597"
@@ -606,14 +577,24 @@ return function(mainfunctions)
         camera.CFrame = CFrame.new(Vector3.new(0, 1, 2.5), Vector3.new(0, 1, -5.5))
 
         -- Apply player appearance
-        local playerDesc = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") and LocalPlayer.Character:FindFirstChildOfClass("Humanoid").HumanoidDescription
-        if playerDesc then
-            humanoid:ApplyDescription(playerDesc)
-        else
-            local getDesc = Instance.new("HumanoidDescription")
-            Players:GetHumanoidDescriptionFromUserId(LocalPlayer.UserId):andThen(function(fetched)
-                humanoid:ApplyDescription(fetched)
-            end)
+        local playerChar = LocalPlayer.Character
+        if playerChar then
+            local playerHum = playerChar:FindFirstChildOfClass("Humanoid")
+            if playerHum then
+                local pDesc = playerHum:GetAppliedDescription()
+                if shirt then shirt.ShirtTemplate = pDesc.Shirt end
+                if pants then pants.PantsTemplate = pDesc.Pants end
+                if head then head.Color = pDesc.HeadColor end
+                if torso then torso.Color = pDesc.TorsoColor end
+                if leftArm then leftArm.Color = pDesc.LeftArmColor end
+                if rightArm then rightArm.Color = pDesc.RightArmColor end
+                if leftLeg then leftLeg.Color = pDesc.LeftLegColor end
+                if rightLeg then rightLeg.Color = pDesc.RightLegColor end
+                if faceDecal then
+                    faceDecal.Texture = pDesc.Face
+                    faceDecal.ColorMap = pDesc.Face
+                end
+            end
         end
 
         return world
