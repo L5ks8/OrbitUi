@@ -399,7 +399,7 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
             end
             
             pcall(function()
-                    if G2L["fps_label"] then
+                if G2L["fps_label"] then
                     G2L["fps_label"].Text = "FPS: " .. currentFps
                 end
                 if G2L["ping_label"] then
@@ -408,9 +408,6 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
                 end
                 if G2L["mem_label"] then
                     G2L["mem_label"].Text = string.format("%.1f MB", Stats:GetTotalMemoryUsageMb())
-                end
-                if G2L["region_label"] then
-                    G2L["region_label"].Text = "Region: N/A"
                 end
                 if G2L["time_text"] then
                     G2L["time_text"].Text = os.date("%I:%M %p")
