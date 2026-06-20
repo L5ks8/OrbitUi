@@ -124,6 +124,10 @@ return function(Tab, mainfunctions, configTitle, defaultState, callback, overrid
         toggleGradient.Rotation = (toggleGradient.Rotation + 120 * dt) % 360
     end)
 
+    widgetFrame.Destroying:Connect(function()
+        if toggleSpinConn then toggleSpinConn:Disconnect() end
+    end)
+
     widgetFrame.MouseEnter:Connect(function()
         TweenService:Create(hoverStroke, TweenInfo.new(0.3), {Transparency = 0.5}):Play()
     end)

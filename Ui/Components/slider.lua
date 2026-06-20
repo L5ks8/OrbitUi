@@ -132,17 +132,22 @@ return function(Tab, mainfunctions, configTitle, minVal, maxVal, defaultState, c
         end
     end)
     
-    UserInputService.InputChanged:Connect(function(input)
+    local changeConn = UserInputService.InputChanged:Connect(function(input)
         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
             local relativeX = (input.Position.X - sliderTrigger.AbsolutePosition.X) / sliderTrigger.AbsoluteSize.X
             updateSlider(relativeX)
         end
     end)
     
-    UserInputService.InputEnded:Connect(function(input)
+    local endConn = UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then 
             dragging = false 
         end
+    end)
+
+    widgetFrame.Destroying:Connect(function()
+        if changeConn then changeConn:Disconnect() end
+        if endConn then endConn:Disconnect() end
     end)
 
     if cb then

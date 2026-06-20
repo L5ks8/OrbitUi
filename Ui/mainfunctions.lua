@@ -9,6 +9,23 @@ UIFunctions.CurrentAccent = Color3.fromRGB(248, 191, 212)
 UIFunctions.CurrentMain = Color3.fromRGB(36, 36, 36)
 
 UIFunctions.Themes = {}
+UIFunctions.connections = {}
+
+function UIFunctions.register(conn)
+    table.insert(UIFunctions.connections, conn)
+    return conn
+end
+
+function UIFunctions.unregister(conn)
+    for i, c in ipairs(UIFunctions.connections) do
+        if c == conn then
+            table.remove(UIFunctions.connections, i)
+            break
+        end
+    end
+end
+
+local register = function(conn) return UIFunctions.register(conn) end
 
 function UIFunctions.New(class, props, parent)
     local i = Instance.new(class)
@@ -68,6 +85,19 @@ end
 
 -- Drag, Resize, Minimize, stats handling
 function UIFunctions.InitBehavior(G2L, window, closeCallback)
+    if G2L["1"] then
+        G2L["1"].Destroying:Connect(function()
+            for _, conn in ipairs(UIFunctions.connections) do
+                if conn then
+                    pcall(function()
+                        conn:Disconnect()
+                    end)
+                end
+            end
+            table.clear(UIFunctions.connections)
+        end)
+    end
+
     local isMinimized = false
     local originalSize = G2L["2"].Size
     local sidebarOpen = true
@@ -113,7 +143,7 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
         end
     end
 
-    UserInputService.InputChanged:Connect(function(input)
+    register(UserInputService.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement then
             if drag and not resizing then
                 local delta = input.Position - dragStart
@@ -125,17 +155,17 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
                 end
             end
         end
-    end)
+    end))
 
-    UserInputService.InputEnded:Connect(function(input) 
+    register(UserInputService.InputEnded:Connect(function(input) 
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             drag, windowDragged = false, false
         end
-    end)
+    end))
 
     -- RenderStepped for Lerp movement
     local lerpConn
-    lerpConn = RunService.RenderStepped:Connect(function()
+    lerpConn = register(RunService.RenderStepped:Connect(function()
         if not G2L["1"] or not G2L["1"].Parent then
             lerpConn:Disconnect()
             return
@@ -143,10 +173,10 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
         if drag and windowTargetPos then
             G2L["2"].Position = G2L["2"].Position:Lerp(windowTargetPos, 0.12)
         end
-    end)
+    end))
 
     -- Keybind Toggle (Customizable, defaults to RightControl)
-    UserInputService.InputBegan:Connect(function(input, gpe)
+    register(UserInputService.InputBegan:Connect(function(input, gpe)
         if not gpe then
             if input.KeyCode == (UIFunctions.ToggleKey or Enum.KeyCode.RightControl) then
                 animateToggle()
@@ -308,16 +338,19 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
                         end
                     end
                 end)
+                register(resizeConn)
             end
         end)
-        UserInputService.InputEnded:Connect(function(input) 
+        register(UserInputService.InputEnded:Connect(function(input) 
             if input.UserInputType == Enum.UserInputType.MouseButton1 and resizing then 
                 resizing = false 
                 if resizeConn then 
                     resizeConn:Disconnect() 
+                    UIFunctions.unregister(resizeConn)
+                    resizeConn = nil
                 end 
             end 
-        end)
+        end))
     end
 
     -- Calculate FPS precisely using RenderStepped
@@ -325,7 +358,7 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
     local fpsCount = 0
     local currentFps = 0
     local fpsConn
-    fpsConn = RunService.RenderStepped:Connect(function()
+    fpsConn = register(RunService.RenderStepped:Connect(function()
         if not G2L["1"] or not G2L["1"].Parent then
             fpsConn:Disconnect()
             return
@@ -337,7 +370,7 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
             fpsCount = 0
             lastTime = now
         end
-    end)
+    end))
 
     -- Stats Updater Loop (Runs once per second)
     task.spawn(function()
@@ -463,15 +496,15 @@ end
                     })
                 }, stroke)
 
-                -- Spin gradient border
                 local borderSpinConn
-                borderSpinConn = RunService.RenderStepped:Connect(function(dt)
+                borderSpinConn = register(RunService.RenderStepped:Connect(function(dt)
                     if not navBtn or not navBtn.Parent then
                         borderSpinConn:Disconnect()
+                        UIFunctions.unregister(borderSpinConn)
                         return
                     end
                     gradient.Rotation = (gradient.Rotation + 6 * dt) % 360
-                end)
+                end))
 
                 New("UIListLayout", {
                     FillDirection = Enum.FillDirection.Horizontal,
