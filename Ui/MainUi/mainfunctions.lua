@@ -4,7 +4,6 @@ local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local Stats = game:GetService("Stats")
-local CollectionService = game:GetService("CollectionService")
 
 UIFunctions.CurrentAccent = Color3.fromRGB(248, 191, 212)
 UIFunctions.CurrentMain = Color3.fromRGB(36, 36, 36)
@@ -400,45 +399,19 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
             end
             
             pcall(function()
-                if G2L["instances_label"] or G2L["scripts_label"] or G2L["modules_label"] or G2L["tags_label"] then
-                    local instanceCount = 0
-                    local scriptCount = 0
-                    local moduleCount = 0
-                    local tags = {}
-
-                    if G2L["1"] then
-                        for _, inst in ipairs(G2L["1"]:GetDescendants()) do
-                            instanceCount = instanceCount + 1
-                            if inst:IsA("Script") or inst:IsA("LocalScript") then
-                                scriptCount = scriptCount + 1
-                            elseif inst:IsA("ModuleScript") then
-                                moduleCount = moduleCount + 1
-                            end
-
-                            for _, tag in ipairs(CollectionService:GetTags(inst)) do
-                                tags[tag] = true
-                            end
-                        end
-                    end
-
-                    if G2L["instances_label"] then
-                        G2L["instances_label"].Text = instanceCount
-                    end
-                    if G2L["scripts_label"] then
-                        G2L["scripts_label"].Text = scriptCount
-                    end
-                    if G2L["modules_label"] then
-                        G2L["modules_label"].Text = moduleCount
-                    end
-                    if G2L["tags_label"] then
-                        local tagCount = 0
-                        for _ in pairs(tags) do
-                            tagCount = tagCount + 1
-                        end
-                        G2L["tags_label"].Text = tagCount
-                    end
+                    if G2L["fps_label"] then
+                    G2L["fps_label"].Text = "FPS: " .. currentFps
                 end
-
+                if G2L["ping_label"] then
+                    local ping = math.floor(Stats:FindFirstChild("PerformanceStats") and Stats.PerformanceStats.Ping:GetValue() or 0)
+                    G2L["ping_label"].Text = ping .. " ms"
+                end
+                if G2L["mem_label"] then
+                    G2L["mem_label"].Text = string.format("%.1f MB", Stats:GetTotalMemoryUsageMb())
+                end
+                if G2L["region_label"] then
+                    G2L["region_label"].Text = "Region: N/A"
+                end
                 if G2L["time_text"] then
                     G2L["time_text"].Text = os.date("%I:%M %p")
                 end
@@ -459,10 +432,9 @@ end
                 TabCount = 0,
                 Logo = logo,
                 Stats = {
-                    Instances = G2L["instances_label"],
-                    Scripts = G2L["scripts_label"],
-                    Modules = G2L["modules_label"],
-                    Tags = G2L["tags_label"]
+                    FPS = G2L["fps_label"],
+                    Ping = G2L["ping_label"],
+                    Memory = G2L["mem_label"]
                 }
             }
             local secondaryTabCount = 0
