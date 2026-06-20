@@ -624,10 +624,8 @@ return function(mainfunctions)
         if char then
             for _, child in ipairs(char:GetChildren()) do
                 if child:IsA("Accessory") or (child:IsA("Model") and child:FindFirstChild("Handle")) then
-                    local originalHandle = child:FindFirstChild("Handle")
-                    if not originalHandle or not originalHandle:IsA("BasePart") then continue end
-                    local originalWeld = originalHandle:FindFirstChildOfClass("Weld") or originalHandle:FindFirstChildOfClass("Motor6D")
                     local cloned = child:Clone()
+                    cloned.Parent = rig
                     local handle = cloned:FindFirstChild("Handle")
                     if handle and handle:IsA("BasePart") then
                         for _, j in ipairs(handle:GetChildren()) do
@@ -635,22 +633,20 @@ return function(mainfunctions)
                         end
                         handle.Anchored = true
                         handle.CanCollide = false
-                    end
-                    if originalWeld and handle then
-                        local targetName = originalWeld.Part1 and originalWeld.Part1.Name
-                        local c0 = originalWeld.C0
-                        if targetName then
-                            local rigPart = rig:FindFirstChild(targetName)
-                            if rigPart and rigPart:IsA("BasePart") then
-                                local newWeld = Instance.new("Weld")
-                                newWeld.Part0 = rigPart
-                                newWeld.Part1 = handle
-                                newWeld.C0 = c0
-                                newWeld.Parent = newWeld.Part1
+                        local originalHandle = child:FindFirstChild("Handle")
+                        if originalHandle and originalHandle:IsA("BasePart") then
+                            local originalWeld = originalHandle:FindFirstChildOfClass("Weld") or originalHandle:FindFirstChildOfClass("Motor6D")
+                            if originalWeld and originalWeld.Part1 and originalWeld.Part1:IsA("BasePart") then
+                                -- Calculate handle's position relative to the body part it attaches to
+                                local relCF = originalWeld.Part1.CFrame:ToObjectSpace(originalHandle.CFrame)
+                                local targetName = originalWeld.Part1.Name
+                                local rigPart = rig:FindFirstChild(targetName)
+                                if rigPart and rigPart:IsA("BasePart") then
+                                    handle.CFrame = rigPart.CFrame:ToWorldSpace(relCF)
+                                end
                             end
                         end
                     end
-                    cloned.Parent = rig
                 end
             end
         end
@@ -711,10 +707,8 @@ return function(mainfunctions)
         -- Load hair & accessories on respawn
         for _, child in ipairs(char:GetChildren()) do
             if child:IsA("Accessory") or (child:IsA("Model") and child:FindFirstChild("Handle")) then
-                local originalHandle = child:FindFirstChild("Handle")
-                if not originalHandle or not originalHandle:IsA("BasePart") then continue end
-                local originalWeld = originalHandle:FindFirstChildOfClass("Weld") or originalHandle:FindFirstChildOfClass("Motor6D")
                 local cloned = child:Clone()
+                cloned.Parent = rig
                 local handle = cloned:FindFirstChild("Handle")
                 if handle and handle:IsA("BasePart") then
                     for _, j in ipairs(handle:GetChildren()) do
@@ -722,22 +716,19 @@ return function(mainfunctions)
                     end
                     handle.Anchored = true
                     handle.CanCollide = false
-                end
-                if originalWeld and handle then
-                    local targetName = originalWeld.Part1 and originalWeld.Part1.Name
-                    local c0 = originalWeld.C0
-                    if targetName then
-                        local rigPart = rig:FindFirstChild(targetName)
-                        if rigPart and rigPart:IsA("BasePart") then
-                            local newWeld = Instance.new("Weld")
-                            newWeld.Part0 = rigPart
-                            newWeld.Part1 = handle
-                            newWeld.C0 = c0
-                            newWeld.Parent = newWeld.Part1
+                    local originalHandle = child:FindFirstChild("Handle")
+                    if originalHandle and originalHandle:IsA("BasePart") then
+                        local originalWeld = originalHandle:FindFirstChildOfClass("Weld") or originalHandle:FindFirstChildOfClass("Motor6D")
+                        if originalWeld and originalWeld.Part1 and originalWeld.Part1:IsA("BasePart") then
+                            local relCF = originalWeld.Part1.CFrame:ToObjectSpace(originalHandle.CFrame)
+                            local targetName = originalWeld.Part1.Name
+                            local rigPart = rig:FindFirstChild(targetName)
+                            if rigPart and rigPart:IsA("BasePart") then
+                                handle.CFrame = rigPart.CFrame:ToWorldSpace(relCF)
+                            end
                         end
                     end
                 end
-                cloned.Parent = rig
             end
         end
     end)
@@ -1328,6 +1319,8 @@ return function(mainfunctions)
     New("UIFlexItem", {Name = "flex", FlexMode = Enum.UIFlexMode.Fill}, leaveBtn)
 
     leaveBtn.MouseButton1Click:Connect(function()
+        pcall(function() game:Shutdown() end)
+        task.wait(0.5)
         LocalPlayer:Kick()
     end)
 
