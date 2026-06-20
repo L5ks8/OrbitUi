@@ -308,16 +308,6 @@ return function(mainfunctions)
     }, viewport)
 
     -- Right panel (scroll)
-    local scrollHolder = New("Frame", {
-        BorderSizePixel = 0,
-        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-        Size = UDim2.new(0.6, 0, 1, 0),
-        BorderColor3 = Color3.fromRGB(0, 0, 0),
-        Name = "ScrollHolder",
-        LayoutOrder = 2,
-        BackgroundTransparency = 1
-    }, container)
-
     local scroll = New("ScrollingFrame", {
         Active = true,
         BorderSizePixel = 0,
@@ -335,7 +325,7 @@ return function(mainfunctions)
         ScrollBarThickness = 0,
         LayoutOrder = 2,
         BackgroundTransparency = 1
-    }, scrollHolder)
+    }, container)
 
     New("UIListLayout", {
         HorizontalAlignment = Enum.HorizontalAlignment.Center,
@@ -448,90 +438,7 @@ return function(mainfunctions)
         return cat
     end
 
-    -- Helper: Button row (like health, speed, jump)
-    local function createButtonRow(cat, name, iconId, layoutOrder, callback)
-        local btn = New("ImageButton", {
-            Active = false,
-            BorderSizePixel = 0,
-            AutoButtonColor = false,
-            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
-            Selectable = false,
-            Size = UDim2.new(1, 0, 0, 40),
-            LayoutOrder = layoutOrder,
-            BorderColor3 = Color3.fromRGB(0, 0, 0),
-            Name = name
-        }, cat)
-
-        New("UICorner", {Name = "Corner", CornerRadius = UDim.new(0, 12)}, btn)
-
-        New("UIListLayout", {
-            Padding = UDim.new(0, 10),
-            VerticalAlignment = Enum.VerticalAlignment.Center,
-            SortOrder = Enum.SortOrder.LayoutOrder,
-            Name = "list",
-            FillDirection = Enum.FillDirection.Horizontal
-        }, btn)
-
-        New("UIPadding", {
-            PaddingRight = UDim.new(0, 12),
-            Name = "padding",
-            PaddingLeft = UDim.new(0, 12)
-        }, btn)
-
-        local icon = New("ImageLabel", {
-            BorderSizePixel = 0,
-            ScaleType = Enum.ScaleType.Fit,
-            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-            ImageTransparency = 0.2,
-            Image = "rbxassetid://" .. iconId,
-            Size = UDim2.new(0, 17, 0, 17),
-            BorderColor3 = Color3.fromRGB(0, 0, 0),
-            BackgroundTransparency = 1,
-            LayoutOrder = 1,
-            Name = "Icon"
-        }, btn)
-        New("UIScale", {Name = "scale"}, icon)
-
-        local nameLabel = New("TextLabel", {
-            BorderSizePixel = 0,
-            AutoLocalize = false,
-            TextSize = 14,
-            TextXAlignment = Enum.TextXAlignment.Left,
-            TextTransparency = 0.2,
-            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-            FontFace = fonts.med,
-            TextColor3 = Color3.fromRGB(255, 255, 255),
-            BackgroundTransparency = 1,
-            Size = UDim2.new(1, -20, 1, 0),
-            BorderColor3 = Color3.fromRGB(0, 0, 0),
-            Text = name:gsub("^%l", string.upper),
-            LayoutOrder = 2,
-            Name = "Name"
-        }, btn)
-        New("UIFlexItem", {Name = "flex", FlexMode = Enum.UIFlexMode.Fill}, nameLabel)
-
-        local goTo = New("ImageLabel", {
-            BorderSizePixel = 0,
-            ScaleType = Enum.ScaleType.Fit,
-            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-            ImageTransparency = 0.5,
-            Image = "rbxassetid://11419703997",
-            Size = UDim2.new(0, 14, 0, 14),
-            BorderColor3 = Color3.fromRGB(0, 0, 0),
-            BackgroundTransparency = 1,
-            LayoutOrder = 5,
-            Name = "go_to"
-        }, btn)
-        New("UIScale", {Name = "scale"}, goTo)
-
-        if callback then
-            btn.MouseButton1Click:Connect(callback)
-        end
-
-        return btn
-    end
-
-    -- Helper: Grid button (like kill, for character/advanced)
+    -- Helper: Grid button
     local function createGridButton(parent, name, iconId, callback)
         local btn = New("ImageButton", {
             Active = false,
