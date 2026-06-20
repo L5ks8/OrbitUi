@@ -454,12 +454,15 @@ function Library:CreateWindow(config)
     New("UIListLayout", {
         FillDirection = Enum.FillDirection.Horizontal,
         VerticalAlignment = Enum.VerticalAlignment.Center,
-        Padding = UDim.new(0, 15)
+        Padding = UDim.new(0, 12)
     }, G2L["a1"])
 
-    New("UIPadding", {PaddingLeft = UDim.new(0, 18)}, G2L["a1"])
+    New("UIPadding", {
+        PaddingLeft = UDim.new(0, 18),
+        PaddingRight = UDim.new(0, 18)
+    }, G2L["a1"])
 
-    local function CreateStatLabel(labelTitle, color)
+    local function CreateDebugGroup(labelTitle, textColor)
         local frame = New("Frame", {
             AutomaticSize = Enum.AutomaticSize.XY,
             BackgroundTransparency = 1
@@ -467,12 +470,13 @@ function Library:CreateWindow(config)
 
         New("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
+            VerticalAlignment = Enum.VerticalAlignment.Center,
             Padding = UDim.new(0, 4)
         }, frame)
 
         New("TextLabel", {
             Text = labelTitle,
-            TextColor3 = color or Color3.fromRGB(255, 255, 81),
+            TextColor3 = Color3.new(1, 1, 1),
             FontFace = fonts.med,
             TextSize = 14,
             BackgroundTransparency = 1,
@@ -480,8 +484,8 @@ function Library:CreateWindow(config)
         }, frame)
 
         return New("TextLabel", {
-            Text = "--",
-            TextColor3 = Color3.new(1, 1, 1),
+            Text = "0",
+            TextColor3 = textColor,
             FontFace = fonts.med,
             TextSize = 14,
             BackgroundTransparency = 1,
@@ -489,18 +493,24 @@ function Library:CreateWindow(config)
         }, frame)
     end
 
-    G2L["mem_label"] = CreateStatLabel("Memory Usage:")
-    G2L["ping_label"] = CreateStatLabel("Avg. Ping:")
+    local function CreateSeparator()
+        return New("TextLabel", {
+            Text = "|",
+            TextColor3 = Color3.fromRGB(168, 168, 168),
+            FontFace = fonts.med,
+            TextSize = 14,
+            BackgroundTransparency = 1,
+            AutomaticSize = Enum.AutomaticSize.X
+        }, G2L["a1"])
+    end
 
-    G2L["fps_label"] = New("TextLabel", {
-        Name = "fps",
-        Text = "FPS: --",
-        FontFace = fonts.med,
-        TextSize = 14,
-        TextColor3 = Color3.fromRGB(255, 255, 255),
-        BackgroundTransparency = 1,
-        AutomaticSize = Enum.AutomaticSize.XY
-    }, G2L["a1"])
+    G2L["instances_label"] = CreateDebugGroup("Instances:", Color3.fromRGB(255, 255, 255))
+    G2L["separator_1"] = CreateSeparator()
+    G2L["scripts_label"] = CreateDebugGroup("Scripts:", Color3.fromRGB(255, 81, 81))
+    G2L["separator_2"] = CreateSeparator()
+    G2L["modules_label"] = CreateDebugGroup("Modules:", Color3.fromRGB(255, 255, 81))
+    G2L["separator_3"] = CreateSeparator()
+    G2L["tags_label"] = CreateDebugGroup("Tags:", Color3.fromRGB(248, 191, 212))
 
     -- Set flex behavior on footer
     if G2L["18"] and not G2L["18"]:FindFirstChildOfClass("UIFlexItem") then
