@@ -167,6 +167,24 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
                 end
             end
 
+            if not onInteractive then
+                local parent = G2L["1"].Parent
+                if parent then
+                    for _, child in ipairs(parent:GetChildren()) do
+                        if child:IsA("ScreenGui") and child ~= G2L["1"] and child.Enabled then
+                            local otherObjs = child:GetGuiObjectsAtPosition(pos.X, pos.Y)
+                            for _, o in ipairs(otherObjs) do
+                                if o:IsA("TextButton") or o:IsA("ImageButton") or o:IsA("TextBox") then
+                                    onInteractive = true
+                                    break
+                                end
+                            end
+                        end
+                        if onInteractive then break end
+                    end
+                end
+            end
+
             if onInteractive or gpe then return end
 
             local absPos = G2L["2"].AbsolutePosition
