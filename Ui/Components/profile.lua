@@ -581,7 +581,7 @@ return function(mainfunctions)
         rootJoint.Part0 = rootPart
 
         -- Set camera to look at the rig
-        camera.CFrame = CFrame.lookAt(Vector3.new(0, 2, 3), Vector3.new(0, 1.2, -5.5))
+        camera.CFrame = CFrame.lookAt(Vector3.new(0, 2, 5), Vector3.new(0, 1.2, -5.5))
 
         -- Apply player appearance
         local playerChar = LocalPlayer.Character
@@ -1192,8 +1192,7 @@ return function(mainfunctions)
         profile.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
     end)
 
-    UserInputService.InputEnded:Connect(function(input, processed)
-        if processed then return end
+    top.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragActive = false
         end
