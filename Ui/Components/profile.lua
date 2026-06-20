@@ -619,6 +619,47 @@ return function(mainfunctions)
             end
         end
 
+        -- Load hair & accessories
+        task.spawn(function()
+            local success, fullModel = pcall(Players.CreateHumanoidModelFromUserId, Players, LocalPlayer.UserId)
+            if success and fullModel then
+                fullModel.Parent = game:GetService("Workspace")
+                task.wait()
+                for _, child in ipairs(fullModel:GetDescendants()) do
+                    if child:IsA("Accessory") or child:IsA("CharacterMesh") then
+                        child:Clone().Parent = rig
+                    end
+                end
+                for _, child in ipairs(fullModel:GetChildren()) do
+                    if child:IsA("Model") and child.Name ~= "Rig" then
+                        for _, part in ipairs(child:GetDescendants()) do
+                            if part:IsA("BasePart") and part:FindFirstChildOfClass("Weld") then
+                                local welded = part:Clone()
+                                welded.Anchored = true
+                                welded.Parent = rig
+                            end
+                        end
+                    end
+                end
+                fullModel:Destroy()
+            else
+                -- Fallback: copy accessories from character
+                local char = LocalPlayer.Character
+                if char then
+                    for _, child in ipairs(char:GetChildren()) do
+                        if child:IsA("Accessory") or child:IsA("CharacterMesh") then
+                            local cloned = child:Clone()
+                            cloned.Parent = rig
+                            local handle = cloned:FindFirstChild("Handle")
+                            if handle then
+                                handle.Anchored = true
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+
         return world
     end
 
@@ -1090,6 +1131,30 @@ return function(mainfunctions)
 
         New("UICorner", {Name = "Corner", CornerRadius = UDim.new(0, 12)}, btn)
 
+        -- Spotlight circle
+        local spotCircle = New("Frame", {
+            Name = "Spotlight",
+            Size = UDim2.new(0, 0, 0, 0),
+            Position = UDim2.new(0, 0, 0, 0),
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+            BackgroundTransparency = 1,
+            BorderSizePixel = 0,
+            ZIndex = 5
+        }, btn)
+        New("UICorner", {CornerRadius = UDim.new(1, 0)}, spotCircle)
+        local spotSize = 50
+        spotCircle.Size = UDim2.new(0, spotSize, 0, spotSize)
+
+        btn.MouseEnter:Connect(function()
+            spotCircle.BackgroundTransparency = 0.85
+        end)
+        btn.MouseMoved:Connect(function(x, y)
+            spotCircle.Position = UDim2.new(0, x - spotSize / 2, 0, y - spotSize / 2)
+        end)
+        btn.MouseLeave:Connect(function()
+            spotCircle.BackgroundTransparency = 1
+        end)
+
         New("UIListLayout", {
             Padding = UDim.new(0, 10),
             VerticalAlignment = Enum.VerticalAlignment.Center,
@@ -1167,11 +1232,21 @@ return function(mainfunctions)
         CellPadding = UDim2.new(0, 6, 0, 6)
     }, charContent)
 
-    createGridButton(charContent, "kill", "12967641870", function()
+    local killBtn = createGridButton(charContent, "kill", "12967641870", function()
         local char = LocalPlayer.Character
         if char and char:FindFirstChild("Humanoid") then
             char.Humanoid.Health = 0
         end
+    end)
+    local killGlow = New("UIGradient", {
+        Transparency = NumberSequence.new(1),
+        Name = "Glow"
+    }, killBtn)
+    killBtn.MouseEnter:Connect(function()
+        TweenService:Create(killGlow, TweenInfo.new(0.2), {Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1)}}):Play()
+    end)
+    killBtn.MouseLeave:Connect(function()
+        TweenService:Create(killGlow, TweenInfo.new(0.3), {Transparency = NumberSequence.new(1)}):Play()
     end)
 
     -- Advanced category
@@ -1195,6 +1270,11 @@ return function(mainfunctions)
         SortOrder = Enum.SortOrder.LayoutOrder,
         CellPadding = UDim2.new(0, 6, 0, 6)
     }, advContent)
+
+    -- Leave button
+    createGridButton(advContent, "leave", "14149523795", function()
+        LocalPlayer:Kick("Left via Profile")
+    end)
 
     -- Loading done
     loading.Visible = false
