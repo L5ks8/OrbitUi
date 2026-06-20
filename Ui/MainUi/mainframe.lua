@@ -505,6 +505,7 @@ function Library:CreateWindow(config)
 
     -- Load Profile Component on click
     local profileGui = nil
+    local profileComponent = nil
     
     -- Avatar click handler to show/hide profile
     local avatarButton = New("ImageButton", {
@@ -519,8 +520,18 @@ function Library:CreateWindow(config)
             profileGui:Destroy()
             profileGui = nil
         else
-            if components.profile then
-                profileGui = components.profile(mainfunctions)
+            -- Load profile component if not already loaded
+            if not profileComponent then
+                local success, profileModule = pcall(function()
+                    return loadstring(game:HttpGet("https://raw.githubusercontent.com/L5ks8/OrbitUi/main/Ui/MainUi/profile.lua?t=" .. os.time()))()
+                end)
+                if success and profileModule then
+                    profileComponent = profileModule
+                end
+            end
+            
+            if profileComponent then
+                profileGui = profileComponent(mainfunctions)
             end
         end
     end)
