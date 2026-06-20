@@ -15,11 +15,6 @@ return function(mainfunctions)
     local displayName = LocalPlayer and LocalPlayer.DisplayName or "Offline Developer"
     local userName = LocalPlayer and LocalPlayer.Name or "dev"
 
-    local existingGui = targetParent:FindFirstChild("OrbitProfile")
-    if existingGui then
-        existingGui:Destroy()
-    end
-
     local screenGui = New("ScreenGui", {
         Name = "OrbitProfile",
         IgnoreGuiInset = true,
@@ -318,15 +313,6 @@ return function(mainfunctions)
 
     New("UICorner", {CornerRadius = UDim.new(0, 5)}, closeButton)
     New("UIScale", {}, closeButton)
-
-    closeButton.MouseButton1Click:Connect(function()
-        if screenGui and screenGui.Parent then
-            screenGui:Destroy()
-        end
-        if mainfunctions then
-            mainfunctions.ProfileGui = nil
-        end
-    end)
 
     New("UISizeConstraint", {MinSize = Vector2.new(0, 300)}, profileFrame)
 

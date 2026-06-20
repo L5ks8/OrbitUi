@@ -26,7 +26,6 @@ function Library:CreateWindow(config)
 
     local New = mainfunctions.New
     local fonts = mainfunctions.GetFonts()
-    local profileModule = components.profile
     local G2L = {}
 
     -- Resolve Local Player safely
@@ -356,12 +355,6 @@ function Library:CreateWindow(config)
     }, G2L["16"])
 
     New("UICorner", {CornerRadius = UDim.new(0, 15)}, G2L["38"])
-
-    if profileModule then
-        G2L["38"].MouseButton1Click:Connect(function()
-            mainfunctions.ToggleProfile(profileModule)
-        end)
-    end
 
     New("UIListLayout", {
         FillDirection = Enum.FillDirection.Horizontal,

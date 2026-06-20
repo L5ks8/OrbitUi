@@ -30,24 +30,6 @@ function UIFunctions.GetFonts()
     }
 end
 
-function UIFunctions.ToggleProfile(profileBuilder)
-    if not profileBuilder then
-        return
-    end
-
-    if UIFunctions.ProfileGui and UIFunctions.ProfileGui.Parent then
-        UIFunctions.ProfileGui:Destroy()
-        UIFunctions.ProfileGui = nil
-        return
-    end
-
-    local screenGui = profileBuilder(UIFunctions)
-    if screenGui and screenGui:IsA("ScreenGui") then
-        UIFunctions.ProfileGui = screenGui
-    end
-    return screenGui
-end
-
 -- Theme Switcher with Smooth Tweens
 function UIFunctions.SetTheme(G2L, themeName)
     local themes = UIFunctions.Themes or {}
