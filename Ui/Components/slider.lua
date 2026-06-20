@@ -56,10 +56,20 @@ return function(Tab, mainfunctions, configTitle, minVal, maxVal, defaultState, c
         FontFace = fonts.bold,
         TextSize = 12,
         ClearTextOnFocus = false,
-        ZIndex = 10
+        ZIndex = 10,
+        AutomaticSize = Enum.AutomaticSize.X
     }, widgetFrame)
 
     New("UICorner", {CornerRadius = UDim.new(0, 4)}, valueBox)
+
+    New("UISizeConstraint", {
+        MinSize = Vector2.new(45, 18)
+    }, valueBox)
+
+    New("UIPadding", {
+        PaddingLeft = UDim.new(0, 6),
+        PaddingRight = UDim.new(0, 6)
+    }, valueBox)
     
     local sliderBg = New("Frame", {
         Size = UDim2.new(1, -20, 0, 6),
@@ -108,7 +118,7 @@ return function(Tab, mainfunctions, configTitle, minVal, maxVal, defaultState, c
                 pcall(cb, val) 
             end
         else
-            valueBox.Text = tostring(math.floor(min + (sliderFill.Size.X.Scale * (max - min))))
+            valueBox.Text = tostring(math.floor(min + (sliderFill.Size.X.Scale * (max - min)))) .. suffix
         end
     end)
 

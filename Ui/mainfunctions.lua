@@ -253,7 +253,7 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
             if logoText then
                 logoText.RichText = true
                 logoText.TextTransparency = 0
-                logoText.Text = window.Logo or '<font color="rgb(248, 191, 212)">Goon</font>Hub'
+                logoText.Text = window.Logo or '<font color="rgb(248, 191, 212)">Test</font>Ui'
                 logoText.Visible = true
             end
 
@@ -365,9 +365,9 @@ end
 
         function UIFunctions.BuildWindow(G2L, config, components)
             config = config or {}
-            local title = config.Title or "GoonHub"
+            local title = config.Title or "Test UI"
             local versionText = config.Version or "1.0.0"
-            local logo = config.Logo or "<font color=\"rgb(248, 191, 212)\">Goon</font>Hub"
+            local logo = config.Logo or "<font color=\"rgb(248, 191, 212)\">Test</font>Ui"
             local defaultTheme = config.Theme or "Dark"
 
             local Window = {
@@ -408,7 +408,7 @@ end
                 if isSecondary then
                     secondaryTabCount = secondaryTabCount + 1
                     if secondaryTabCount > 2 then
-                        warn("GoonHub: Max 2 secondary tabs allowed. '" .. tabName .. "' was not created.")
+                        warn("Orbit Ui: Max 2 secondary tabs allowed. '" .. tabName .. "' was not created.")
                         return nil
                     end
                 end

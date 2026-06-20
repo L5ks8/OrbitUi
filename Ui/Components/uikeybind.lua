@@ -1,4 +1,4 @@
--- Keybind Input Component
+-- UI Keybind Component
 return function(Tab, mainfunctions, configTitle, defaultKey, callback, overrideParent, layoutOrder)
     local UserInputService = game:GetService("UserInputService")
     local TweenService = game:GetService("TweenService")
@@ -9,6 +9,13 @@ return function(Tab, mainfunctions, configTitle, defaultKey, callback, overrideP
     local default = type(configTitle) == "table" and configTitle.Default or defaultKey
     local cb = type(configTitle) == "table" and configTitle.Callback or callback
     local colName = type(configTitle) == "table" and configTitle.Column or nil
+
+    if mainfunctions.UIToggleBindRegistered then
+        warn("Orbit Ui: UI Keybind toggle can only be used once per UI.")
+        return nil
+    end
+    mainfunctions.UIToggleBindRegistered = true
+    mainfunctions.ToggleKey = default
 
     local parent = Tab.getWidgetParent(overrideParent, colName)
     Tab.WidgetCount = Tab.WidgetCount + 1
@@ -112,7 +119,7 @@ return function(Tab, mainfunctions, configTitle, defaultKey, callback, overrideP
                     bindBtn.Text = code.Name
                     bindBtn.TextColor3 = mainfunctions.CurrentAccent
                     TweenService:Create(bindBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play()
-
+                    mainfunctions.ToggleKey = code
                     if cb then
                         pcall(cb, code)
                     end
@@ -129,7 +136,7 @@ return function(Tab, mainfunctions, configTitle, defaultKey, callback, overrideP
         Set = function(_, newKey)
             currentKey = newKey
             bindBtn.Text = getKeyName(newKey)
-
+            mainfunctions.ToggleKey = newKey
             if cb then
                 pcall(cb, newKey)
             end

@@ -66,7 +66,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         BackgroundTransparency = 1,
         TextColor3 = Color3.fromRGB(150, 150, 150),
         TextSize = 12,
-        Rotation = 0
+        Rotation = -90
     }, btn)
 
     local function setTabScrollingEnabled(enabled)
@@ -201,7 +201,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
                 end
 
                 updateDropdownScrollState(false)
-                TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
+                TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = -90}):Play()
 
                 TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 44)}):Play()
                 if cb then 
@@ -224,7 +224,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         end
 
         updateDropdownScrollState(dropped)
-        TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
+        TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = dropped and 0 or -90}):Play()
 
         local targetHeight = dropped and (searchbar and 200 or math.min(listLayout.AbsoluteContentSize.Y + 54, 200)) or 44
         TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()

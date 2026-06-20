@@ -5,26 +5,26 @@ local success1, content1 = pcall(game.HttpGet, game, Url .. "mainfunctions.lua?t
 local success2, content2 = pcall(game.HttpGet, game, Url .. "mainframe.lua?t=" .. os.time())
 
 if not (success1 and success2) then
-    error("UiLibary Loader: Failed to load files from GitHub.")
+    error("Orbit Ui: Failed to load files from GitHub.")
 end
 
 local mainfunctions = loadstring(content1)()
 local mainframe = loadstring(content2)()
 
 local components = {}
-local componentNames = {"button", "toggle", "slider", "status", "paragraph", "dropdown", "avatar", "input"}
+local componentNames = {"button", "toggle", "slider", "status", "paragraph", "dropdown", "avatar", "input", "uikeybind"}
 
 for _, name in ipairs(componentNames) do
     local success, content = pcall(game.HttpGet, game, componentsUrl .. name .. ".lua?t=" .. os.time())
     if success then
         components[name] = loadstring(content)()
     else
-        error("UiLibary Loader: Failed to load component '" .. name .. "' from GitHub.")
+        error("Orbit Ui: Failed to load component '" .. name .. "' from GitHub.")
     end
 end
 
 if mainframe and mainfunctions then
     return mainframe(mainfunctions, components)
 else
-    error("UiLibary Loader: Failed to compile mainframe or mainfunctions.")
+    error("Orbit Ui: Failed to compile mainframe or mainfunctions.")
 end
