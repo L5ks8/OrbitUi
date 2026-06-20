@@ -1,4 +1,4 @@
-local Url = "https://raw.githubusercontent.com/L5ks8/UiLibary/main/Ui/"
+local Url = "https://raw.githubusercontent.com/L5ks8/OrbitUi/main/Ui/"
 local componentsUrl = Url .. "Components/"
 
 local success1, content1 = pcall(game.HttpGet, game, Url .. "mainfunctions.lua?t=" .. os.time())
