@@ -374,14 +374,25 @@ function Library:CreateWindow(config)
         Name = "profile"
     }, G2L["38"])
 
-    G2L["avatar"] = New("ImageLabel", {
+    G2L["avatar"] = New("ImageButton", {
         Size = UDim2.new(0, 26, 0, 26),
         Image = "rbxthumb://type=AvatarHeadShot&id=" .. userId .. "&w=150&h=150",
         BackgroundTransparency = 1,
-        BackgroundColor3 = Color3.fromRGB(36, 36, 36)
+        BackgroundColor3 = Color3.fromRGB(36, 36, 36),
+        AutoButtonColor = false
     }, avatarFrame)
 
     New("UICorner", {CornerRadius = UDim.new(1, 0)}, G2L["avatar"])
+
+    local profileInstance = nil
+    G2L["avatar"].MouseButton1Click:Connect(function()
+        if profileInstance and profileInstance.Parent then
+            profileInstance:Destroy()
+            profileInstance = nil
+        else
+            profileInstance = components.profile(mainfunctions)
+        end
+    end)
 
     local infoFrame = New("Frame", {
         Size = UDim2.new(0, 0, 1, 0),
