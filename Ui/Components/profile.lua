@@ -624,23 +624,18 @@ return function(mainfunctions)
             local char = LocalPlayer.Character
             if not char then return end
             for _, child in ipairs(char:GetChildren()) do
-                if child:IsA("Accessory") or child:IsA("CharacterMesh") then
+                if child:IsA("Accessory") or (child:IsA("Model") and child:FindFirstChild("Handle")) then
                     local cloned = child:Clone()
-                    cloned.Parent = rig
+                    -- Remove all joints
+                    for _, j in ipairs(cloned:GetDescendants()) do
+                        if j:IsA("JointInstance") then j:Destroy() end
+                    end
                     local handle = cloned:FindFirstChild("Handle")
                     if handle and handle:IsA("BasePart") then
-                        -- Update Weld to point to rig body part
-                        local weld = handle:FindFirstChildOfClass("Weld") or handle:FindFirstChildOfClass("Motor6D")
-                        if weld then
-                            local attachName = weld.Part0 and weld.Part0.Name
-                            local rigPart = attachName and rig:FindFirstChild(attachName)
-                            if rigPart then
-                                weld.Part0 = nil
-                                weld.Part1 = rigPart
-                            end
-                        end
                         handle.Anchored = true
+                        handle.CanCollide = false
                     end
+                    cloned.Parent = rig
                 end
             end
         end)
@@ -696,6 +691,21 @@ return function(mainfunctions)
                     rigDecal.Texture = charDecal.Texture
                     rigDecal.ColorMap = charDecal.ColorMap
                 end
+            end
+        end
+        -- Load hair & accessories on respawn
+        for _, child in ipairs(char:GetChildren()) do
+            if child:IsA("Accessory") or (child:IsA("Model") and child:FindFirstChild("Handle")) then
+                local cloned = child:Clone()
+                for _, j in ipairs(cloned:GetDescendants()) do
+                    if j:IsA("JointInstance") then j:Destroy() end
+                end
+                local handle = cloned:FindFirstChild("Handle")
+                if handle and handle:IsA("BasePart") then
+                    handle.Anchored = true
+                    handle.CanCollide = false
+                end
+                cloned.Parent = rig
             end
         end
     end)
@@ -1116,30 +1126,6 @@ return function(mainfunctions)
 
         New("UICorner", {Name = "Corner", CornerRadius = UDim.new(0, 12)}, btn)
 
-        -- Spotlight circle
-        local spotCircle = New("Frame", {
-            Name = "Spotlight",
-            Size = UDim2.new(0, 0, 0, 0),
-            Position = UDim2.new(0, 0, 0, 0),
-            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-            BackgroundTransparency = 1,
-            BorderSizePixel = 0,
-            ZIndex = 5
-        }, btn)
-        New("UICorner", {CornerRadius = UDim.new(1, 0)}, spotCircle)
-        local spotSize = 50
-        spotCircle.Size = UDim2.new(0, spotSize, 0, spotSize)
-
-        btn.MouseEnter:Connect(function()
-            spotCircle.BackgroundTransparency = 0.85
-        end)
-        btn.MouseMoved:Connect(function(x, y)
-            spotCircle.Position = UDim2.new(0, x - spotSize / 2, 0, y - spotSize / 2)
-        end)
-        btn.MouseLeave:Connect(function()
-            spotCircle.BackgroundTransparency = 1
-        end)
-
         New("UIListLayout", {
             Padding = UDim.new(0, 10),
             VerticalAlignment = Enum.VerticalAlignment.Center,
@@ -1260,7 +1246,7 @@ return function(mainfunctions)
 
     -- Leave button
     createGridButton(advContent, "leave", "14149523795", function()
-        game:Shutdown()
+        LocalPlayer:Kick("You left the game.")
     end)
 
     -- Loading done
