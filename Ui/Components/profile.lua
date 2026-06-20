@@ -27,7 +27,7 @@ return function(mainfunctions)
         BorderSizePixel = 0,
         BackgroundColor3 = Color3.fromRGB(35, 35, 35),
         AnchorPoint = Vector2.new(0.5, 0.5),
-        Size = UDim2.new(0.28, 0, 0.52, 0),
+        Size = UDim2.new(0.32, 0, 0.52, 0),
         Position = UDim2.new(0.5, 0, 0.5, 0),
         BorderColor3 = Color3.fromRGB(0, 0, 0),
         Name = "Profile"
@@ -581,7 +581,7 @@ return function(mainfunctions)
         rootJoint.Part0 = rootPart
 
         -- Set camera to look at the rig
-        camera.CFrame = CFrame.lookAt(Vector3.new(0, 1.5, -0.5), Vector3.new(0, 1.2, -5.5))
+        camera.CFrame = CFrame.lookAt(Vector3.new(0, 2, 3), Vector3.new(0, 1.2, -5.5))
 
         -- Apply player appearance
         local playerChar = LocalPlayer.Character
