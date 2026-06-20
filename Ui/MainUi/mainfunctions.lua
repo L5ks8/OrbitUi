@@ -30,6 +30,34 @@ function UIFunctions.GetFonts()
     }
 end
 
+function UIFunctions.ShowProfile(profileCreator)
+    if type(profileCreator) ~= "function" then
+        return
+    end
+
+    local CoreGui = game:GetService("CoreGui")
+    local existing = CoreGui:FindFirstChild("OrbitProfile")
+    if existing then
+        existing:Destroy()
+    end
+
+    local profileGui = profileCreator(UIFunctions)
+    if not profileGui or not profileGui:IsA("ScreenGui") then
+        return
+    end
+
+    local closeButton = profileGui:FindFirstChild("close", true)
+    if closeButton and closeButton:IsA("ImageButton") then
+        closeButton.MouseButton1Click:Connect(function()
+            if profileGui and profileGui.Parent then
+                profileGui:Destroy()
+            end
+        end)
+    end
+
+    return profileGui
+end
+
 -- Theme Switcher with Smooth Tweens
 function UIFunctions.SetTheme(G2L, themeName)
     local themes = UIFunctions.Themes or {}
@@ -466,107 +494,6 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
             end)
         end
     end)
-
-    -- Profile Modal Setup & Behavior
-    local profileModal = G2L["profile_modal"]
-    if profileModal then
-        local profileScale = profileModal:FindFirstChild("Scale")
-        local profileClose = profileModal:FindFirstChild("actions", true) and profileModal:FindFirstChild("actions", true):FindFirstChild("close")
-        
-        -- Create background overlay
-        local overlay = UIFunctions.New("ImageButton", {
-            Name = "ProfileOverlay",
-            Size = UDim2.new(1, 0, 1, 0),
-            Position = UDim2.new(0, 0, 0, 0),
-            BackgroundTransparency = 1,
-            ZIndex = 1009,
-            Visible = false,
-            AutoButtonColor = false
-        }, G2L["1"])
-        
-        profileModal.ZIndex = 1010
-        profileModal.Visible = false
-        profileModal.GroupTransparency = 1
-        if profileScale then
-            profileScale.Scale = 0.8
-        end
-        
-        local modalOpen = false
-        local isAnimatingModal = false
-        
-        local function openProfile()
-            if isAnimatingModal or modalOpen then return end
-            isAnimatingModal = true
-            modalOpen = true
-            
-            overlay.Visible = true
-            profileModal.Visible = true
-            
-            local openTween = TweenService:Create(
-                profileModal,
-                TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-                { GroupTransparency = 0 }
-            )
-            
-            local scaleTween
-            if profileScale then
-                scaleTween = TweenService:Create(
-                    profileScale,
-                    TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-                    { Scale = 1 }
-                )
-            end
-            
-            openTween:Play()
-            if scaleTween then scaleTween:Play() end
-            
-            openTween.Completed:Connect(function()
-                isAnimatingModal = false
-            end)
-        end
-        
-        local function closeProfile()
-            if isAnimatingModal or not modalOpen then return end
-            isAnimatingModal = true
-            modalOpen = false
-            
-            overlay.Visible = false
-            
-            local closeTween = TweenService:Create(
-                profileModal,
-                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-                { GroupTransparency = 1 }
-            )
-            
-            local scaleTween
-            if profileScale then
-                scaleTween = TweenService:Create(
-                    profileScale,
-                    TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-                    { Scale = 0.8 }
-                )
-            end
-            
-            closeTween:Play()
-            if scaleTween then scaleTween:Play() end
-            
-            closeTween.Completed:Connect(function()
-                profileModal.Visible = false
-                isAnimatingModal = false
-            end)
-        end
-        
-        -- Connect trigger buttons
-        if G2L["38"] then -- Avatar button
-            G2L["38"].MouseButton1Click:Connect(openProfile)
-        end
-        
-        if profileClose then
-            profileClose.MouseButton1Click:Connect(closeProfile)
-        end
-        
-        overlay.MouseButton1Click:Connect(closeProfile)
-    end
 end
 
         function UIFunctions.BuildWindow(G2L, config, components)

@@ -1,5 +1,5 @@
 -- GoonHub UI Library Mainframe
-return function(mainfunctions, components, profileCreator)
+return function(mainfunctions, components)
     local RunService = game:GetService("RunService")
     local TweenService = game:GetService("TweenService")
     local Library = {}
@@ -27,6 +27,13 @@ function Library:CreateWindow(config)
     local New = mainfunctions.New
     local fonts = mainfunctions.GetFonts()
     local G2L = {}
+    local openProfileUI
+
+    openProfileUI = function()
+        if components and type(components.profile) == "function" then
+            mainfunctions.ShowProfile(components.profile)
+        end
+    end
 
     -- Resolve Local Player safely
     local Players = game:GetService("Players")
@@ -38,17 +45,17 @@ function Library:CreateWindow(config)
     -- Find parent container
     local targetParent = (gethui and gethui()) or game:GetService("CoreGui") or (LocalPlayer and LocalPlayer:WaitForChild("PlayerGui"))
     if not targetParent then
-        error("UiLibary: Could not locate a valid GUI parent container.")
+        error("Orbit Ui: Could not locate a valid GUI parent container.")
     end
 
     -- Destroy old instance if exists
-    if targetParent:FindFirstChild("UiLibary") then 
-        targetParent["UiLibary"]:Destroy() 
+    if targetParent:FindFirstChild("OrbitUi") then 
+        targetParent["OrbitUi"]:Destroy() 
     end
 
     G2L["1"] = New("ScreenGui", {
         IgnoreGuiInset = true,
-        Name = "UiLibary",
+        Name = "OrbitUi",
         ResetOnSpawn = false,
         ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     }, targetParent)
@@ -367,6 +374,12 @@ function Library:CreateWindow(config)
         PaddingLeft = UDim.new(0, 10),
         PaddingRight = UDim.new(0, 35)
     }, G2L["38"])
+
+    if G2L["38"] then
+        G2L["38"].MouseButton1Click:Connect(function()
+            openProfileUI()
+        end)
+    end
 
     local avatarFrame = New("Frame", {
         Size = UDim2.new(0, 26, 0, 26),
@@ -740,49 +753,6 @@ function Library:CreateWindow(config)
     -- Set flex behavior on footer
     if G2L["18"] and not G2L["18"]:FindFirstChildOfClass("UIFlexItem") then
         New("UIFlexItem", {FlexMode = Enum.UIFlexMode.None}, G2L["18"])
-    end
-
-    -- Setup Profile Modal if profileCreator is provided
-    if profileCreator then
-        local success, profileGui = pcall(profileCreator)
-        if success and profileGui then
-            local profileFrame = profileGui:FindFirstChild("Profile")
-            if profileFrame then
-                profileFrame.Parent = G2L["1"]
-                profileFrame.Visible = false
-                G2L["profile_modal"] = profileFrame
-                
-                -- Populate user info dynamically
-                local mainFrame = profileFrame:FindFirstChild("Main")
-                if mainFrame then
-                    local topFrame = mainFrame:FindFirstChild("Top")
-                    if topFrame then
-                        local avatarImage = topFrame:FindFirstChild("Profile")
-                        if avatarImage then
-                            avatarImage.Image = "rbxthumb://type=AvatarHeadShot&id=" .. userId .. "&w=420&h=420"
-                        end
-                        local info = topFrame:FindFirstChild("Information")
-                        if info then
-                            local infoDetails = info:FindFirstChild("Info")
-                            if infoDetails then
-                                local userText = infoDetails:FindFirstChild("Username")
-                                if userText then
-                                    userText.Text = "@" .. userName
-                                end
-                                local dispText = infoDetails:FindFirstChild("Display")
-                                if dispText then
-                                    dispText.Text = displayName
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-            -- Destroy the temporary ScreenGui wrapper
-            pcall(function() profileGui:Destroy() end)
-        else
-            warn("Orbit Ui: Failed to load profile GUI.")
-        end
     end
 
     local Window = mainfunctions.BuildWindow(G2L, config, components)
