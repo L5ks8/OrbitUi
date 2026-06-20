@@ -621,40 +621,25 @@ return function(mainfunctions)
 
         -- Load hair & accessories
         task.spawn(function()
-            local success, fullModel = pcall(Players.CreateHumanoidModelFromUserId, Players, LocalPlayer.UserId)
-            if success and fullModel then
-                fullModel.Parent = game:GetService("Workspace")
-                task.wait()
-                for _, child in ipairs(fullModel:GetDescendants()) do
-                    if child:IsA("Accessory") or child:IsA("CharacterMesh") then
-                        child:Clone().Parent = rig
-                    end
-                end
-                for _, child in ipairs(fullModel:GetChildren()) do
-                    if child:IsA("Model") and child.Name ~= "Rig" then
-                        for _, part in ipairs(child:GetDescendants()) do
-                            if part:IsA("BasePart") and part:FindFirstChildOfClass("Weld") then
-                                local welded = part:Clone()
-                                welded.Anchored = true
-                                welded.Parent = rig
+            local char = LocalPlayer.Character
+            if not char then return end
+            for _, child in ipairs(char:GetChildren()) do
+                if child:IsA("Accessory") or child:IsA("CharacterMesh") then
+                    local cloned = child:Clone()
+                    cloned.Parent = rig
+                    local handle = cloned:FindFirstChild("Handle")
+                    if handle and handle:IsA("BasePart") then
+                        -- Update Weld to point to rig body part
+                        local weld = handle:FindFirstChildOfClass("Weld") or handle:FindFirstChildOfClass("Motor6D")
+                        if weld then
+                            local attachName = weld.Part0 and weld.Part0.Name
+                            local rigPart = attachName and rig:FindFirstChild(attachName)
+                            if rigPart then
+                                weld.Part0 = nil
+                                weld.Part1 = rigPart
                             end
                         end
-                    end
-                end
-                fullModel:Destroy()
-            else
-                -- Fallback: copy accessories from character
-                local char = LocalPlayer.Character
-                if char then
-                    for _, child in ipairs(char:GetChildren()) do
-                        if child:IsA("Accessory") or child:IsA("CharacterMesh") then
-                            local cloned = child:Clone()
-                            cloned.Parent = rig
-                            local handle = cloned:FindFirstChild("Handle")
-                            if handle then
-                                handle.Anchored = true
-                            end
-                        end
+                        handle.Anchored = true
                     end
                 end
             end
@@ -1238,15 +1223,17 @@ return function(mainfunctions)
             char.Humanoid.Health = 0
         end
     end)
-    local killGlow = New("UIGradient", {
-        Transparency = NumberSequence.new(1),
+    local killStroke = New("UIStroke", {
+        Thickness = 0,
+        Color = Color3.fromRGB(255, 60, 60),
+        Transparency = 0.4,
         Name = "Glow"
     }, killBtn)
     killBtn.MouseEnter:Connect(function()
-        TweenService:Create(killGlow, TweenInfo.new(0.2), {Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1)}}):Play()
+        TweenService:Create(killStroke, TweenInfo.new(0.15), {Thickness = 4}):Play()
     end)
     killBtn.MouseLeave:Connect(function()
-        TweenService:Create(killGlow, TweenInfo.new(0.3), {Transparency = NumberSequence.new(1)}):Play()
+        TweenService:Create(killStroke, TweenInfo.new(0.2), {Thickness = 0}):Play()
     end)
 
     -- Advanced category
@@ -1273,7 +1260,7 @@ return function(mainfunctions)
 
     -- Leave button
     createGridButton(advContent, "leave", "14149523795", function()
-        LocalPlayer:Kick("Left via Profile")
+        game:Shutdown()
     end)
 
     -- Loading done
