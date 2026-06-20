@@ -169,17 +169,15 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
 
             if not onInteractive then
                 local parent = G2L["1"].Parent
-            if parent then
-                for _, child in ipairs(parent:GetChildren()) do
-                    if child:IsA("ScreenGui") and child ~= G2L["1"] and child.Enabled then
-                        local otherObjs = child:GetGuiObjectsAtPosition(pos.X, pos.Y)
+                if parent then
+                    local profileGui = parent:FindFirstChild("Profile")
+                    if profileGui and profileGui:IsA("ScreenGui") and profileGui.Enabled then
+                        local otherObjs = profileGui:GetGuiObjectsAtPosition(pos.X, pos.Y)
                         if #otherObjs > 0 then
                             onInteractive = true
-                            break
                         end
                     end
                 end
-            end
             end
 
             if onInteractive or gpe then return end

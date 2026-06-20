@@ -581,7 +581,7 @@ return function(mainfunctions)
         rootJoint.Part0 = rootPart
 
         -- Set camera to look at the rig
-        camera.CFrame = CFrame.lookAt(Vector3.new(0, 2.5, 7), Vector3.new(0, 1.5, -5.5))
+        camera.CFrame = CFrame.lookAt(Vector3.new(0, 3.5, 7), Vector3.new(0, 1.5, -5.5))
 
         -- Apply player appearance
         local playerChar = LocalPlayer.Character
