@@ -13,6 +13,8 @@ return function(mainfunctions)
     local userId = LocalPlayer and LocalPlayer.UserId or 0
     local displayName = LocalPlayer and LocalPlayer.DisplayName or "Offline Developer"
     local userName = LocalPlayer and LocalPlayer.Name or "dev"
+    local TweenService = game:GetService("TweenService")
+    local UserInputService = game:GetService("UserInputService")
 
     local screenGui = New("ScreenGui", {
         Name = "Profile",
@@ -25,7 +27,7 @@ return function(mainfunctions)
         BorderSizePixel = 0,
         BackgroundColor3 = Color3.fromRGB(35, 35, 35),
         AnchorPoint = Vector2.new(0.5, 0.5),
-        Size = UDim2.new(0.35, 350, 0.7, 0),
+        Size = UDim2.new(0.28, 0, 0.52, 0),
         Position = UDim2.new(0.5, 0, 0.5, 0),
         BorderColor3 = Color3.fromRGB(0, 0, 0),
         Name = "Profile"
@@ -39,6 +41,7 @@ return function(mainfunctions)
     New("UICorner", {Name = "Corner", CornerRadius = UDim.new(0, 28)}, profile)
 
     local scale = New("UIScale", {Name = "Scale"}, profile)
+    scale.Scale = 0
     CollectionService:AddTag(scale, "OrbitModalFrameScale")
 
     New("UIPadding", {Name = "Padding"}, profile)
@@ -120,7 +123,11 @@ return function(mainfunctions)
     New("UIScale", {Name = "scale"}, closeBtn)
 
     closeBtn.MouseButton1Click:Connect(function()
-        screenGui:Destroy()
+        local closeTween = TweenService:Create(scale, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Scale = 0})
+        closeTween.Completed:Connect(function()
+            screenGui:Destroy()
+        end)
+        closeTween:Play()
     end)
 
     -- SizeLimit
@@ -371,7 +378,7 @@ return function(mainfunctions)
     }, leftPanel)
 
     local camera = Instance.new("Camera")
-    camera.FieldOfView = 20
+    camera.FieldOfView = 30
     viewport.CurrentCamera = camera
 
     local function buildRig()
@@ -574,7 +581,7 @@ return function(mainfunctions)
         rootJoint.Part0 = rootPart
 
         -- Set camera to look at the rig
-        camera.CFrame = CFrame.lookAt(Vector3.new(0, 1.2, -3.5), Vector3.new(0, 1.2, -5.5))
+        camera.CFrame = CFrame.lookAt(Vector3.new(0, 1.5, -0.5), Vector3.new(0, 1.2, -5.5))
 
         -- Apply player appearance
         local playerChar = LocalPlayer.Character
@@ -1163,6 +1170,34 @@ return function(mainfunctions)
 
     -- Loading done
     loading.Visible = false
+
+    -- Open animation
+    TweenService:Create(scale, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Scale = 1}):Play()
+
+    -- Dragging
+    local dragActive, dragStart, dragPos
+
+    top.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragActive = true
+            dragStart = input.Position
+            dragPos = profile.Position
+        end
+    end)
+
+    top.InputChanged:Connect(function(input)
+        if not dragActive then return end
+        if input.UserInputType ~= Enum.UserInputType.MouseMovement and input.UserInputType ~= Enum.UserInputType.Touch then return end
+        local delta = input.Position - dragStart
+        profile.Position = UDim2.new(dragPos.X.Scale, dragPos.X.Offset + delta.X, dragPos.Y.Scale, dragPos.Y.Offset + delta.Y)
+    end)
+
+    UserInputService.InputEnded:Connect(function(input, processed)
+        if processed then return end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragActive = false
+        end
+    end)
 
     return screenGui
 end
