@@ -182,8 +182,8 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
     local function animateSidebar()
         sidebarOpen = not sidebarOpen
         
-        local barTargetSize = sidebarOpen and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 60, 1, 0)
-        local screenTargetSize = sidebarOpen and UDim2.new(1, -235, 1, 0) or UDim2.new(1, -75, 1, 0)
+        local barTargetSize = sidebarOpen and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 80, 1, 0)
+        local screenTargetSize = sidebarOpen and UDim2.new(1, -235, 1, 0) or UDim2.new(1, -95, 1, 0)
         
         TweenService:Create(G2L["16"], TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = barTargetSize}):Play()
         TweenService:Create(G2L["11"], TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = screenTargetSize}):Play()
@@ -202,8 +202,8 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
         
         local userPadding = G2L["38"]:FindFirstChildOfClass("UIPadding")
         if userPadding then
-            userPadding.PaddingLeft = sidebarOpen and UDim.new(0, 10) or UDim.new(0, 6)
-            userPadding.PaddingRight = sidebarOpen and UDim.new(0, 35) or UDim.new(0, 6)
+            userPadding.PaddingLeft = sidebarOpen and UDim.new(0, 10) or UDim.new(0, 16)
+            userPadding.PaddingRight = sidebarOpen and UDim.new(0, 35) or UDim.new(0, 16)
         end
         
         local userInfo = G2L["38"]:FindFirstChild("info")
@@ -227,8 +227,8 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
                         end
                         local uiPadding = innerItem:FindFirstChildOfClass("UIPadding")
                         if uiPadding then
-                            uiPadding.PaddingLeft = sidebarOpen and UDim.new(0, 12) or UDim.new(0, 9)
-                            uiPadding.PaddingRight = sidebarOpen and UDim.new(0, 12) or UDim.new(0, 9)
+                            uiPadding.PaddingLeft = sidebarOpen and UDim.new(0, 12) or UDim.new(0, 19)
+                            uiPadding.PaddingRight = sidebarOpen and UDim.new(0, 12) or UDim.new(0, 19)
                         end
                     end
                 end
