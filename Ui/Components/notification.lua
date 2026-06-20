@@ -28,7 +28,7 @@ return function(mainfunctions)
     if not container then
         container = New("Frame", {
             Name = "Notifications",
-            Size = UDim2.new(0, 320, 1, -40),
+            Size = UDim2.new(0, 500, 1, -40),
             Position = UDim2.new(0.5, 0, 0, 20),
             AnchorPoint = Vector2.new(0.5, 0),
             BackgroundTransparency = 1,
@@ -93,17 +93,44 @@ return function(mainfunctions)
         
         local listLayout = New("UIListLayout", {
             Name = "List",
-            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            HorizontalAlignment = Enum.HorizontalAlignment.Left,
             VerticalAlignment = Enum.VerticalAlignment.Center,
             SortOrder = Enum.SortOrder.LayoutOrder,
             FillDirection = Enum.FillDirection.Horizontal,
-            Padding = UDim.new(0, 14)
+            Padding = UDim.new(0, 12)
         }, banner)
         
         local scale = New("UIScale", {
             Name = "Scale",
             Scale = 1
         }, banner)
+        
+        -- Avatar (if userId present) - LayoutOrder 1
+        if userId then
+            local userImage = New("ImageLabel", {
+                Name = "user",
+                ZIndex = 2,
+                BorderSizePixel = 0,
+                ScaleType = Enum.ScaleType.Fit,
+                BackgroundColor3 = Color3.fromRGB(27, 27, 27),
+                Image = "rbxthumb://type=AvatarHeadShot&id=" .. userId .. "&w=150&h=150",
+                Size = UDim2.new(0, 40, 0, 40),
+                LayoutOrder = 1
+            }, banner)
+            
+            CollectionService:AddTag(userImage, "ThemesOnlyIncludeBg")
+            
+            New("UICorner", {
+                Name = "corner",
+                CornerRadius = UDim.new(1, 0)
+            }, userImage)
+            
+            New("UIStroke", {
+                Name = "stroke",
+                Thickness = 2,
+                Color = Color3.fromRGB(35, 35, 35)
+            }, userImage)
+        end
         
         if iconId then
             local holder = New("ImageLabel", {
@@ -113,7 +140,7 @@ return function(mainfunctions)
                 ImageTransparency = 1,
                 Size = UDim2.new(0, 32, 0, 32),
                 BackgroundTransparency = 0.8,
-                LayoutOrder = 1
+                LayoutOrder = userId and 2 or 1
             }, banner)
             
             New("UICorner", {
@@ -142,7 +169,7 @@ return function(mainfunctions)
             BorderSizePixel = 0,
             AutomaticSize = Enum.AutomaticSize.XY,
             BackgroundTransparency = 1,
-            LayoutOrder = 2
+            LayoutOrder = userId and 3 or (iconId and 2 or 1)
         }, banner)
         
         New("UIListLayout", {
@@ -188,48 +215,6 @@ return function(mainfunctions)
                 LayoutOrder = 2,
                 AutomaticSize = Enum.AutomaticSize.XY
             }, infoFrame)
-        end
-        
-        if userId then
-            local groupFrame = New("Frame", {
-                Name = "group",
-                BorderSizePixel = 0,
-                AutomaticSize = Enum.AutomaticSize.XY,
-                BackgroundTransparency = 1,
-                LayoutOrder = 3
-            }, infoFrame)
-            
-            New("UIListLayout", {
-                Name = "list",
-                Padding = UDim.new(0, -4),
-                VerticalAlignment = Enum.VerticalAlignment.Bottom,
-                SortOrder = Enum.SortOrder.LayoutOrder,
-                FillDirection = Enum.FillDirection.Horizontal
-            }, groupFrame)
-            
-            local userImage = New("ImageLabel", {
-                Name = "user",
-                ZIndex = 2,
-                BorderSizePixel = 0,
-                ScaleType = Enum.ScaleType.Fit,
-                BackgroundColor3 = Color3.fromRGB(27, 27, 27),
-                Image = "rbxthumb://type=AvatarHeadShot&id=" .. userId .. "&w=150&h=150",
-                Size = UDim2.new(0, 26, 0, 26),
-                LayoutOrder = 2
-            }, groupFrame)
-            
-            CollectionService:AddTag(userImage, "ThemesOnlyIncludeBg")
-            
-            New("UICorner", {
-                Name = "corner",
-                CornerRadius = UDim.new(1, 0)
-            }, userImage)
-            
-            New("UIStroke", {
-                Name = "stroke",
-                Thickness = 4,
-                Color = Color3.fromRGB(35, 35, 35)
-            }, userImage)
         end
         
         New("UIPadding", {
