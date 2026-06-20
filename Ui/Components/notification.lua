@@ -28,16 +28,16 @@ return function(mainfunctions)
     if not container then
         container = New("Frame", {
             Name = "Notifications",
-            Size = UDim2.new(0, 320, 1, -40),
-            Position = UDim2.new(1, -20, 0, 20),
-            AnchorPoint = Vector2.new(1, 0),
+            Size = UDim2.new(0, 450, 1, -40),
+            Position = UDim2.new(0.5, 0, 0, 20),
+            AnchorPoint = Vector2.new(0.5, 0),
             BackgroundTransparency = 1,
             ZIndex = 3
         }, screenGui)
         
         New("UIListLayout", {
             Name = "Layout",
-            HorizontalAlignment = Enum.HorizontalAlignment.Right,
+            HorizontalAlignment = Enum.HorizontalAlignment.Center,
             VerticalAlignment = Enum.VerticalAlignment.Top,
             SortOrder = Enum.SortOrder.LayoutOrder,
             Padding = UDim.new(0, 10)
@@ -237,7 +237,7 @@ return function(mainfunctions)
             PaddingBottom = UDim.new(0, 18)
         }, banner)
         
-        banner.Position = UDim2.new(1.2, 0, 0, 0)
+        banner.Position = UDim2.new(0, 0, -1.2, 0)
         notificationBtn.Parent = container
         
         task.wait()
@@ -254,9 +254,9 @@ return function(mainfunctions)
             if isClosing then return end
             isClosing = true
             
-            -- Slide out to the right and fade out
+            -- Slide out to the top and fade out
             local slideOutTween = TweenService:Create(banner, TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
-                Position = UDim2.new(1.2, 0, 0, 0),
+                Position = UDim2.new(0, 0, -1.2, 0),
                 GroupTransparency = 1
             })
             slideOutTween:Play()
