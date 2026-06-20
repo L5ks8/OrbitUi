@@ -7,14 +7,6 @@ return function(mainfunctions, components)
     Library.Themes = mainfunctions.Themes
 
     local NotificationSystem = components.notification(mainfunctions)
-    
-    -- Load Profile Component
-    local profileComponent = nil
-    local profileSuccess, profileContent = pcall(game.HttpGet, game, "https://raw.githubusercontent.com/L5ks8/OrbitUi/main/Ui/MainUi/profile.lua")
-    if profileSuccess and profileContent then
-        profileComponent = loadstring(profileContent)()
-    end
-    
     function Library:Notify(config)
         return NotificationSystem:Notify(config)
     end
@@ -447,32 +439,6 @@ function Library:CreateWindow(config)
         TextTransparency = 0.2,
         AutomaticSize = Enum.AutomaticSize.X
     }, timeBox)
-
-    -- Profile Avatar Button (unten links neben der Uhrzeit)
-    local profileGui = nil
-    
-    local profileAvatarBtn = New("ImageButton", {
-        Size = UDim2.new(0, 26, 0, 26),
-        BackgroundColor3 = Color3.fromRGB(27, 27, 27),
-        BackgroundTransparency = 0,
-        Image = "rbxthumb://type=AvatarHeadShot&id=" .. userId .. "&w=150&h=150",
-        Name = "profile_avatar",
-        AutoButtonColor = false,
-        LayoutOrder = 2
-    }, G2L["6e"])
-    
-    New("UICorner", {CornerRadius = UDim.new(1, 0)}, profileAvatarBtn)
-    
-    profileAvatarBtn.MouseButton1Click:Connect(function()
-        if profileGui then
-            profileGui:Destroy()
-            profileGui = nil
-        else
-            if profileComponent then
-                profileGui = profileComponent(mainfunctions)
-            end
-        end
-    end)
 
     G2L["a1"] = New("Frame", {
         Size = UDim2.new(1, 0, 0, 30),
