@@ -12,6 +12,7 @@ return function(mainfunctions, components)
 
     -- Show loading screen
     local loadingScreen
+    local loadStart = os.clock()
     if components and components.loading then
         local ok, loadScr = pcall(components.loading, mainfunctions)
         if ok and loadScr then
@@ -1336,6 +1337,10 @@ return function(mainfunctions, components)
     -- Loading done
     loading.Visible = false
     if loadingScreen then
+        local elapsed = os.clock() - loadStart
+        if elapsed < 1 then
+            task.wait(1 - elapsed)
+        end
         loadingScreen:Close()
     end
 
