@@ -1565,6 +1565,26 @@ return function(mainfunctions, components)
         end
     end)
 
+    local freecamInstance = nil
+
+    createActionBtn(spectatePanel, "Freecam", "rbxassetid://11433568090", function()
+        if freecamInstance then
+            freecamInstance.Close()
+            freecamInstance = nil
+            return
+        end
+        setMenusVisible(false)
+        local ok, result = pcall(components.freecam, mainfunctions, components)
+        if ok then
+            freecamInstance = result(function()
+                freecamInstance = nil
+                setMenusVisible(true)
+            end)
+        else
+            setMenusVisible(true)
+        end
+    end)
+
     -- Loading done
     loading.Visible = false
     if loadingScreen then
