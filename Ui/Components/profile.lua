@@ -1332,11 +1332,17 @@ return function(mainfunctions, components)
         CellPadding = UDim2.new(0, 6, 0, 6)
     }, charContent)
 
-    local killBtn = createGridButton(charContent, "kill", "12967641870", function()
+    createGridButton(charContent, "kill", "12967641870", function()
         local char = LocalPlayer.Character
         if char and char:FindFirstChild("Humanoid") then
             char.Humanoid.Health = 0
         end
+    end)
+
+    createGridButton(charContent, "leave", "138668025068101", function()
+        pcall(function() game:Shutdown() end)
+        task.wait(0.5)
+        LocalPlayer:Kick()
     end)
 
     -- Advanced category
@@ -1354,80 +1360,194 @@ return function(mainfunctions, components)
         BackgroundTransparency = 1
     }, advancedCat)
 
-    New("UIGridLayout", {
-        HorizontalAlignment = Enum.HorizontalAlignment.Left,
-        CellSize = UDim2.new(0.5, -3, 0, 40),
+    New("UIListLayout", {
+        Padding = UDim.new(0, 6),
         SortOrder = Enum.SortOrder.LayoutOrder,
-        CellPadding = UDim2.new(0, 6, 0, 6)
+        Name = "List",
+        FillDirection = Enum.FillDirection.Horizontal
     }, advContent)
 
-    -- Leave button
-    local leaveBtn = New("ImageButton", {
-        Active = true,
+    -- Left: player list
+    local playerListFrame = New("ScrollingFrame", {
         BorderSizePixel = 0,
-        AutoButtonColor = false,
-        BackgroundColor3 = Color3.fromRGB(25, 25, 25),
-        Selectable = false,
-        Size = UDim2.new(0.5, -3, 0, 40),
-        LayoutOrder = 12,
+        BackgroundColor3 = Color3.fromRGB(23, 23, 23),
+        Size = UDim2.new(0.5, -3, 0, 200),
         BorderColor3 = Color3.fromRGB(0, 0, 0),
-        Name = "leave"
+        Name = "PlayerList",
+        ScrollBarThickness = 0,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        AutomaticCanvasSize = Enum.AutomaticSize.Y
     }, advContent)
 
-    New("UICorner", {Name = "Corner", CornerRadius = UDim.new(0, 12)}, leaveBtn)
+    New("UICorner", {Name = "Corner", CornerRadius = UDim.new(0, 12)}, playerListFrame)
 
     New("UIListLayout", {
-        Padding = UDim.new(0, 10),
-        VerticalAlignment = Enum.VerticalAlignment.Center,
+        Padding = UDim.new(0, 2),
         SortOrder = Enum.SortOrder.LayoutOrder,
-        Name = "list",
-        FillDirection = Enum.FillDirection.Horizontal
-    }, leaveBtn)
+        Name = "List"
+    }, playerListFrame)
 
     New("UIPadding", {
-        PaddingRight = UDim.new(0, 12),
-        Name = "padding",
-        PaddingLeft = UDim.new(0, 12)
-    }, leaveBtn)
+        PaddingTop = UDim.new(0, 4),
+        PaddingRight = UDim.new(0, 4),
+        PaddingLeft = UDim.new(0, 4),
+        PaddingBottom = UDim.new(0, 4)
+    }, playerListFrame)
 
-    local leaveIcon = New("ImageLabel", {
+    local selectedPlayer = nil
+
+    local function refreshPlayerList()
+        for _, child in ipairs(playerListFrame:GetChildren()) do
+            if child:IsA("TextButton") then
+                child:Destroy()
+            end
+        end
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                local btn = New("TextButton", {
+                    BorderSizePixel = 0,
+                    AutoLocalize = false,
+                    TextSize = 14,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+                    FontFace = fonts.reg,
+                    TextColor3 = Color3.fromRGB(200, 200, 200),
+                    Size = UDim2.new(1, 0, 0, 28),
+                    BorderColor3 = Color3.fromRGB(0, 0, 0),
+                    Text = player.Name,
+                    Name = "PlayerBtn",
+                    BackgroundTransparency = 1
+                }, playerListFrame)
+                New("UICorner", {Name = "Corner", CornerRadius = UDim.new(0, 8)}, btn)
+                btn.MouseButton1Click:Connect(function()
+                    selectedPlayer = player
+                    for _, b in ipairs(playerListFrame:GetChildren()) do
+                        if b:IsA("TextButton") then
+                            b.BackgroundTransparency = 1
+                            b.TextColor3 = Color3.fromRGB(200, 200, 200)
+                        end
+                    end
+                    btn.BackgroundTransparency = 0.6
+                    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+                end)
+            end
+        end
+    end
+
+    refreshPlayerList()
+    Players.PlayerAdded:Connect(refreshPlayerList)
+    Players.PlayerRemoving:Connect(refreshPlayerList)
+
+    -- Right: spectate controls
+    local spectatePanel = New("Frame", {
         BorderSizePixel = 0,
-        ScaleType = Enum.ScaleType.Fit,
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-        ImageTransparency = 0.2,
-        Image = "rbxassetid://138668025068101",
-        Size = UDim2.new(0, 17, 0, 17),
+        Size = UDim2.new(0.5, -3, 0, 200),
         BorderColor3 = Color3.fromRGB(0, 0, 0),
-        BackgroundTransparency = 1,
-        LayoutOrder = 1,
-        Name = "Icon"
-    }, leaveBtn)
-    New("UIScale", {Name = "scale"}, leaveIcon)
+        Name = "Spectate",
+        BackgroundTransparency = 1
+    }, advContent)
 
-    local leaveLabel = New("TextLabel", {
-        BorderSizePixel = 0,
-        AutoLocalize = false,
-        TextSize = 14,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        TextTransparency = 0.2,
-        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-        FontFace = fonts.med,
-        TextColor3 = Color3.fromRGB(255, 255, 255),
-        BackgroundTransparency = 1,
-        Size = UDim2.new(1, -20, 1, 0),
-        BorderColor3 = Color3.fromRGB(0, 0, 0),
-        Text = "Leave",
-        LayoutOrder = 2,
-        Name = "Name"
-    }, leaveBtn)
-    leaveLabel:SetAttribute("Key", "orbit.modals.player.leave")
-    New("UIFlexItem", {Name = "flex", FlexMode = Enum.UIFlexMode.Fill}, leaveLabel)
-    New("UIFlexItem", {Name = "flex", FlexMode = Enum.UIFlexMode.Fill}, leaveBtn)
+    New("UIListLayout", {
+        Padding = UDim.new(0, 6),
+        VerticalAlignment = Enum.VerticalAlignment.Center,
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        Name = "List",
+        FillDirection = Enum.FillDirection.Vertical
+    }, spectatePanel)
 
-    leaveBtn.MouseButton1Click:Connect(function()
-        pcall(function() game:Shutdown() end)
-        task.wait(0.5)
-        LocalPlayer:Kick()
+    New("UIPadding", {
+        PaddingTop = UDim.new(0, 20),
+        PaddingRight = UDim.new(0, 10),
+        PaddingLeft = UDim.new(0, 10),
+        PaddingBottom = UDim.new(0, 20)
+    }, spectatePanel)
+
+    local function createActionBtn(parent, name, iconId, callback)
+        local btn = New("ImageButton", {
+            Active = false,
+            BorderSizePixel = 0,
+            AutoButtonColor = false,
+            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
+            Selectable = false,
+            Size = UDim2.new(1, 0, 0, 40),
+            LayoutOrder = 12,
+            BorderColor3 = Color3.fromRGB(0, 0, 0),
+            Name = name
+        }, parent)
+
+        New("UICorner", {Name = "Corner", CornerRadius = UDim.new(0, 12)}, btn)
+
+        New("UIListLayout", {
+            Padding = UDim.new(0, 10),
+            VerticalAlignment = Enum.VerticalAlignment.Center,
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Name = "list",
+            FillDirection = Enum.FillDirection.Horizontal
+        }, btn)
+
+        New("UIPadding", {
+            PaddingRight = UDim.new(0, 12),
+            Name = "padding",
+            PaddingLeft = UDim.new(0, 12)
+        }, btn)
+
+        local icon = New("ImageLabel", {
+            BorderSizePixel = 0,
+            ScaleType = Enum.ScaleType.Fit,
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+            ImageTransparency = 0.2,
+            Image = iconId,
+            Size = UDim2.new(0, 17, 0, 17),
+            BorderColor3 = Color3.fromRGB(0, 0, 0),
+            BackgroundTransparency = 1,
+            LayoutOrder = 1,
+            Name = "Icon"
+        }, btn)
+        New("UIScale", {Name = "scale"}, icon)
+
+        local nameLabel = New("TextLabel", {
+            BorderSizePixel = 0,
+            AutoLocalize = false,
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            TextTransparency = 0.2,
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+            FontFace = fonts.med,
+            TextColor3 = Color3.fromRGB(255, 255, 255),
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, -20, 1, 0),
+            BorderColor3 = Color3.fromRGB(0, 0, 0),
+            Text = name,
+            LayoutOrder = 2,
+            Name = "Name"
+        }, btn)
+        New("UIFlexItem", {Name = "flex", FlexMode = Enum.UIFlexMode.Fill}, nameLabel)
+        New("UIFlexItem", {Name = "flex", FlexMode = Enum.UIFlexMode.Fill}, btn)
+
+        if callback then
+            btn.MouseButton1Click:Connect(callback)
+        end
+
+        return btn
+    end
+
+    local spectateInstance = nil
+
+    createActionBtn(spectatePanel, "Spectate", "rbxassetid://11963367322", function()
+        if not selectedPlayer then return end
+        if spectateInstance then
+            spectateInstance.Close()
+            spectateInstance = nil
+        end
+        if selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("Humanoid") then
+            workspace.CurrentCamera.CameraSubject = selectedPlayer.Character.Humanoid
+            workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+            local ok, result = pcall(components.spectate, mainfunctions, components)
+            if ok then
+                spectateInstance = result(selectedPlayer)
+            end
+        end
     end)
 
     -- Loading done
