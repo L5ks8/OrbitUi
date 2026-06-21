@@ -21,13 +21,49 @@ function UIFunctions.New(class, props, parent)
     return i
 end
 
+-- Cached fonts: avoids creating new Font objects on every call
+local _fontCache = nil
 function UIFunctions.GetFonts()
-    return {
-        reg = Font.new("rbxassetid://12187365364"),
-        bold = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold),
-        med = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium),
-        logo = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Bold)
-    }
+    if not _fontCache then
+        _fontCache = {
+            reg = Font.new("rbxassetid://12187365364"),
+            bold = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold),
+            med = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium),
+            logo = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Bold)
+        }
+    end
+    return _fontCache
+end
+
+-- Centralized gradient rotation system: one RenderStepped connection for ALL gradient spins
+-- instead of one per toggle/tab, dramatically reducing per-frame overhead
+local _gradientEntries = {} -- { gradient = UIGradient, speed = number }
+local _gradientConn = nil
+
+function UIFunctions.RegisterGradient(gradient, speed)
+    _gradientEntries[gradient] = speed or 120
+
+    -- Start the single shared connection if not already running
+    if not _gradientConn then
+        _gradientConn = RunService.RenderStepped:Connect(function(dt)
+            for grad, spd in pairs(_gradientEntries) do
+                if grad and grad.Parent then
+                    grad.Rotation = (grad.Rotation + spd * dt) % 360
+                else
+                    _gradientEntries[grad] = nil
+                end
+            end
+            -- Stop connection if no gradients left
+            if not next(_gradientEntries) then
+                _gradientConn:Disconnect()
+                _gradientConn = nil
+            end
+        end)
+    end
+end
+
+function UIFunctions.UnregisterGradient(gradient)
+    _gradientEntries[gradient] = nil
 end
 
 -- Theme Switcher with Smooth Tweens
@@ -576,15 +612,8 @@ end
                     })
                 }, stroke)
 
-                -- Spin gradient border
-                local borderSpinConn
-                borderSpinConn = RunService.RenderStepped:Connect(function(dt)
-                    if not navBtn or not navBtn.Parent then
-                        borderSpinConn:Disconnect()
-                        return
-                    end
-                    gradient.Rotation = (gradient.Rotation + 6 * dt) % 360
-                end)
+                -- Register gradient for centralized rotation (one shared RenderStepped for all)
+                UIFunctions.RegisterGradient(gradient, 6)
 
                 New("UIListLayout", {
                     FillDirection = Enum.FillDirection.Horizontal,

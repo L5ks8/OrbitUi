@@ -60,13 +60,11 @@ return function(mainfunctions)
         -- Create cloned Notification Frame (G2L["4"] equivalent)
         local notificationBtn = New("ImageButton", {
             Name = "Notification",
-            BorderSizePixel = 0,
             AutoButtonColor = false,
             ImageTransparency = 1,
             BackgroundTransparency = 1,
-            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
             Size = UDim2.new(1, 0, 0, 0),
-            AutomaticSize = Enum.AutomaticSize.Y, -- Enable automatic height
+            AutomaticSize = Enum.AutomaticSize.Y,
             ClipsDescendants = true
         })
         
@@ -78,12 +76,11 @@ return function(mainfunctions)
         
         local banner = New("CanvasGroup", {
             Name = "Banner",
-            BorderSizePixel = 0,
             BackgroundColor3 = Color3.fromRGB(37, 37, 37),
             AutomaticSize = Enum.AutomaticSize.XY,
-            GroupTransparency = 0.5, -- Start at 0.5 as in user's script
-            AnchorPoint = Vector2.new(0.5, 1), -- Align to bottom of the button
-            Position = UDim2.new(0.5, 0, 0, -5) -- Centered horizontally, offset Y by -5
+            GroupTransparency = 0.5,
+            AnchorPoint = Vector2.new(0.5, 1),
+            Position = UDim2.new(0.5, 0, 0, -5)
         }, notificationBtn)
         
         New("UICorner", {
@@ -110,7 +107,6 @@ return function(mainfunctions)
             local userImage = New("ImageLabel", {
                 Name = "user",
                 ZIndex = 2,
-                BorderSizePixel = 0,
                 ScaleType = Enum.ScaleType.Fit,
                 BackgroundColor3 = Color3.fromRGB(27, 27, 27),
                 Image = "rbxthumb://type=AvatarHeadShot&id=" .. userId .. "&w=150&h=150",
@@ -135,7 +131,6 @@ return function(mainfunctions)
         if iconId then
             local holder = New("ImageLabel", {
                 Name = "holder",
-                BorderSizePixel = 0,
                 BackgroundColor3 = Color3.fromRGB(0, 0, 0),
                 ImageTransparency = 1,
                 Size = UDim2.new(0, 32, 0, 32),
@@ -153,7 +148,6 @@ return function(mainfunctions)
             
             New("ImageLabel", {
                 Name = "icon",
-                BorderSizePixel = 0,
                 BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                 AnchorPoint = Vector2.new(0.5, 0.5),
                 Size = UDim2.new(0, 20, 0, 20),
@@ -166,7 +160,6 @@ return function(mainfunctions)
         
         local infoFrame = New("Frame", {
             Name = "information",
-            BorderSizePixel = 0,
             AutomaticSize = Enum.AutomaticSize.XY,
             BackgroundTransparency = 1,
             LayoutOrder = userId and 3 or (iconId and 2 or 1)
@@ -184,11 +177,9 @@ return function(mainfunctions)
             Name = "title",
             Text = titleText,
             TextWrapped = true,
-            BorderSizePixel = 0,
             AutoLocalize = false,
             TextSize = 15,
             TextXAlignment = Enum.TextXAlignment.Left,
-            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
             FontFace = fonts.med,
             TextColor3 = Color3.fromRGB(255, 255, 255),
             BackgroundTransparency = 1,
@@ -202,13 +193,11 @@ return function(mainfunctions)
                 Name = "description",
                 Text = descText,
                 TextWrapped = true,
-                BorderSizePixel = 0,
                 AutoLocalize = false,
                 TextSize = 12,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 TextTransparency = 0.5,
                 TextYAlignment = Enum.TextYAlignment.Top,
-                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                 FontFace = fonts.reg,
                 TextColor3 = Color3.fromRGB(255, 255, 255),
                 BackgroundTransparency = 1,

@@ -48,5 +48,14 @@ return function(Tab, mainfunctions, configTitle, callback, overrideParent, layou
         end
     end)
 
-    return buttonWidget
+    -- Consistent API: return table with methods (like other components)
+    return {
+        Instance = buttonWidget,
+        SetText = function(_, newText)
+            buttonWidget.Text = tostring(newText)
+        end,
+        SetCallback = function(_, newCb)
+            cb = newCb
+        end
+    }
 end

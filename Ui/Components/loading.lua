@@ -22,7 +22,6 @@ return function(mainfunctions)
         AnchorPoint = Vector2.new(0.5, 0.5),
         Size = UDim2.new(0, 200, 0, 135),
         Position = UDim2.new(0.5, 0, 0.5, 0),
-        BorderColor3 = Color3.fromRGB(0, 0, 0),
         Name = "Progress"
     }, screenGui)
     progress:SetAttribute("Position", -1)
@@ -50,7 +49,6 @@ return function(mainfunctions)
         BorderSizePixel = 0,
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
         Size = UDim2.new(0, 20, 0, 20),
-        BorderColor3 = Color3.fromRGB(0, 0, 0),
         Name = "Icon",
         BackgroundTransparency = 1
     }, progress)
@@ -63,7 +61,6 @@ return function(mainfunctions)
         AnchorPoint = Vector2.new(0.5, 0.5),
         Image = "rbxassetid://10723433935",
         Size = UDim2.new(1, 0, 1, 0),
-        BorderColor3 = Color3.fromRGB(0, 0, 0),
         BackgroundTransparency = 1,
         Name = "icon",
         Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -79,28 +76,33 @@ return function(mainfunctions)
         TextColor3 = Color3.fromRGB(255, 255, 255),
         BackgroundTransparency = 1,
         Size = UDim2.new(1, 0, 0, 20),
-        BorderColor3 = Color3.fromRGB(0, 0, 0),
         Text = "Loading",
-        Name = "Proccess"
+        Name = "Process"
     }, progress)
 
     -- Open animation
     TweenService:Create(scale, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Scale = 1}):Play()
 
-    -- Spin animation
+    -- Spin animation (frame-rate independent using dt)
     local spinConn
-    spinConn = game:GetService("RunService").RenderStepped:Connect(function()
+    spinConn = game:GetService("RunService").RenderStepped:Connect(function(dt)
         if not screenGui or not screenGui.Parent then
             spinConn:Disconnect()
             return
         end
-        spinIcon.Rotation = (spinIcon.Rotation + 2) % 360
+        spinIcon.Rotation = (spinIcon.Rotation + 180 * dt) % 360
     end)
 
     local loading = {}
     loading.screen = screenGui
 
     function loading:Close()
+        -- Disconnect spin animation to prevent memory leak
+        if spinConn then
+            spinConn:Disconnect()
+            spinConn = nil
+        end
+
         local closeTween = TweenService:Create(scale, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Scale = 0})
         closeTween.Completed:Connect(function()
             screenGui:Destroy()

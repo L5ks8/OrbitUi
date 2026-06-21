@@ -115,14 +115,19 @@ return function(Tab, mainfunctions, configTitle, defaultState, callback, overrid
         })
     }, hoverStroke)
 
+    -- Register gradient for centralized rotation (if available), otherwise use local connection
     local toggleSpinConn
-    toggleSpinConn = RunService.RenderStepped:Connect(function(dt)
-        if not toggleBtn or not toggleBtn.Parent then
-            toggleSpinConn:Disconnect()
-            return
-        end
-        toggleGradient.Rotation = (toggleGradient.Rotation + 120 * dt) % 360
-    end)
+    if mainfunctions.RegisterGradient then
+        mainfunctions.RegisterGradient(toggleGradient, 120)
+    else
+        toggleSpinConn = RunService.RenderStepped:Connect(function(dt)
+            if not toggleBtn or not toggleBtn.Parent then
+                toggleSpinConn:Disconnect()
+                return
+            end
+            toggleGradient.Rotation = (toggleGradient.Rotation + 120 * dt) % 360
+        end)
+    end
 
     widgetFrame.MouseEnter:Connect(function()
         TweenService:Create(hoverStroke, TweenInfo.new(0.3), {Transparency = 0.5}):Play()
@@ -131,28 +136,36 @@ return function(Tab, mainfunctions, configTitle, defaultState, callback, overrid
         TweenService:Create(hoverStroke, TweenInfo.new(0.3), {Transparency = 1}):Play()
     end)
 
-    toggleBtn.MouseButton1Click:Connect(function()
-        state = not state
+    -- Shared visual update function (eliminates duplicate code)
+    local function updateVisuals()
         TweenService:Create(toggleBtn, TweenInfo.new(0.25, Enum.EasingStyle.Quart), {
             BackgroundColor3 = state and mainfunctions.CurrentAccent or Color3.fromRGB(45, 45, 45)
         }):Play()
         TweenService:Create(sliderCircle, TweenInfo.new(0.25, Enum.EasingStyle.Quart), {
             Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
         }):Play()
+    end
+
+    toggleBtn.MouseButton1Click:Connect(function()
+        state = not state
+        updateVisuals()
         if cb then 
             pcall(cb, state) 
+        end
+    end)
+
+    -- Cleanup on destroy
+    widgetFrame.Destroying:Connect(function()
+        if toggleSpinConn then toggleSpinConn:Disconnect() end
+        if mainfunctions.UnregisterGradient then
+            mainfunctions.UnregisterGradient(toggleGradient)
         end
     end)
     
     return {
         Set = function(_, newState)
             state = newState
-            TweenService:Create(toggleBtn, TweenInfo.new(0.25, Enum.EasingStyle.Quart), {
-                BackgroundColor3 = state and mainfunctions.CurrentAccent or Color3.fromRGB(45, 45, 45)
-            }):Play()
-            TweenService:Create(sliderCircle, TweenInfo.new(0.25, Enum.EasingStyle.Quart), {
-                Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
-            }):Play()
+            updateVisuals()
             if cb then 
                 pcall(cb, state) 
             end
