@@ -433,6 +433,8 @@ return function(mainfunctions, components)
             self.v = pos * 0
         end
 
+        local freecamEnabled = false
+        local rightClickHeld = false
         local cameraPos = Vector3.new()
         local cameraRot = Vector2.new()
         local cameraFov = 0
@@ -637,8 +639,6 @@ return function(mainfunctions, components)
             end
         end
 
-        local freecamEnabled = false
-        local rightClickHeld = false
         local rcBeganConn = UserInputService.InputBegan:Connect(function(input, gp)
             if gp then return end
             if input.UserInputType == Enum.UserInputType.MouseButton2 and freecamEnabled then
