@@ -13,7 +13,7 @@ local mainframe = loadstring(content2)()
 
 -- Load all components in parallel for faster startup
 local components = {}
-local componentNames = {"button", "toggle", "slider", "status", "paragraph", "dropdown", "avatar", "input", "uikeybind", "notification", "profile", "loading", "spectate", "freecam"}
+local componentNames = {"button", "toggle", "slider", "status", "paragraph", "dropdown", "avatar", "input", "uikeybind", "notification", "profile", "loading", "spectate", "freecam", "confirmation"}
 local loadedCount = 0
 local totalCount = #componentNames
 local loadErrors = {}

@@ -1340,6 +1340,23 @@ return function(mainfunctions, components)
     end)
 
     createGridButton(charContent, "leave", "138668025068101", function()
+        if components and components.confirmation then
+            local confirmFactory = components.confirmation(mainfunctions, components)
+            if confirmFactory then
+                confirmFactory({
+                    Title = "Leave Game",
+                    Description = "Are you sure you want to leave the game?",
+                    ConfirmText = "Leave",
+                    CancelText = "Cancel",
+                    OnConfirm = function()
+                        pcall(function() game:Shutdown() end)
+                        task.wait(0.5)
+                        LocalPlayer:Kick()
+                    end
+                })
+                return
+            end
+        end
         pcall(function() game:Shutdown() end)
         task.wait(0.5)
         LocalPlayer:Kick()
