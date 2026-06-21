@@ -173,30 +173,45 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
             end
         end
         
+        local function refreshOptionStyles()
+            for _, child in ipairs(list:GetChildren()) do
+                if child:IsA("TextButton") then
+                    local isSel = child:GetAttribute("OptionValue") == tostring(selected)
+                    if isSel then
+                        child.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+                        child.TextColor3 = Color3.new(1, 1, 1)
+                    else
+                        child.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+                        child.TextColor3 = Color3.fromRGB(180, 180, 180)
+                    end
+                end
+            end
+        end
+
         for _, opt in pairs(listOptions) do
             local optionBtn = New("TextButton", {
                 Size = UDim2.new(1, 0, 0, 30),
-                BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+                BackgroundColor3 = Color3.fromRGB(35, 35, 35),
                 Text = "  " .. tostring(opt),
-                TextColor3 = Color3.fromRGB(200, 200, 200),
+                TextColor3 = Color3.fromRGB(180, 180, 180),
                 FontFace = fonts.med,
                 TextSize = 13,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 AutoButtonColor = false
             }, list)
 
+            optionBtn:SetAttribute("OptionValue", tostring(opt))
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, optionBtn)
 
-            local isSelected = tostring(opt) == tostring(selected)
-
             optionBtn.MouseEnter:Connect(function()
-                TweenService:Create(optionBtn, TweenInfo.new(0.15, Enum.EasingStyle.Quad), {BackgroundColor3 = Color3.fromRGB(55, 55, 55), TextColor3 = Color3.new(1, 1, 1)}):Play()
+                TweenService:Create(optionBtn, TweenInfo.new(0.12, Enum.EasingStyle.Quad), {BackgroundColor3 = Color3.fromRGB(55, 55, 55), TextColor3 = Color3.new(1, 1, 1)}):Play()
             end)
             optionBtn.MouseLeave:Connect(function()
-                if isSelected then
-                    TweenService:Create(optionBtn, TweenInfo.new(0.15, Enum.EasingStyle.Quad), {BackgroundColor3 = accent, TextColor3 = Color3.new(1, 1, 1)}):Play()
+                local isSel = optionBtn:GetAttribute("OptionValue") == tostring(selected)
+                if isSel then
+                    TweenService:Create(optionBtn, TweenInfo.new(0.12, Enum.EasingStyle.Quad), {BackgroundColor3 = Color3.fromRGB(45, 45, 45), TextColor3 = Color3.new(1, 1, 1)}):Play()
                 else
-                    TweenService:Create(optionBtn, TweenInfo.new(0.15, Enum.EasingStyle.Quad), {BackgroundColor3 = Color3.fromRGB(40, 40, 40), TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+                    TweenService:Create(optionBtn, TweenInfo.new(0.12, Enum.EasingStyle.Quad), {BackgroundColor3 = Color3.fromRGB(35, 35, 35), TextColor3 = Color3.fromRGB(180, 180, 180)}):Play()
                 end
             end)
 
@@ -211,6 +226,8 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
                     searchBox.Text = ""
                 end
 
+                refreshOptionStyles()
+
                 updateDropdownScrollState(false)
                 TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = -90}):Play()
 
@@ -220,6 +237,8 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
                 end
             end)
         end
+
+        refreshOptionStyles()
     end
     
     populateOptions(options)
