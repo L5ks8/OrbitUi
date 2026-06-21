@@ -391,6 +391,28 @@ return function(mainfunctions, components)
     camera.FieldOfView = 30
     viewport.CurrentCamera = camera
 
+    local function findRigPart(rig, partName)
+        local part = rig:FindFirstChild(partName)
+        if part then return part end
+        local r15toR6 = {
+            UpperTorso = "Torso",
+            LowerTorso = "Torso",
+            LeftUpperArm = "Left Arm",
+            LeftLowerArm = "Left Arm",
+            LeftHand = "Left Arm",
+            RightUpperArm = "Right Arm",
+            RightLowerArm = "Right Arm",
+            RightHand = "Right Arm",
+            LeftUpperLeg = "Left Leg",
+            LeftLowerLeg = "Left Leg",
+            LeftFoot = "Left Leg",
+            RightUpperLeg = "Right Leg",
+            RightLowerLeg = "Right Leg",
+            RightFoot = "Right Leg",
+        }
+        return rig:FindFirstChild(r15toR6[partName])
+    end
+
     local function buildRig()
         -- WorldModel
         local world = Instance.new("WorldModel")
@@ -661,12 +683,12 @@ return function(mainfunctions, components)
                         handle.CanCollide = false
                         local originalHandle = child:FindFirstChild("Handle")
                         if originalHandle and originalHandle:IsA("BasePart") then
-                            local originalWeld = originalHandle:FindFirstChildOfClass("Weld") or originalHandle:FindFirstChildOfClass("Motor6D")
+                            local originalWeld = originalHandle:FindFirstChildOfClass("Weld") or originalHandle:FindFirstChildOfClass("Motor6D") or originalHandle:FindFirstChildOfClass("WeldConstraint")
                             if originalWeld and originalWeld.Part1 and originalWeld.Part1:IsA("BasePart") then
                                 -- Calculate handle's position relative to the body part it attaches to
                                 local relCF = originalWeld.Part1.CFrame:ToObjectSpace(originalHandle.CFrame)
                                 local targetName = originalWeld.Part1.Name
-                                local rigPart = rig:FindFirstChild(targetName)
+                                local rigPart = findRigPart(rig, targetName)
                                 if rigPart and rigPart:IsA("BasePart") then
                                     handle.CFrame = rigPart.CFrame:ToWorldSpace(relCF)
                                 end
@@ -710,11 +732,11 @@ return function(mainfunctions, components)
                     handle.CanCollide = false
                     local originalHandle = child:FindFirstChild("Handle")
                     if originalHandle and originalHandle:IsA("BasePart") then
-                        local originalWeld = originalHandle:FindFirstChildOfClass("Weld") or originalHandle:FindFirstChildOfClass("Motor6D")
+                        local originalWeld = originalHandle:FindFirstChildOfClass("Weld") or originalHandle:FindFirstChildOfClass("Motor6D") or originalHandle:FindFirstChildOfClass("WeldConstraint")
                         if originalWeld and originalWeld.Part1 and originalWeld.Part1:IsA("BasePart") then
                             local relCF = originalWeld.Part1.CFrame:ToObjectSpace(originalHandle.CFrame)
                             local targetName = originalWeld.Part1.Name
-                            local rigPart = rig:FindFirstChild(targetName)
+                            local rigPart = findRigPart(rig, targetName)
                             if rigPart and rigPart:IsA("BasePart") then
                                 handle.CFrame = rigPart.CFrame:ToWorldSpace(relCF)
                             end
@@ -802,11 +824,11 @@ return function(mainfunctions, components)
                     handle.CanCollide = false
                     local originalHandle = child:FindFirstChild("Handle")
                     if originalHandle and originalHandle:IsA("BasePart") then
-                        local originalWeld = originalHandle:FindFirstChildOfClass("Weld") or originalHandle:FindFirstChildOfClass("Motor6D")
+                        local originalWeld = originalHandle:FindFirstChildOfClass("Weld") or originalHandle:FindFirstChildOfClass("Motor6D") or originalHandle:FindFirstChildOfClass("WeldConstraint")
                         if originalWeld and originalWeld.Part1 and originalWeld.Part1:IsA("BasePart") then
                             local relCF = originalWeld.Part1.CFrame:ToObjectSpace(originalHandle.CFrame)
                             local targetName = originalWeld.Part1.Name
-                            local rigPart = rig:FindFirstChild(targetName)
+                            local rigPart = findRigPart(rig, targetName)
                             if rigPart and rigPart:IsA("BasePart") then
                                 handle.CFrame = rigPart.CFrame:ToWorldSpace(relCF)
                             end
