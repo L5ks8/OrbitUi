@@ -1442,14 +1442,15 @@ return function(mainfunctions, components)
     local spectatePanel = New("Frame", {
         BorderSizePixel = 0,
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-        Size = UDim2.new(0.5, -3, 0, 200),
+        AutomaticSize = Enum.AutomaticSize.Y,
+        Size = UDim2.new(0.5, -3, 0, 0),
         BorderColor3 = Color3.fromRGB(0, 0, 0),
         Name = "Spectate",
         BackgroundTransparency = 1
     }, advContent)
 
     New("UIListLayout", {
-        Padding = UDim.new(0, 6),
+        Padding = UDim.new(0, 0),
         VerticalAlignment = Enum.VerticalAlignment.Center,
         SortOrder = Enum.SortOrder.LayoutOrder,
         Name = "List",
@@ -1457,10 +1458,10 @@ return function(mainfunctions, components)
     }, spectatePanel)
 
     New("UIPadding", {
-        PaddingTop = UDim.new(0, 20),
+        PaddingTop = UDim.new(0, 0),
         PaddingRight = UDim.new(0, 10),
         PaddingLeft = UDim.new(0, 10),
-        PaddingBottom = UDim.new(0, 20)
+        PaddingBottom = UDim.new(0, 0)
     }, spectatePanel)
 
     local function createActionBtn(parent, name, iconId, callback)
@@ -1543,9 +1544,15 @@ return function(mainfunctions, components)
         if selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("Humanoid") then
             workspace.CurrentCamera.CameraSubject = selectedPlayer.Character.Humanoid
             workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+            screenGui.Enabled = false
             local ok, result = pcall(components.spectate, mainfunctions, components)
             if ok then
-                spectateInstance = result(selectedPlayer)
+                spectateInstance = result(selectedPlayer, function()
+                    spectateInstance = nil
+                    screenGui.Enabled = true
+                end)
+            else
+                screenGui.Enabled = true
             end
         end
     end)

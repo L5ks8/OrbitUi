@@ -6,7 +6,7 @@ return function(mainfunctions, components)
     local TweenService = game:GetService("TweenService")
     local targetParent = (gethui and gethui()) or game:GetService("CoreGui") or (LocalPlayer and LocalPlayer:WaitForChild("PlayerGui"))
 
-    return function(targetPlayer)
+    return function(targetPlayer, onClose)
         local screenGui = New("ScreenGui", {
             Name = "Spectate",
             ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -342,6 +342,7 @@ return function(mainfunctions, components)
                 workspace.CurrentCamera.CameraSubject = char.Humanoid
                 workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
             end
+            if onClose then onClose() end
             local closeTween = TweenService:Create(scale, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Scale = 0})
             closeTween.Completed:Connect(function()
                 screenGui:Destroy()

@@ -18,54 +18,56 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
     local dropped = false
     local selected = default
     
+    local accent = mainfunctions.CurrentAccent
+
     local dropdownFrame = New("Frame", {
         Size = UDim2.new(1, 0, 0, 44),
-        BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+        BackgroundColor3 = Color3.fromRGB(25, 25, 25),
         LayoutOrder = lOrder,
         ClipsDescendants = true
     }, parent)
 
-    New("UICorner", {CornerRadius = UDim.new(0, 6)}, dropdownFrame)
+    New("UICorner", {CornerRadius = UDim.new(0, 8)}, dropdownFrame)
 
     New("UIStroke", {
-        Color = Color3.fromRGB(45, 45, 45),
+        Color = Color3.fromRGB(50, 50, 50),
         Thickness = 1,
-        Transparency = 0.5
+        Transparency = 0.4
     }, dropdownFrame)
 
     New("TextLabel", {
-        Size = UDim2.new(1, -20, 0, 18),
-        Position = UDim2.new(0, 10, 0, 2),
+        Size = UDim2.new(1, -24, 0, 16),
+        Position = UDim2.new(0, 12, 0, 3),
         Text = title,
-        TextColor3 = Color3.new(1, 1, 1),
-        BackgroundTransparency = 1, 
+        TextColor3 = Color3.fromRGB(180, 180, 180),
+        BackgroundTransparency = 1,
         TextXAlignment = Enum.TextXAlignment.Left,
-        FontFace = fonts.bold,
-        TextSize = 14
+        FontFace = fonts.med,
+        TextSize = 12
     }, dropdownFrame)
 
     local btn = New("TextButton", {
-        Size = UDim2.new(1, -20, 0, 24),
-        Position = UDim2.new(0, 10, 0, 18),
+        Size = UDim2.new(1, -24, 0, 22),
+        Position = UDim2.new(0, 12, 0, 19),
         BackgroundColor3 = Color3.fromRGB(35, 35, 35),
         Text = "  " .. selected,
-        TextColor3 = mainfunctions.CurrentAccent,
-        FontFace = fonts.bold,
+        TextColor3 = Color3.fromRGB(220, 220, 220),
+        FontFace = fonts.med,
         TextSize = 13,
         TextXAlignment = Enum.TextXAlignment.Left,
         AutoButtonColor = false
     }, dropdownFrame)
 
-    New("UICorner", {CornerRadius = UDim.new(0, 4)}, btn)
+    New("UICorner", {CornerRadius = UDim.new(0, 6)}, btn)
 
     local arrow = New("TextLabel", {
-        Size = UDim2.new(0, 20, 0, 32),
-        Position = UDim2.new(1, -25, 0.5, 0),
+        Size = UDim2.new(0, 20, 0, 22),
+        Position = UDim2.new(1, -24, 0.5, 0),
         AnchorPoint = Vector2.new(1, 0.5),
         Text = "▼",
         BackgroundTransparency = 1,
-        TextColor3 = Color3.fromRGB(150, 150, 150),
-        TextSize = 12,
+        TextColor3 = Color3.fromRGB(140, 140, 140),
+        TextSize = 11,
         Rotation = -90
     }, btn)
 
@@ -104,10 +106,12 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         Size = listSize,
         BackgroundTransparency = 1,
         Visible = false,
-        ScrollBarThickness = 3,
+        ScrollBarThickness = 4,
         ScrollBarImageColor3 = mainfunctions.CurrentAccent,
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
-        CanvasSize = UDim2.new(0, 0, 0, 0)
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        BorderSizePixel = 0,
+        BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     }, dropdownFrame)
 
     local listLayout = New("UIListLayout", {Padding = UDim.new(0, 4)}, list)
@@ -116,33 +120,33 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
     if searchbar then
         searchBox = New("TextBox", {
             Name = "search",
-            Size = UDim2.new(1, -20, 0, 24),
+            Size = UDim2.new(1, -20, 0, 26),
             Position = UDim2.new(0, 30, 0, 48),
-            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
+            BackgroundColor3 = Color3.fromRGB(28, 28, 28),
             Text = "",
             PlaceholderText = "Search...",
             TextColor3 = Color3.new(1, 1, 1),
-            PlaceholderColor3 = Color3.fromRGB(120, 120, 120),
-            FontFace = fonts.med,
+            PlaceholderColor3 = Color3.fromRGB(130, 130, 130),
+            FontFace = fonts.reg,
             TextSize = 13,
             TextXAlignment = Enum.TextXAlignment.Left,
             ClearTextOnFocus = false,
             Visible = false
         }, dropdownFrame)
 
-        New("UICorner", {CornerRadius = UDim.new(0, 4)}, searchBox)
+        New("UICorner", {CornerRadius = UDim.new(0, 6)}, searchBox)
         New("UIPadding", {
-            PaddingLeft = UDim.new(0, 8),
-            PaddingRight = UDim.new(0, 8)
+            PaddingLeft = UDim.new(0, 10),
+            PaddingRight = UDim.new(0, 10)
         }, searchBox)
 
         New("ImageLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 14, 0, 14),
-            Position = UDim2.new(0, 12, 0, 58),
+            Position = UDim2.new(0, 12, 0, 59),
             AnchorPoint = Vector2.new(0, 0.5),
             Image = "rbxassetid://112780490255100",
-            ImageColor3 = Color3.fromRGB(180, 180, 180),
+            ImageColor3 = Color3.fromRGB(200, 200, 200),
             BackgroundTransparency = 1,
             ZIndex = 11
         }, dropdownFrame)
@@ -171,29 +175,36 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         
         for _, opt in pairs(listOptions) do
             local optionBtn = New("TextButton", {
-                Size = UDim2.new(1, 0, 0, 28),
-                BackgroundColor3 = Color3.fromRGB(45, 45, 45),
+                Size = UDim2.new(1, 0, 0, 30),
+                BackgroundColor3 = Color3.fromRGB(40, 40, 40),
                 Text = "  " .. tostring(opt),
-                TextColor3 = Color3.new(0.8, 0.8, 0.8), 
-                FontFace = fonts.bold,
+                TextColor3 = Color3.fromRGB(200, 200, 200),
+                FontFace = fonts.med,
                 TextSize = 13,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 AutoButtonColor = false
             }, list)
-            
-            New("UICorner", {CornerRadius = UDim.new(0, 4)}, optionBtn)
-            
+
+            New("UICorner", {CornerRadius = UDim.new(0, 6)}, optionBtn)
+
+            local isSelected = tostring(opt) == tostring(selected)
+
             optionBtn.MouseEnter:Connect(function()
-                TweenService:Create(optionBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(55, 55, 55), TextColor3 = Color3.new(1, 1, 1)}):Play()
+                TweenService:Create(optionBtn, TweenInfo.new(0.15, Enum.EasingStyle.Quad), {BackgroundColor3 = Color3.fromRGB(55, 55, 55), TextColor3 = Color3.new(1, 1, 1)}):Play()
             end)
             optionBtn.MouseLeave:Connect(function()
-                TweenService:Create(optionBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(45, 45, 45), TextColor3 = Color3.new(0.8, 0.8, 0.8)}):Play()
+                if isSelected then
+                    TweenService:Create(optionBtn, TweenInfo.new(0.15, Enum.EasingStyle.Quad), {BackgroundColor3 = accent, TextColor3 = Color3.new(1, 1, 1)}):Play()
+                else
+                    TweenService:Create(optionBtn, TweenInfo.new(0.15, Enum.EasingStyle.Quad), {BackgroundColor3 = Color3.fromRGB(40, 40, 40), TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+                end
             end)
 
             optionBtn.MouseButton1Click:Connect(function()
-                selected = opt 
-                btn.Text = "  " .. tostring(opt) 
-                dropped = false 
+                selected = opt
+                btn.Text = "  " .. tostring(opt)
+                btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+                dropped = false
                 list.Visible = false
                 if searchBox then
                     searchBox.Visible = false
@@ -204,8 +215,8 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
                 TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = -90}):Play()
 
                 TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 44)}):Play()
-                if cb then 
-                    pcall(cb, opt) 
+                if cb then
+                    pcall(cb, opt)
                 end
             end)
         end
@@ -237,6 +248,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         Set = function(_, value)
             selected = value
             btn.Text = "  " .. tostring(value)
+            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
             if cb then 
                 pcall(cb, value) 
             end
