@@ -779,8 +779,12 @@ function Library:CreateWindow(config)
     end
 
     local Window = mainfunctions.BuildWindow(G2L, config, components)
+    Window._G2L = G2L
     Window.Notify = function(self, cfg)
         return NotificationSystem:Notify(cfg)
+    end
+    Window.SetTheme = function(self, themeName)
+        mainfunctions.SetTheme(G2L, themeName)
     end
     mainfunctions.SetTheme(G2L, defaultTheme)
     mainfunctions.InitBehavior(G2L, Window, config.OnClose)

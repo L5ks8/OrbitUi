@@ -42,7 +42,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         TextColor3 = Color3.fromRGB(180, 180, 180),
         BackgroundTransparency = 1,
         TextXAlignment = Enum.TextXAlignment.Left,
-        FontFace = fonts.med,
+        FontFace = fonts.bold,
         TextSize = 12
     }, dropdownFrame)
 
@@ -52,7 +52,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         BackgroundColor3 = Color3.fromRGB(35, 35, 35),
         Text = "  " .. selected,
         TextColor3 = Color3.fromRGB(220, 220, 220),
-        FontFace = fonts.med,
+        FontFace = fonts.bold,
         TextSize = 13,
         TextXAlignment = Enum.TextXAlignment.Left,
         AutoButtonColor = false
@@ -71,30 +71,24 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
         Rotation = -90
     }, btn)
 
-    local function setTabScrollingEnabled(enabled)
-        local function recurse(frame)
-            if frame:IsA("ScrollingFrame") and frame.Name ~= "list" then
-                frame.ScrollingEnabled = enabled
+    local function ensureDropdownVisible()
+        task.wait(0.4)
+        local parentFrame = dropdownFrame.Parent
+        while parentFrame and parentFrame ~= Tab.tabFrame do
+            if parentFrame:IsA("ScrollingFrame") then
+                local dropdownPos = dropdownFrame.AbsolutePosition.Y
+                local parentPos = parentFrame.AbsolutePosition.Y
+                local parentSize = parentFrame.AbsoluteSize.Y
+                local dropdownEnd = dropdownPos + dropdownFrame.AbsoluteSize.Y
+                local visibleEnd = parentPos + parentSize + parentFrame.CanvasPosition.Y
+                if dropdownEnd > visibleEnd then
+                    local scrollNeeded = dropdownEnd - visibleEnd + parentFrame.CanvasPosition.Y
+                    parentFrame.CanvasPosition = Vector2.new(0, scrollNeeded)
+                end
+                break
             end
-            for _, child in pairs(frame:GetChildren()) do
-                recurse(child)
-            end
+            parentFrame = parentFrame.Parent
         end
-
-        if Tab and Tab.tabFrame then
-            recurse(Tab.tabFrame)
-        end
-    end
-
-    Tab._activeDropdownCount = Tab._activeDropdownCount or 0
-
-    local function updateDropdownScrollState(droppedState)
-        if droppedState then
-            Tab._activeDropdownCount = Tab._activeDropdownCount + 1
-        else
-            Tab._activeDropdownCount = math.max(0, Tab._activeDropdownCount - 1)
-        end
-        setTabScrollingEnabled(Tab._activeDropdownCount == 0)
     end
 
     local listPosition = searchbar and UDim2.new(0, 10, 0, 76) or UDim2.new(0, 10, 0, 48)
@@ -194,7 +188,7 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
                 BackgroundColor3 = Color3.fromRGB(35, 35, 35),
                 Text = "  " .. tostring(opt),
                 TextColor3 = Color3.fromRGB(180, 180, 180),
-                FontFace = fonts.med,
+                FontFace = fonts.bold,
                 TextSize = 13,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 AutoButtonColor = false
@@ -228,7 +222,6 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
 
                 refreshOptionStyles()
 
-                updateDropdownScrollState(false)
                 TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = -90}):Play()
 
                 TweenService:Create(dropdownFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 44)}):Play()
@@ -253,7 +246,9 @@ return function(Tab, mainfunctions, configTitle, configOptions, callback, overri
             end
         end
 
-        updateDropdownScrollState(dropped)
+        if dropped then
+            task.defer(ensureDropdownVisible)
+        end
         TweenService:Create(arrow, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {Rotation = dropped and 0 or -90}):Play()
 
         local targetHeight = dropped and (searchbar and 200 or math.min(listLayout.AbsoluteContentSize.Y + 54, 200)) or 44
