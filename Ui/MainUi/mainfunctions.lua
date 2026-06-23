@@ -526,7 +526,7 @@ end
                     AutomaticCanvasSize = Enum.AutomaticSize.Y,
                     CanvasSize = UDim2.new(0, 0, 0, 0),
                     LayoutOrder = tabIndex
-                }, G2L["pagelayout"])
+                }, G2L["screen"])
 
                 New("UIPadding", {
                     PaddingLeft = UDim.new(0, 15),
