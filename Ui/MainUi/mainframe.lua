@@ -45,7 +45,9 @@ function Library:CreateWindow(config)
     end
 
     G2L["1"] = New("ScreenGui", {
+        DisplayOrder = 999,
         IgnoreGuiInset = true,
+        ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets,
         Name = "UiLibary",
         ResetOnSpawn = false,
         ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -70,6 +72,19 @@ function Library:CreateWindow(config)
 
     G2L["scale"] = New("UIScale", {Scale = 1}, G2L["2"])
 
+    -- UIPageLayout for main frame (Moon G2L["8"])
+    G2L["page"] = New("UIPageLayout", {
+        FillDirection = Enum.FillDirection.Vertical,
+        HorizontalAlignment = Enum.HorizontalAlignment.Center,
+        VerticalAlignment = Enum.VerticalAlignment.Center,
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        TweenTime = 0.5,
+        EasingStyle = Enum.EasingStyle.Exponential,
+        GamepadInputEnabled = false,
+        TouchInputEnabled = false,
+        ScrollWheelInputEnabled = false
+    }, G2L["2"])
+
     -- Loading overlay (hidden by default)
     G2L["loading"] = New("Frame", {
         Size = UDim2.new(1, 0, 1, 0),
@@ -78,7 +93,8 @@ function Library:CreateWindow(config)
         BackgroundTransparency = 1,
         Visible = false,
         ZIndex = 9999,
-        Name = "loading"
+        Name = "loading",
+        LayoutOrder = 2
     }, G2L["2"])
 
     New("ImageLabel", {
@@ -95,7 +111,8 @@ function Library:CreateWindow(config)
         Position = UDim2.new(0.5, 0, 0.5, 0),
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundTransparency = 1,
-        Name = "empty"
+        Name = "empty",
+        LayoutOrder = 3
     }, G2L["2"])
 
     -- Content container
@@ -104,7 +121,8 @@ function Library:CreateWindow(config)
         Position = UDim2.new(0.5, 0, 0.5, 0),
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundTransparency = 1,
-        Name = "content"
+        Name = "content",
+        LayoutOrder = 1
     }, G2L["2"])
 
     New("UICorner", {CornerRadius = UDim.new(0, 18)}, G2L["content"])
@@ -344,12 +362,12 @@ function Library:CreateWindow(config)
     -- UIPageLayout for tabs (in the screen)
     G2L["pagelayout"] = New("UIPageLayout", {
         SortOrder = Enum.SortOrder.LayoutOrder,
-        Animated = true,
-        EasingStyle = Enum.EasingStyle.Quart,
-        EasingDirection = Enum.EasingDirection.Out,
-        TweenTime = 0.45,
+        HorizontalAlignment = Enum.HorizontalAlignment.Center,
+        VerticalAlignment = Enum.VerticalAlignment.Center,
+        Animated = false,
         ScrollWheelInputEnabled = false,
-        TouchInputEnabled = false
+        TouchInputEnabled = false,
+        GamepadInputEnabled = false
     }, G2L["screen"])
 
     -- LeafletControls (window control overlay - Moon-style)
@@ -374,8 +392,10 @@ function Library:CreateWindow(config)
 
     New("UIListLayout", {
         FillDirection = Enum.FillDirection.Horizontal,
+        HorizontalAlignment = Enum.HorizontalAlignment.Center,
         VerticalAlignment = Enum.VerticalAlignment.Center,
-        Padding = UDim.new(0, 10)
+        Padding = UDim.new(0, 0),
+        Name = "list"
     }, G2L["leaflet_top"])
 
     New("UIPadding", {
@@ -385,21 +405,21 @@ function Library:CreateWindow(config)
         PaddingBottom = UDim.new(0, 10)
     }, G2L["leaflet_top"])
 
-    -- Tracking icon (like Moon's tracking indicator)
-    G2L["tracking_icon"] = New("ImageLabel", {
-        Size = UDim2.new(0, 20, 0, 20),
-        Image = "rbxassetid://72548733587158",
-        BackgroundTransparency = 1,
-        LayoutOrder = 1
-    }, G2L["leaflet_top"])
-
-    -- Clock
+    -- Clock (Moon order: Actions=1, Clock=2, Tracking=3)
     G2L["clock"] = New("ImageLabel", {
         Size = UDim2.new(0, 0, 0, 24),
         BackgroundTransparency = 1,
         AutomaticSize = Enum.AutomaticSize.X,
         Name = "Clock",
         LayoutOrder = 2
+    }, G2L["leaflet_top"])
+
+    -- Tracking icon (Moon-style, right side)
+    G2L["tracking_icon"] = New("ImageLabel", {
+        Size = UDim2.new(0, 20, 0, 20),
+        Image = "rbxassetid://72548733587158",
+        BackgroundTransparency = 1,
+        LayoutOrder = 3
     }, G2L["leaflet_top"])
 
     G2L["time_text"] = New("TextLabel", {
@@ -412,31 +432,37 @@ function Library:CreateWindow(config)
         AutomaticSize = Enum.AutomaticSize.X
     }, G2L["clock"])
 
-    -- Spacer
-    local leafletSpacer = New("Frame", {
-        BackgroundTransparency = 1,
-        LayoutOrder = 3
-    }, G2L["leaflet_top"])
-    New("UIFlexItem", {FlexMode = Enum.UIFlexMode.Fill}, leafletSpacer)
-
-    -- Action buttons (Moon-style: 30x30 ImageButton → 24x24 ImageLabel container)
-    G2L["actions_frame"] = New("ImageButton", {
-        Size = UDim2.new(0, 0, 0, 0),
-        AutomaticSize = Enum.AutomaticSize.X,
+    -- Action buttons (Moon-style: Frame → ImageButton w/ UIScale 0.8 → Container → buttons)
+    G2L["actions_frame"] = New("Frame", {
+        Size = UDim2.new(0, 85, 1, 0),
         BackgroundTransparency = 1,
         Name = "Actions",
-        LayoutOrder = 4,
-        AutoButtonColor = false,
+        LayoutOrder = 1,
         ZIndex = 3
     }, G2L["leaflet_top"])
+
+    New("UIPadding", {PaddingTop = UDim.new(0, -5), PaddingLeft = UDim.new(0, -5)}, G2L["actions_frame"])
+
+    G2L["actions_inner_btn"] = New("ImageButton", {
+        Size = UDim2.new(0, 85, 1, 0),
+        AutomaticSize = Enum.AutomaticSize.XY,
+        BackgroundTransparency = 1,
+        Name = "Frame",
+        AutoButtonColor = false
+    }, G2L["actions_frame"])
+
+    New("UIPadding", {PaddingTop = UDim.new(0, 10), PaddingRight = UDim.new(0, 12), PaddingLeft = UDim.new(0, 12), PaddingBottom = UDim.new(0, 10)}, G2L["actions_inner_btn"])
+
+    New("UIScale", {Scale = 0.8}, G2L["actions_inner_btn"])
 
     G2L["actions_container"] = New("Frame", {
         Size = UDim2.new(0, 0, 0, 32),
         AutomaticSize = Enum.AutomaticSize.X,
         BackgroundColor3 = Color3.fromRGB(35, 35, 35),
         BackgroundTransparency = 0,
+        ZIndex = 2,
         Name = "Container"
-    }, G2L["actions_frame"])
+    }, G2L["actions_inner_btn"])
 
     New("UICorner", {CornerRadius = UDim.new(1, 0)}, G2L["actions_container"])
     local containerStroke = New("UIStroke", {
@@ -497,7 +523,7 @@ function Library:CreateWindow(config)
         mainfunctions.RegisterGradient(iconGradient, 6)
 
         local icon = New("ImageLabel", {
-            Size = UDim2.new(0, 14, 0, 14),
+            Size = UDim2.new(0, 16, 0, 16),
             Position = UDim2.new(0.5, 0, 0.5, 0),
             AnchorPoint = Vector2.new(0.5, 0.5),
             Image = "rbxassetid://" .. iconId,
