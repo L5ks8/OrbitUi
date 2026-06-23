@@ -62,7 +62,8 @@ return function(mainfunctions, components)
             Position = UDim2.new(0.5, 0, 0.5, 0),
             Name = "main_frame",
             ClipsDescendants = true,
-            BackgroundTransparency = 1,
+            BackgroundColor3 = Color3.fromRGB(27, 27, 27),
+            BackgroundTransparency = 0,
             Image = "rbxassetid://125088425775676",
             ImageColor3 = Color3.fromRGB(27, 27, 27),
             ImageTransparency = 0.05,
@@ -137,7 +138,7 @@ return function(mainfunctions, components)
             LayoutOrder = 1
         }, G2L["2"])
 
-        New("UICorner", {CornerRadius = UDim.new(0, 18)}, G2L["content"])
+        New("UICorner", {CornerRadius = UDim.new(0, 8)}, G2L["content"])
 
         -- Navigation sidebar (matching Moon G2L["b"])
         G2L["navigation"] = New("ImageButton", {
@@ -378,7 +379,7 @@ return function(mainfunctions, components)
             Name = "screen"
         }, G2L["content"])
 
-        New("UICorner", {CornerRadius = UDim.new(0, 20)}, G2L["screen"])
+        New("UICorner", {CornerRadius = UDim.new(0, 8)}, G2L["screen"])
 
         -- UIPageLayout for tabs inside screen (pages will be sibling children of screen)
         G2L["pagelayout"] = New("UIPageLayout", {
