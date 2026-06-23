@@ -72,9 +72,6 @@ return function(mainfunctions, components)
             AutoButtonColor = false,
             Visible = true
         }, G2L["1"])
-        G2L["2"].Attributes.Fullscreen = true
-        G2L["2"].Attributes.PortraitMode = false
-        G2L["2"].Attributes.NavigationMenu = false
         CollectionService:AddTag(G2L["2"], "MoonAerialEffect")
         CollectionService:AddTag(G2L["2"], "MoonDynamicSpeculars")
         CollectionService:AddTag(G2L["2"], "MoonScreenButton")
