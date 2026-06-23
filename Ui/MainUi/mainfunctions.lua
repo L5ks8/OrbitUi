@@ -181,7 +181,7 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
         end
     end)
 
-    -- Keybind Toggle (Customizable, defaults to RightControl)
+    -- Moon-style drag: only from leaflet_top, exclude action buttons
     UserInputService.InputBegan:Connect(function(input, gpe)
         if not gpe then
             if input.KeyCode == (UIFunctions.ToggleKey or Enum.KeyCode.RightControl) then
@@ -191,105 +191,93 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
         end
 
         if input.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
-            if resizing then return end
+            if resizing or gpe then return end
 
             local pos = input.Position
-            local onInteractive = false
-            local objects = G2L["1"]:GetGuiObjectsAtPosition(pos.X, pos.Y)
-            for _, obj in pairs(objects) do
-                if obj:IsA("TextButton") or obj:IsA("ImageButton") or obj:IsA("TextBox") then
-                    onInteractive = true
-                    break
-                end
-            end
 
-            if not onInteractive then
-                local parent = G2L["1"].Parent
-                if parent then
-                    local profileGui = parent:FindFirstChild("Profile")
-                    if profileGui and profileGui:IsA("ScreenGui") and profileGui.Enabled then
-                        local otherObjs = profileGui:GetGuiObjectsAtPosition(pos.X, pos.Y)
-                        if #otherObjs > 0 then
-                            onInteractive = true
+            if G2L["leaflet_top"] then
+                local topPos = G2L["leaflet_top"].AbsolutePosition
+                local topSize = G2L["leaflet_top"].AbsoluteSize
+                if pos.X >= topPos.X and pos.X <= topPos.X + topSize.X and pos.Y >= topPos.Y and pos.Y <= topPos.Y + topSize.Y then
+                    -- Exclude action buttons area
+                    local onActions = false
+                    if G2L["actions_frame"] then
+                        local actPos = G2L["actions_frame"].AbsolutePosition
+                        local actSize = G2L["actions_frame"].AbsoluteSize
+                        if pos.X >= actPos.X and pos.X <= actPos.X + actSize.X and pos.Y >= actPos.Y and pos.Y <= actPos.Y + actSize.Y then
+                            onActions = true
                         end
                     end
+                    if not onActions then
+                        drag, dragStart, startPos, windowDragged, windowTargetPos = true, pos, G2L["2"].Position, false, G2L["2"].Position
+                    end
                 end
-            end
-
-            if onInteractive or gpe then return end
-
-            local absPos = G2L["2"].AbsolutePosition
-            local absSize = G2L["2"].AbsoluteSize
-
-            if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
-                drag, dragStart, startPos, windowDragged, windowTargetPos = true, pos, G2L["2"].Position, false, G2L["2"].Position
             end
         end
     end)
 
     -- Sidebar Toggle Function
+    local sidebarAnimating = false
     local function animateSidebar()
+        if sidebarAnimating then return end
+        sidebarAnimating = true
         sidebarOpen = not sidebarOpen
         
-        local barTargetSize = sidebarOpen and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 70, 1, 0)
-        local screenTargetSize = sidebarOpen and UDim2.new(1, -235, 1, 0) or UDim2.new(1, -85, 1, 0)
+        local navTargetSize = sidebarOpen and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 0, 1, 0)
+        local screenTargetSize = sidebarOpen and UDim2.new(1, -225, 1, -10) or UDim2.new(1, -15, 1, -10)
         
-        TweenService:Create(G2L["16"], TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = barTargetSize}):Play()
-        TweenService:Create(G2L["11"], TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = screenTargetSize}):Play()
+        local navTween = G2L["navigation"] and TweenService:Create(G2L["navigation"], TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = navTargetSize}) or nil
+        local screenTween = G2L["screen"] and TweenService:Create(G2L["screen"], TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = screenTargetSize}) or nil
         
-        local navPadding = G2L["4c"]:FindFirstChildOfClass("UIPadding")
-        if navPadding then
-            navPadding.PaddingLeft = sidebarOpen and UDim.new(0, 8) or UDim.new(0, 0)
-            navPadding.PaddingRight = sidebarOpen and UDim.new(0, 8) or UDim.new(0, 0)
-        end
+        if navTween then navTween:Play() end
+        if screenTween then screenTween:Play() end
         
-        local mainPadding = G2L["19"]:FindFirstChildOfClass("UIPadding")
-        if mainPadding then
-            mainPadding.PaddingLeft = sidebarOpen and UDim.new(0, 6) or UDim.new(0, 0)
-            mainPadding.PaddingRight = sidebarOpen and UDim.new(0, 6) or UDim.new(0, 0)
-        end
-        
-        local userPadding = G2L["38"]:FindFirstChildOfClass("UIPadding")
-        if userPadding then
-            userPadding.PaddingLeft = sidebarOpen and UDim.new(0, 10) or UDim.new(0, 11)
-            userPadding.PaddingRight = sidebarOpen and UDim.new(0, 35) or UDim.new(0, 11)
-        end
-        
-        local userInfo = G2L["38"]:FindFirstChild("info")
-        if userInfo then
-            userInfo.Visible = sidebarOpen
-        end
-        
-        local userTime = G2L["38"]:FindFirstChild("time")
-        if userTime then
-            userTime.Visible = sidebarOpen
-        end
-        
-        local function updateItems(parentFrame)
+        local function updateNavLabels(parentFrame)
+            if not parentFrame then return end
             for _, btn in ipairs(parentFrame:GetChildren()) do
                 if btn:IsA("ImageButton") then
-                    local innerItem = btn:FindFirstChild("item")
-                    if innerItem then
-                        local label = innerItem:FindFirstChild("label")
-                        if label then
-                            label.Visible = sidebarOpen
-                        end
-                        local uiPadding = innerItem:FindFirstChildOfClass("UIPadding")
-                        if uiPadding then
-                            uiPadding.PaddingLeft = sidebarOpen and UDim.new(0, 12) or UDim.new(0, 14)
-                            uiPadding.PaddingRight = sidebarOpen and UDim.new(0, 12) or UDim.new(0, 14)
-                        end
+                    local label = btn:FindFirstChild("label")
+                    if label then
+                        label.Visible = sidebarOpen
                     end
                 end
             end
         end
         
-        updateItems(G2L["4c"])
-        updateItems(G2L["19"])
+        local sideTween = navTween or screenTween
+        if sideTween then
+            sideTween.Completed:Connect(function()
+                if G2L["user"] then G2L["user"].Visible = sidebarOpen end
+                if G2L["fixed_buttons"] then G2L["fixed_buttons"].Visible = sidebarOpen end
+                updateNavLabels(G2L["directory"])
+                sidebarAnimating = false
+            end)
+        else
+            sidebarAnimating = false
+        end
     end
 
-    if G2L["80"] then
-        G2L["80"].MouseButton1Click:Connect(animateSidebar)
+    if G2L["menu_btn"] then
+        G2L["menu_btn"].MouseButton1Click:Connect(animateSidebar)
+    end
+
+    -- Moon-style: click leaflet_space to toggle controls
+    local leafletVisible = true
+    if G2L["leaflet_space"] then
+        G2L["leaflet_space"].InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                leafletVisible = not leafletVisible
+                if G2L["leaflet_top"] then G2L["leaflet_top"].Visible = leafletVisible end
+                if G2L["leaflet_bottom"] then G2L["leaflet_bottom"].Visible = leafletVisible end
+            end
+        end)
+    end
+
+    -- User profile click
+    if G2L["user_frame"] then
+        G2L["user_frame"].MouseButton1Click:Connect(function()
+            print("Profile clicked")
+        end)
     end
 
     local function closeUI()
@@ -318,91 +306,38 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
         G2L["72"].MouseButton1Click:Connect(closeUI) 
     end
 
-    local function toggleMinimize()
-        isMinimized = not isMinimized
-        local targetSize = isMinimized and UDim2.new(0, 260, 0, 35) or originalSize
-
-        local tween = TweenService:Create(
-            G2L["2"], 
-            TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), 
-            { Size = targetSize })
-        tween:Play()
-        
-        if isMinimized then
-
-            G2L["10"].Visible = false
-            G2L["65"].Visible = false
-            G2L["a1"].Visible = false
-            G2L["b"].Visible = false
-            
-
-            miniButtons = G2L["70"]:Clone()
-            miniButtons.Name = "MiniButtons"
-            miniButtons.Parent = G2L["5"]
-            miniButtons.Size = UDim2.new(0, 85, 0, 27)
-            miniButtons.AnchorPoint = Vector2.new(1, 0.5) 
-            miniButtons.Position = UDim2.new(1, -15, 0, 17.5)
-            miniButtons.ZIndex = 2000
-            miniButtons.Visible = true
-            
-            for _, child in pairs(miniButtons:GetDescendants()) do
-                if child:IsA("GuiObject") then
-                    child.ZIndex = miniButtons.ZIndex + 5
-                    if child:IsA("ImageLabel") then
-                        child.ImageTransparency = 0
-                    end
-                    child.Visible = true
-                end
+    -- Fullscreen toggle
+    if G2L["fullscreen_btn"] then
+        local isFullscreen = false
+        local lastPos = G2L["2"].Position
+        local lastSize = G2L["2"].Size
+        G2L["fullscreen_btn"].MouseButton1Click:Connect(function()
+            isFullscreen = not isFullscreen
+            if isFullscreen then
+                lastPos = G2L["2"].Position
+                lastSize = G2L["2"].Size
+                TweenService:Create(G2L["2"], TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {
+                    Position = UDim2.fromScale(0.5, 0.5),
+                    Size = UDim2.fromScale(1, 1)
+                }):Play()
+            else
+                TweenService:Create(G2L["2"], TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {
+                    Position = lastPos,
+                    Size = lastSize
+                }):Play()
             end
-
-            miniLogo = G2L["6c"]:Clone()
-            miniLogo.Name = "MiniLogo"
-            miniLogo.Parent = G2L["5"]
-            miniLogo.AnchorPoint = Vector2.new(0, 0.5)
-            miniLogo.Position = UDim2.new(0, 15, 0, 17.5)
-            miniLogo.ZIndex = 2000
-            miniLogo.Visible = true
-
-            local logoText = miniLogo:FindFirstChild("logo_text")
-            if logoText then
-                logoText.RichText = true
-                logoText.TextTransparency = 0
-                logoText.Text = window.Logo or '<font color="rgb(248, 191, 212)">Test</font>Ui'
-                logoText.Visible = true
-            end
-
-            if miniButtons:FindFirstChild("close") then 
-                miniButtons.close.MouseButton1Click:Connect(closeUI) 
-            end
-            if miniButtons:FindFirstChild("maximize") then 
-                miniButtons.maximize.MouseButton1Click:Connect(toggleMinimize) 
-            end
-            if miniButtons:FindFirstChild("sidebar_toggle") then
-                miniButtons.sidebar_toggle.MouseButton1Click:Connect(animateSidebar)
-            end
-        else
-
-            if miniButtons then 
-                miniButtons:Destroy() 
-                miniButtons = nil 
-            end
-            if miniLogo then 
-                miniLogo:Destroy() 
-                miniLogo = nil 
-            end
-            G2L["10"].Visible = true
-            G2L["65"].Visible = true
-            G2L["a1"].Visible = true
-            G2L["b"].Visible = true
-        end
+        end)
     end
 
-    if G2L["94"] then 
-        G2L["94"].MouseButton1Click:Connect(toggleMinimize) 
+    if G2L["restore_btn"] then
+        G2L["restore_btn"].MouseButton1Click:Connect(function()
+            G2L["2"].Size = UDim2.new(0, 900, 0, 500)
+            G2L["2"].Position = UDim2.new(0.5, 0, 0.5, 0)
+        end)
     end
 
+    -- Resize
     if G2L["b"] then
-        G2L["b"].Size = UDim2.new(0, 30, 0, 30)
         G2L["b"].InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 then
                 drag = false
@@ -447,18 +382,7 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
         end
     end)
 
-    -- Stats Updater Loop (Runs once per second)
-    local LogService = game:GetService("LogService")
-    LogService.MessageOut:Connect(function(message, messageType)
-        if messageType == Enum.MessageType.MessageError then
-            local count = (G2L["1"]:GetAttribute("errCount") or 0) + 1
-            G2L["1"]:SetAttribute("errCount", count)
-        elseif messageType == Enum.MessageType.MessageWarning then
-            local count = (G2L["1"]:GetAttribute("warnCount") or 0) + 1
-            G2L["1"]:SetAttribute("warnCount", count)
-        end
-    end)
-
+    -- Stats Updater Loop
     task.spawn(function()
         while task.wait(1) do
             if not G2L["1"] or not G2L["1"].Parent then 
@@ -478,43 +402,6 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
                 end
                 if G2L["time_text"] then
                     G2L["time_text"].Text = os.date("%I:%M %p")
-                end
-                if G2L["err_value"] then
-                    G2L["err_value"].Text = tostring(G2L["1"]:GetAttribute("errCount") or 0)
-                end
-                if G2L["warn_value"] then
-                    G2L["warn_value"].Text = tostring(G2L["1"]:GetAttribute("warnCount") or 0)
-                end
-                if G2L["debug_region"] and not G2L["1"]:GetAttribute("regionFetched") then
-                    pcall(function()
-                        local Remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-                        if Remotes then
-                            local retrieving = Remotes:FindFirstChild("Retrieving")
-                            if retrieving then
-                                local retrieveRegion = retrieving:FindFirstChild("RetrieveServerRegion")
-                                if retrieveRegion then
-                                    local region = retrieveRegion:InvokeServer()
-                                    if region then
-                                        G2L["debug_region"].Text = "Region: " .. region
-                                    end
-                                end
-                            end
-                        end
-                        if G2L["debug_region"].Text ~= "Region: N/A" then return end
-                        local ncSuccess, nc = pcall(game.GetService, game, "NetworkClient")
-                        if ncSuccess and nc then
-                            local addr = nc.PeerConnectAddress
-                            if addr and addr ~= "" then
-                                G2L["debug_region"].Text = "Region: " .. tostring(addr):match("(%d+%.%d+)") or tostring(addr)
-                            end
-                        end
-                        if G2L["debug_region"].Text == "Region: N/A" then
-                            G2L["debug_region"].Text = "Region: " .. game.JobId:sub(1, 8)
-                        end
-                    end)
-                    G2L["1"]:SetAttribute("regionFetched", os.time())
-                elseif G2L["debug_region"] and os.time() - (G2L["1"]:GetAttribute("regionFetched") or 0) > 30 then
-                    G2L["1"]:SetAttribute("regionFetched", nil)
                 end
             end)
         end
@@ -562,116 +449,73 @@ end
                     tabName = tostring(tabNameOrConfig)
                 end
 
-                -- Enforce max 2 secondary tabs
-                if isSecondary then
-                    secondaryTabCount = secondaryTabCount + 1
-                    if secondaryTabCount > 2 then
-                        warn("Orbit Ui: Max 2 secondary tabs allowed. '" .. tabName .. "' was not created.")
-                        return nil
-                    end
-                end
-
-                -- Construct Tab Sidebar Navigation Button
-                local parentFrame = isSecondary and G2L["19"] or G2L["4c"]
+                -- Construct Tab Sidebar Navigation Button (Moon-style)
+                local parentFrame = G2L["directory"]
                 
                 local navBtn = New("ImageButton", {
                     Name = tabName,
-                    Size = UDim2.new(1, 0, 0, 31),
-                    BackgroundTransparency = 1,
+                    Size = UDim2.new(1, 0, 0, 40),
+                    BackgroundColor3 = Color3.fromRGB(34, 34, 34),
+                    BackgroundTransparency = 0,
                     AutoButtonColor = false,
                     LayoutOrder = tabIndex,
                     ClipsDescendants = false
                 }, parentFrame)
 
-                local innerItem = New("Frame", {
-                    Name = "item",
-                    Size = UDim2.new(1, 0, 1, 0),
-                    BackgroundTransparency = 1,
-                    ZIndex = 2
-                }, navBtn)
+                New("UICorner", {CornerRadius = UDim.new(1, 0)}, navBtn)
 
-                local selectorFrame = New("Frame", {
-                    Name = "selector",
-                    AnchorPoint = Vector2.new(0.5, 0.5),
-                    Position = UDim2.new(0.5, 0, 0.5, 0),
-                    Size = UDim2.new(1, 0, 1, 0),
-                    BackgroundColor3 = Color3.fromRGB(41, 41, 41),
-                    BackgroundTransparency = 1,
-                    ZIndex = 0
-                }, navBtn)
-
-                New("UICorner", {CornerRadius = UDim.new(0, 10)}, selectorFrame)
-
-                local stroke = New("UIStroke", {
-                    Name = "SelectionStroke",
+                local navStroke = New("UIStroke", {
                     Color = Color3.new(1, 1, 1),
-                    Thickness = 1.5,
-                    Transparency = 1,
-                    ApplyStrokeMode = "Border"
-                }, selectorFrame)
+                    Thickness = 1,
+                    Transparency = 1
+                }, navBtn)
 
-                local gradient = New("UIGradient", {
+                local navGradient = New("UIGradient", {
                     Transparency = NumberSequence.new({
                         NumberSequenceKeypoint.new(0, 1),
                         NumberSequenceKeypoint.new(0.45, 0),
                         NumberSequenceKeypoint.new(0.55, 0),
                         NumberSequenceKeypoint.new(1, 1)
                     })
-                }, stroke)
+                }, navStroke)
 
-                -- Register gradient for centralized rotation (one shared RenderStepped for all)
-                UIFunctions.RegisterGradient(gradient, 6)
+                UIFunctions.RegisterGradient(navGradient, 6)
 
                 New("UIListLayout", {
                     FillDirection = Enum.FillDirection.Horizontal,
                     VerticalAlignment = Enum.VerticalAlignment.Center,
                     Padding = UDim.new(0, 10)
-                }, innerItem)
+                }, navBtn)
 
                 New("UIPadding", {
-                    PaddingLeft = UDim.new(0, 12),
+                    PaddingLeft = UDim.new(0, 15),
                     PaddingRight = UDim.new(0, 12)
-                }, innerItem)
-
-                local iconHolder = New("ImageLabel", {
-                    Name = "holder",
-                    Size = UDim2.new(0, 20, 0, 20),
-                    BackgroundColor3 = Color3.new(0, 0, 0),
-                    BackgroundTransparency = 0.8,
-                    ImageTransparency = 1,
-                    LayoutOrder = 1,
-                    ZIndex = 3
-                }, innerItem)
-
-                New("UICorner", {CornerRadius = UDim.new(0, 6)}, iconHolder)
+                }, navBtn)
 
                 local iconImg = New("ImageLabel", {
                     Name = "icon",
-                    Size = UDim2.new(0, 14, 0, 14),
-                    Position = UDim2.new(0.5, 0, 0.5, 0),
-                    AnchorPoint = Vector2.new(0.5, 0.5),
+                    Size = UDim2.new(0, 16, 0, 16),
                     Image = "rbxassetid://" .. iconId,
-                    ImageTransparency = 0.5,
-                    ZIndex = 4,
-                    BackgroundTransparency = 1
-                }, iconHolder)
+                    ImageTransparency = 0.4,
+                    BackgroundTransparency = 1,
+                    LayoutOrder = 1
+                }, navBtn)
 
                 local textLabel = New("TextLabel", {
                     Name = "label",
                     Text = tabName,
-                    FontFace = fonts.bold,
-                    TextSize = 15,
+                    FontFace = fonts.med,
+                    TextSize = 14,
                     TextColor3 = Color3.new(1, 1, 1),
-                    TextTransparency = 0.5,
+                    TextTransparency = 0.4,
                     BackgroundTransparency = 1,
                     LayoutOrder = 2,
-                    ZIndex = 3,
                     TextXAlignment = Enum.TextXAlignment.Left
-                }, innerItem)
+                }, navBtn)
 
                 New("UIFlexItem", {FlexMode = Enum.UIFlexMode.Fill}, textLabel)
 
-                -- Construct Tab Content Frame
+                -- Construct Tab Content Frame (in the pagelayout inside screen)
                 local tabContentFrame = New("ScrollingFrame", {
                     Name = tabName .. "Tab",
                     Size = UDim2.new(1, 0, 1, 0),
@@ -681,13 +525,13 @@ end
                     AutomaticCanvasSize = Enum.AutomaticSize.Y,
                     CanvasSize = UDim2.new(0, 0, 0, 0),
                     LayoutOrder = tabIndex
-                }, G2L["11"])
+                }, G2L["pagelayout"])
 
                 New("UIPadding", {
-                    PaddingLeft = UDim.new(0, 12),
-                    PaddingRight = UDim.new(0, 12),
-                    PaddingTop = UDim.new(0, 8),
-                    PaddingBottom = UDim.new(0, 8)
+                    PaddingLeft = UDim.new(0, 15),
+                    PaddingRight = UDim.new(0, 15),
+                    PaddingTop = UDim.new(0, 12),
+                    PaddingBottom = UDim.new(0, 12)
                 }, tabContentFrame)
 
                 local searchOffset = searchbar and 42 or 0
@@ -792,8 +636,6 @@ end
                         ZIndex = 11,
                     }, searchContainer)
 
-
-
                     searchBox:GetPropertyChangedSignal("Text"):Connect(function()
                         local query = searchBox.Text:lower()
                         
@@ -802,7 +644,6 @@ end
                                 if child:IsA("Frame") and child.Name ~= "SearchBar" then
                                     local innerContainer = child:FindFirstChild("container")
                                     if innerContainer then
-                                        -- It's a Section
                                         local anyWidgetVisible = false
                                         for _, widget in pairs(innerContainer:GetChildren()) do
                                             if widget:IsA("Frame") or widget:IsA("TextButton") or widget:IsA("TextBox") then
@@ -827,7 +668,6 @@ end
                                             child.Visible = true
                                         end
                                     else
-                                        -- Normal widget placed directly
                                         local titleText = ""
                                         local titleLabel = child:FindFirstChild("label", true) or child:FindFirstChildOfClass("TextLabel")
                                         if titleLabel and titleLabel:IsA("TextLabel") then
@@ -856,60 +696,57 @@ end
 
                 -- Wire Selection / Navigation jump
                 navBtn.MouseButton1Click:Connect(function()
-                    G2L["14"]:JumpTo(tabContentFrame)
+                    G2L["pagelayout"]:JumpTo(tabContentFrame)
                     
                     local function updateNavStyle(button, active)
-                        local sel = button:FindFirstChild("selector") 
-                        if sel then 
-                            TweenService:Create(sel, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {
-                                BackgroundTransparency = active and 0 or 1, 
-                                Size = active and UDim2.new(1, -12, 1, -4) or UDim2.new(1, 0, 1, 0)
-                            }):Play() 
-                            
-                            local selectStroke = sel:FindFirstChild("SelectionStroke") 
-                            if selectStroke then 
-                                TweenService:Create(selectStroke, TweenInfo.new(0.35), {
-                                    Transparency = active and 0 or 1
-                                }):Play() 
-                            end 
+                        if active then
+                            TweenService:Create(button, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {
+                                BackgroundColor3 = Color3.fromRGB(44, 44, 44)
+                            }):Play()
+                            local stroke = button:FindFirstChildOfClass("UIStroke")
+                            if stroke then
+                                TweenService:Create(stroke, TweenInfo.new(0.35), {
+                                    Transparency = 0
+                                }):Play()
+                            end
+                        else
+                            TweenService:Create(button, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {
+                                BackgroundColor3 = Color3.fromRGB(34, 34, 34)
+                            }):Play()
+                            local stroke = button:FindFirstChildOfClass("UIStroke")
+                            if stroke then
+                                TweenService:Create(stroke, TweenInfo.new(0.35), {
+                                    Transparency = 1
+                                }):Play()
+                            end
                         end
                         
-                        local lbl = button:FindFirstChild("label", true) 
-                        if lbl then 
+                        local lbl = button:FindFirstChild("label")
+                        if lbl then
                             TweenService:Create(lbl, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {
-                                TextTransparency = active and 0 or 0.5
-                            }):Play() 
+                                TextTransparency = active and 0 or 0.4
+                            }):Play()
                         end
                         
-                        local hld = button:FindFirstChild("holder", true) 
-                        if hld then 
-                            local icon = hld:FindFirstChild("icon", true) 
-                            if icon then 
-                                TweenService:Create(icon, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {
-                                    ImageTransparency = active and 0 or 0.5
-                                }):Play() 
-                            end 
+                        local icon = button:FindFirstChild("icon")
+                        if icon then
+                            TweenService:Create(icon, TweenInfo.new(0.35, Enum.EasingStyle.Quart), {
+                                ImageTransparency = active and 0 or 0.4
+                            }):Play()
                         end
                     end
 
-                    -- Update states of all sidebar items
-                    for _, child in pairs(G2L["4c"]:GetChildren()) do 
-                        if child:IsA("ImageButton") then 
-                            updateNavStyle(child, child == navBtn) 
-                        end 
-                    end
-                    for _, child in pairs(G2L["19"]:GetChildren()) do 
-                        if child:IsA("ImageButton") then 
-                            updateNavStyle(child, child == navBtn) 
-                        end 
+                    for _, child in pairs(G2L["directory"]:GetChildren()) do
+                        if child:IsA("ImageButton") then
+                            updateNavStyle(child, child == navBtn)
+                        end
                     end
                 end)
 
                 -- Initial style for active first tab
                 if tabIndex == 1 then
-                    selectorFrame.BackgroundTransparency = 0
-                    selectorFrame.Size = UDim2.new(1, -12, 1, -4)
-                    stroke.Transparency = 0
+                    navBtn.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
+                    navStroke.Transparency = 0
                     textLabel.TextTransparency = 0
                     iconImg.ImageTransparency = 0
                 end
@@ -1013,7 +850,6 @@ end
                             dropped = not dropped
                             isAnimating = true
                             if not dropped then
-                                -- COLLAPSE: tween secFrame from full height to header-only (32px)
                                 secFrame.ClipsDescendants = true
                                 local fullHeight = secFrame.AbsoluteSize.Y
                                 secFrame.AutomaticSize = Enum.AutomaticSize.None
@@ -1035,11 +871,9 @@ end
                                     isAnimating = false
                                 end)
                             else
-                                -- EXPAND: tween secFrame from 32px back to full height
                                 container.Visible = true
                                 secFrame.ClipsDescendants = true
                                 
-                                -- Temporarily enable AutomaticSize to measure target height
                                 secFrame.AutomaticSize = Enum.AutomaticSize.Y
                                 RunService.RenderStepped:Wait()
                                 local targetHeight = secFrame.AbsoluteSize.Y
@@ -1118,7 +952,6 @@ end
                     return Section
                 end
 
-                -- Delegate widget creation to external components
                 function Tab:CreateToggle(configTitle, defaultState, callback, overrideParent, layoutOrder)
                     return components.toggle(self, UIFunctions, configTitle, defaultState, callback, overrideParent, layoutOrder)
                 end
