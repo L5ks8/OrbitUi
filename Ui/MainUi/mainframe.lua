@@ -128,7 +128,8 @@ function Library:CreateWindow(config)
         BackgroundTransparency = 1,
         ClipsDescendants = true,
         Name = "navigation",
-        AutoButtonColor = false
+        AutoButtonColor = false,
+        ZIndex = 99
     }, G2L["content"])
 
     -- Navigation padding
@@ -149,19 +150,19 @@ function Library:CreateWindow(config)
     New("UIPadding", {
         PaddingLeft = UDim.new(0, 8),
         PaddingRight = UDim.new(0, 8),
-        PaddingTop = UDim.new(0, 8)
+        PaddingTop = UDim.new(0, 50)
     }, G2L["user"])
 
     G2L["user_frame"] = New("ImageButton", {
         Size = UDim2.new(1, 0, 1, 0),
-        BackgroundColor3 = Color3.fromRGB(34, 34, 34),
-        BackgroundTransparency = 0,
+        BackgroundTransparency = 1,
         Name = "frame",
-        AutoButtonColor = false
+        AutoButtonColor = false,
+        Image = "rbxassetid://125088425775676",
+        ImageColor3 = Color3.fromRGB(34, 34, 34),
+        ScaleType = Enum.ScaleType.Slice,
+        SliceCenter = Rect.new(512, 512, 512, 512)
     }, G2L["user"])
-
-    New("UICorner", {CornerRadius = UDim.new(1, 0)}, G2L["user_frame"])
-    New("UIStroke", {Color = Color3.new(1, 1, 1), Transparency = 1, Thickness = 1}, G2L["user_frame"])
 
     local userInnerList = New("UIListLayout", {
         FillDirection = Enum.FillDirection.Horizontal,
@@ -203,43 +204,50 @@ function Library:CreateWindow(config)
     }, userInfoFrame)
 
     G2L["user_role"] = New("TextLabel", {
-        Size = UDim2.new(1, 0, 0, 11),
-        Text = "User",
+        Size = UDim2.new(0, 0, 0, 20),
+        Text = "  User  ",
         FontFace = fonts.reg,
         TextSize = 11,
-        TextColor3 = Color3.fromRGB(160, 160, 160),
-        BackgroundTransparency = 1,
+        TextColor3 = Color3.new(1, 1, 1),
+        BackgroundColor3 = Color3.fromRGB(72, 72, 72),
+        BackgroundTransparency = 0,
         TextXAlignment = Enum.TextXAlignment.Left,
-        TextTruncate = Enum.TextTruncate.AtEnd
+        AutomaticSize = Enum.AutomaticSize.X
     }, userInfoFrame)
+    New("UICorner", {CornerRadius = UDim.new(0, 20)}, G2L["user_role"])
 
-    -- Fixed buttons (system, exe_flow)
+    -- Fixed buttons (system, exe_flow) - Moon-style
     G2L["fixed_buttons"] = New("Frame", {
-        Size = UDim2.new(1, 0, 0, 36),
+        Size = UDim2.new(1, 0, 0, 0),
+        AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         Name = "fixed_buttons",
-        LayoutOrder = 2
+        LayoutOrder = 2,
+        AnchorPoint = Vector2.new(0, 1),
+        Position = UDim2.new(0, 0, 1, 0),
+        ZIndex = 2
     }, G2L["navigation"])
 
     New("UIListLayout", {
-        FillDirection = Enum.FillDirection.Horizontal,
-        VerticalAlignment = Enum.VerticalAlignment.Center,
+        FillDirection = Enum.FillDirection.Vertical,
+        SortOrder = Enum.SortOrder.LayoutOrder,
         Padding = UDim.new(0, 4)
     }, G2L["fixed_buttons"])
 
     New("UIPadding", {
         PaddingLeft = UDim.new(0, 8),
-        PaddingRight = UDim.new(0, 8)
+        PaddingRight = UDim.new(0, 8),
+        PaddingBottom = UDim.new(0, 4)
     }, G2L["fixed_buttons"])
 
-    local function CreateFixedButton(name, iconId, labelText, order)
+    local function CreateFixedButton(name, iconId, labelText, isFullWidth)
         local btn = New("ImageButton", {
             Name = name,
-            Size = UDim2.new(0, 0, 0, 36),
-            AutomaticSize = Enum.AutomaticSize.X,
+            Size = isFullWidth and UDim2.new(1, 0, 0, 36) or UDim2.new(0, 0, 0, 36),
             BackgroundTransparency = 1,
-            LayoutOrder = order,
-            AutoButtonColor = false
+            LayoutOrder = 1,
+            AutoButtonColor = false,
+            Visible = true
         }, G2L["fixed_buttons"])
 
         local bg = New("ImageLabel", {
@@ -280,22 +288,15 @@ function Library:CreateWindow(config)
         return btn
     end
 
-    G2L["fixed_system"] = CreateFixedButton("system", "11433532654", "System", 1)
-    G2L["fixed_exe"] = CreateFixedButton("exe_flow", "11433532654", "Exe. Flow", 2)
-
-    -- Divider
-    New("Frame", {
-        Size = UDim2.new(1, -22, 0, 1),
-        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-        BackgroundTransparency = 0.9,
-        Name = "divider",
-        LayoutOrder = 3
-    }, G2L["navigation"])
+    G2L["fixed_system"] = CreateFixedButton("system", "11433532654", "System", true)
+    G2L["fixed_exe"] = CreateFixedButton("exe_flow", "11433532654", "Exe. Flow", false)
+    G2L["fixed_exe"].Visible = false
 
     -- Navigation Directory (ScrollingFrame for tab buttons)
     G2L["directory"] = New("ScrollingFrame", {
-        Size = UDim2.new(1, 0, 1, 0),
-        Position = UDim2.new(0, 0, 0, 0),
+        Size = UDim2.new(1, -20, 1, -120),
+        Position = UDim2.new(0.5, 0, 1, -10),
+        AnchorPoint = Vector2.new(0.5, 1),
         BackgroundTransparency = 1,
         ScrollBarThickness = 0,
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
@@ -303,20 +304,40 @@ function Library:CreateWindow(config)
         LayoutOrder = 4
     }, G2L["navigation"])
 
+    -- primary Frame: actual tab button container (matches Moon G2L structure)
+    G2L["primary"] = New("Frame", {
+        Size = UDim2.new(1, 0, 0, 0),
+        AutomaticSize = Enum.AutomaticSize.Y,
+        BackgroundTransparency = 1,
+        Name = "primary"
+    }, G2L["directory"])
+
     New("UIListLayout", {
         Padding = UDim.new(0, 2),
         SortOrder = Enum.SortOrder.LayoutOrder
-    }, G2L["directory"])
+    }, G2L["primary"])
 
     New("UIPadding", {
         PaddingLeft = UDim.new(0, 8),
         PaddingRight = UDim.new(0, 8),
         PaddingTop = UDim.new(0, 6),
         PaddingBottom = UDim.new(0, 6)
-    }, G2L["directory"])
+    }, G2L["primary"])
 
-    -- Flex fill for directory
-    New("UIFlexItem", {FlexMode = Enum.UIFlexMode.Fill}, G2L["navigation"])
+    -- util Folder for badges (Moon has this in primary)
+    G2L["util"] = New("Folder", {Name = "util"}, G2L["primary"])
+
+    -- Divider between primary and rest
+    New("Frame", {
+        Size = UDim2.new(1, -22, 0, 1),
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundTransparency = 0.9,
+        Name = "divider",
+        LayoutOrder = 999
+    }, G2L["primary"])
+
+    -- Flex fill for directory (fills remaining space in navigation layout)
+    New("UIFlexItem", {FlexMode = Enum.UIFlexMode.Fill}, G2L["directory"])
 
     -- Screen (CanvasGroup - main content area)
     G2L["screen"] = New("CanvasGroup", {
@@ -324,13 +345,13 @@ function Library:CreateWindow(config)
         Position = UDim2.new(1, -5, 1, -5),
         AnchorPoint = Vector2.new(1, 1),
         BackgroundTransparency = 0,
-        BackgroundColor3 = Color3.fromRGB(34, 34, 34),
+        BackgroundColor3 = Color3.fromRGB(35, 35, 35),
         GroupTransparency = 0,
         ClipsDescendants = true,
         Name = "screen"
     }, G2L["content"])
 
-    New("UICorner", {CornerRadius = UDim.new(0, 12)}, G2L["screen"])
+    New("UICorner", {CornerRadius = UDim.new(0, 20)}, G2L["screen"])
 
     -- UIPageLayout for tabs (in the screen)
     G2L["pagelayout"] = New("UIPageLayout", {
@@ -349,10 +370,11 @@ function Library:CreateWindow(config)
         Position = UDim2.new(0.5, 0, 0.5, 0),
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundTransparency = 1,
-        Name = "LeafletControls"
+        Name = "LeafletControls",
+        ZIndex = 100
     }, G2L["content"])
 
-    New("UICorner", {CornerRadius = UDim.new(0, 18)}, G2L["leaflet"])
+    New("UICorner", {CornerRadius = UDim.new(0, 0)}, G2L["leaflet"])
 
     -- Leaflet Top (actions + clock)
     G2L["leaflet_top"] = New("Frame", {
@@ -369,8 +391,10 @@ function Library:CreateWindow(config)
     }, G2L["leaflet_top"])
 
     New("UIPadding", {
-        PaddingLeft = UDim.new(0, 15),
-        PaddingRight = UDim.new(0, 15)
+        PaddingTop = UDim.new(0, 10),
+        PaddingRight = UDim.new(0, 15),
+        PaddingLeft = UDim.new(0, 10),
+        PaddingBottom = UDim.new(0, 10)
     }, G2L["leaflet_top"])
 
     -- Tracking icon (like Moon's tracking indicator)
@@ -407,49 +431,82 @@ function Library:CreateWindow(config)
     }, G2L["leaflet_top"])
     New("UIFlexItem", {FlexMode = Enum.UIFlexMode.Fill}, leafletSpacer)
 
-    -- Action buttons (close, fullscreen, menu, restore)
+    -- Action buttons (Moon-style: 30x30 ImageButton → 24x24 ImageLabel container)
     G2L["actions_frame"] = New("ImageButton", {
         Size = UDim2.new(0, 0, 0, 0),
         AutomaticSize = Enum.AutomaticSize.X,
         BackgroundTransparency = 1,
-        Image = "rbxassetid://72548733587158",
-        ImageTransparency = 1,
         Name = "Actions",
         LayoutOrder = 4,
-        AutoButtonColor = false
+        AutoButtonColor = false,
+        ZIndex = 3
     }, G2L["leaflet_top"])
 
     G2L["actions_container"] = New("Frame", {
         Size = UDim2.new(0, 0, 0, 32),
         AutomaticSize = Enum.AutomaticSize.X,
-        BackgroundTransparency = 1,
+        BackgroundColor3 = Color3.fromRGB(35, 35, 35),
+        BackgroundTransparency = 0,
         Name = "Container"
     }, G2L["actions_frame"])
 
-    local actionBtnList = New("UIListLayout", {
+    New("UICorner", {CornerRadius = UDim.new(1, 0)}, G2L["actions_container"])
+    local containerStroke = New("UIStroke", {
+        Color = Color3.new(1, 1, 1),
+        Thickness = 1,
+        Transparency = 0.85
+    }, G2L["actions_container"])
+    local containerGradient = New("UIGradient", {
+        Transparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 1),
+            NumberSequenceKeypoint.new(0.45, 0),
+            NumberSequenceKeypoint.new(0.55, 0),
+            NumberSequenceKeypoint.new(1, 1)
+        })
+    }, containerStroke)
+    mainfunctions.RegisterGradient(containerGradient, 6)
+
+    New("UIListLayout", {
         FillDirection = Enum.FillDirection.Horizontal,
         VerticalAlignment = Enum.VerticalAlignment.Center,
-        Padding = UDim.new(0, 4)
+        Padding = UDim.new(0, 0)
     }, G2L["actions_container"])
     New("UIPadding", {PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6)}, G2L["actions_container"])
 
     local function CreateActionButton(name, iconId)
         local btn = New("ImageButton", {
             Name = name,
-            Size = UDim2.new(0, 28, 0, 28),
+            Size = UDim2.new(0, 30, 0, 30),
             BackgroundTransparency = 1,
             AutoButtonColor = false
         }, G2L["actions_container"])
 
         local container = New("ImageLabel", {
-            Size = UDim2.new(1, 0, 1, 0),
+            Size = UDim2.new(0, 24, 0, 24),
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            AnchorPoint = Vector2.new(0.5, 0.5),
             BackgroundTransparency = 1,
             ImageTransparency = 0,
             ImageColor3 = Color3.fromRGB(44, 44, 44),
             Name = "container"
         }, btn)
 
-        New("UICorner", {CornerRadius = UDim.new(0, 6)}, container)
+        New("UICorner", {CornerRadius = UDim.new(1, 0)}, container)
+
+        local iconStroke = New("UIStroke", {
+            Color = Color3.new(1, 1, 1),
+            Thickness = 1,
+            Transparency = 0.9
+        }, container)
+        local iconGradient = New("UIGradient", {
+            Transparency = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 1),
+                NumberSequenceKeypoint.new(0.45, 0),
+                NumberSequenceKeypoint.new(0.55, 0),
+                NumberSequenceKeypoint.new(1, 1)
+            })
+        }, iconStroke)
+        mainfunctions.RegisterGradient(iconGradient, 6)
 
         local icon = New("ImageLabel", {
             Size = UDim2.new(0, 14, 0, 14),
@@ -460,28 +517,24 @@ function Library:CreateWindow(config)
             Name = "icon"
         }, container)
 
-        New("UIScale", {Name = "scale"}, container)
-
         btn.MouseEnter:Connect(function()
             TweenService:Create(container, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageColor3 = Color3.fromRGB(34, 34, 34)}):Play()
-            TweenService:Create(container:FindFirstChild("scale"), TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Scale = 1.2}):Play()
         end)
         btn.MouseButton1Down:Connect(function()
             TweenService:Create(container, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageColor3 = Color3.fromRGB(20, 20, 20)}):Play()
-            TweenService:Create(container:FindFirstChild("scale"), TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Scale = 0.6}):Play()
         end)
         btn.InputEnded:Connect(function()
             TweenService:Create(container, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageColor3 = Color3.fromRGB(44, 44, 44)}):Play()
-            TweenService:Create(container:FindFirstChild("scale"), TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Scale = 1}):Play()
         end)
 
         return btn
     end
 
-    G2L["72"] = CreateActionButton("close", "109757326745560")
-    G2L["fullscreen_btn"] = CreateActionButton("fullscreen", "11295291707")
-    G2L["menu_btn"] = CreateActionButton("menu", "4773248567")
-    G2L["restore_btn"] = CreateActionButton("restore", "11433532654")
+    G2L["close_btn"] = CreateActionButton("close", "72895544872618")
+    G2L["fullscreen_btn"] = CreateActionButton("fullscreen", "11295287158")
+    G2L["menu_btn"] = CreateActionButton("menu", "11295285432")
+    G2L["restore_btn"] = CreateActionButton("restore", "11963366999")
+    G2L["restore_btn"].Visible = false
 
     -- Leaflet Space (clickable area to dismiss controls)
     G2L["leaflet_space"] = New("Frame", {
@@ -493,28 +546,38 @@ function Library:CreateWindow(config)
 
     -- Leaflet Bottom (with Resize handle)
     G2L["leaflet_bottom"] = New("Frame", {
-        Size = UDim2.new(1, 0, 0, 30),
-        Position = UDim2.new(0, 0, 1, 0),
-        AnchorPoint = Vector2.new(0, 1),
+        Size = UDim2.new(0, 50, 0, 50),
+        Position = UDim2.new(1, 0, 1, 0),
+        AnchorPoint = Vector2.new(1, 1),
         BackgroundTransparency = 1,
         Name = "Bottom"
     }, G2L["leaflet"])
 
+    New("UIListLayout", {
+        FillDirection = Enum.FillDirection.Horizontal,
+        HorizontalFlex = Enum.UIFlexMode.Fill
+    }, G2L["leaflet_bottom"])
+
     G2L["b"] = New("ImageButton", {
-        Size = UDim2.new(0, 30, 0, 30),
-        Position = UDim2.new(1, -5, 0.5, 0),
-        AnchorPoint = Vector2.new(1, 0.5),
+        Size = UDim2.new(0, 0, 0, 0),
+        AutomaticSize = Enum.AutomaticSize.X,
         BackgroundTransparency = 1,
         Name = "resize"
     }, G2L["leaflet_bottom"])
+    CollectionService:AddTag(G2L["b"], "Exe6ResizeHandle")
+
+    New("UIPadding", {
+        PaddingRight = UDim.new(0, 8),
+        PaddingBottom = UDim.new(0, 8)
+    }, G2L["b"])
 
     New("ImageLabel", {
         Size = UDim2.new(0, 18, 0, 18),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(0.5, 0.5),
         Image = "rbxassetid://86527207319523",
         BackgroundTransparency = 1,
-        Name = "icon"
+        Name = "icon",
+        ScaleType = Enum.ScaleType.Slice,
+        SliceScale = 0.5
     }, G2L["b"])
 
     -- Stats overlay (inside leaflet, outside leaflet_top layout)

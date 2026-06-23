@@ -249,7 +249,7 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
             sideTween.Completed:Connect(function()
                 if G2L["user"] then G2L["user"].Visible = sidebarOpen end
                 if G2L["fixed_buttons"] then G2L["fixed_buttons"].Visible = sidebarOpen end
-                updateNavLabels(G2L["directory"])
+                updateNavLabels(G2L["primary"] or G2L["directory"])
                 sidebarAnimating = false
             end)
         else
@@ -302,8 +302,8 @@ function UIFunctions.InitBehavior(G2L, window, closeCallback)
         end)
     end
 
-    if G2L["72"] then 
-        G2L["72"].MouseButton1Click:Connect(closeUI) 
+    if G2L["close_btn"] then 
+        G2L["close_btn"].MouseButton1Click:Connect(closeUI) 
     end
 
     -- Fullscreen toggle
@@ -450,11 +450,12 @@ end
                 end
 
                 -- Construct Tab Sidebar Navigation Button (Moon-style)
-                local parentFrame = G2L["directory"]
+                local parentFrame = G2L["primary"] or G2L["directory"]
                 
+                local btnHeight = (tabIndex == 1) and 40 or 36
                 local navBtn = New("ImageButton", {
                     Name = tabName,
-                    Size = UDim2.new(1, 0, 0, 40),
+                    Size = UDim2.new(1, 0, 0, btnHeight),
                     BackgroundColor3 = Color3.fromRGB(34, 34, 34),
                     BackgroundTransparency = 0,
                     AutoButtonColor = false,
@@ -736,7 +737,8 @@ end
                         end
                     end
 
-                    for _, child in pairs(G2L["directory"]:GetChildren()) do
+                    local navParent = G2L["primary"] or G2L["directory"]
+                    for _, child in pairs(navParent:GetChildren()) do
                         if child:IsA("ImageButton") then
                             updateNavStyle(child, child == navBtn)
                         end
