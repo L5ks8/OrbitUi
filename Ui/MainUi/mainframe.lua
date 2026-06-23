@@ -98,18 +98,6 @@ function Library:CreateWindow(config)
         Name = "empty"
     }, G2L["2"])
 
-    -- UIPageLayout (for tab switching)
-    G2L["page"] = New("UIPageLayout", {
-        SortOrder = Enum.SortOrder.LayoutOrder,
-        Animated = true,
-        EasingStyle = Enum.EasingStyle.Quart,
-        EasingDirection = Enum.EasingDirection.Out,
-        TweenTime = 0.45,
-        ScrollWheelInputEnabled = false,
-        TouchInputEnabled = false,
-        Circular = false
-    }, G2L["2"])
-
     -- Content container
     G2L["content"] = New("Frame", {
         Size = UDim2.new(1, 0, 1, 0),
