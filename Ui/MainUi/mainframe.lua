@@ -553,14 +553,12 @@ function Library:CreateWindow(config)
         Name = "Bottom"
     }, G2L["leaflet"])
 
-    New("UIListLayout", {
-        FillDirection = Enum.FillDirection.Horizontal,
-        HorizontalFlex = Enum.UIFlexMode.Fill
-    }, G2L["leaflet_bottom"])
 
     G2L["b"] = New("ImageButton", {
         Size = UDim2.new(0, 0, 0, 0),
         AutomaticSize = Enum.AutomaticSize.X,
+        Position = UDim2.new(1, 0, 1, 0),
+        AnchorPoint = Vector2.new(1, 1),
         BackgroundTransparency = 1,
         Name = "resize"
     }, G2L["leaflet_bottom"])
